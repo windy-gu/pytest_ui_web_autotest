@@ -32,11 +32,10 @@ def init_env(report_file_dir):
 def run(m):
     if m is None or m == "run":
         logger.info("回归模式，开始执行！")
-        today_time = time.strftime("%Y_%m_%d")
-        hours_minutes_time = time.strftime("%H_%M")
-        init_env(os.path.join(today_time, hours_minutes_time))
-        html_report = os.path.join(REPORT_DIR, today_time, hours_minutes_time, "report.html")
-        xml_report = os.path.join(REPORT_DIR, today_time, hours_minutes_time, "junit-xml.xml")
+        now_time = time.strftime("%Y_%m_%d_%H_%M_%S")
+        init_env(now_time)
+        html_report = os.path.join(REPORT_DIR, now_time, "report.html")
+        xml_report = os.path.join(REPORT_DIR, now_time, "junit-xml.xml")
         pytest.main(["-s", "-v", cases_path,
                      "--html=" + html_report,
                      "--junit-xml=" + xml_report,
