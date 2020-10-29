@@ -10,6 +10,11 @@ from page.baidu_page import BaiduPage
     测试案例，百度页面上搜索
 """
 
+"""
+    setup_module/teardown_module/setup_function
+    teardown_function/setup/teardown有点类型unittest等
+"""
+
 
 def setup_module():
     print("Setup_module========")

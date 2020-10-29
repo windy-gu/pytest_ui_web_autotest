@@ -28,7 +28,7 @@ def test_boss_login(browser, url='https://boss-uat.lifekh.com/boss#/login',
     page.google_code = google_code
     page.login_confirm_button.click()
     sleep(2)
-    change_language(browser, language='en')
+    change_language(browser, language='zh')
     assert browser.title == 'boss管理后台'
 
 
@@ -70,4 +70,4 @@ def change_language(browser, language='zh'):
 
 
 if __name__ == '__main__':
-    pytest.main(['-s', './test_boss_login.py'])
+    pytest.main(['-s', './test_001_boss_login.py'])
