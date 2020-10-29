@@ -88,7 +88,11 @@ class HomePage(Page):
     system_configuration = NewPageElement(xpath='//*[@class="main-menu-list"]/li[6]', describe='系统配置')
 
 
-class CreateMerchant(Page):
+class CustomerCenter(Page):
+    member_management = NewPageElement(link_text='会员管理', describe='会员管理')
+    merchant_management = NewPageElement(link_text='商户管理', describe='商户管理')
+
+
     pass
 
 

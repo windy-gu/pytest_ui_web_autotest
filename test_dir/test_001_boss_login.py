@@ -1,3 +1,4 @@
+import os
 import sys
 import hmac
 import time
@@ -70,4 +71,5 @@ def change_language(browser, language='zh'):
 
 
 if __name__ == '__main__':
-    pytest.main(['-s', './test_001_boss_login.py'])
+    file_name = os.path.split(__file__)[-1]
+    pytest.main(['-s', './{}'.format(file_name)])
