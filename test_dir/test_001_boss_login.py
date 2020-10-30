@@ -15,6 +15,7 @@ from page.boss_page import BossLoginPage, HomePage
 
 """
     测试案例，Boss登录页面
+    这里作为一个public的方法作为所有需要在boss中进行操作的前置方法
 """
 
 
@@ -68,6 +69,18 @@ def change_language(browser, language='zh'):
             page.language_selector_zh.click()
         else:
             page.language_selector_en.click()
+
+
+def check_boss_login(browser, url, need_login=True):
+    if url != browser.current_url:
+        logging.info('测试URL地址为重定向到Boss登录地址')
+        if need_login is True:
+            logging.info('need_login：{}，执行Boss登录流程'.format(need_login))
+            test_boss_login(browser=browser)
+        else:
+            logging.info('need_login：{}，不执行Boss登录流程'.format(need_login))
+    else:
+        logging.info('测试URL地址与当前URL地址一致')
 
 
 if __name__ == '__main__':
