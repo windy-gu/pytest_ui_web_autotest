@@ -6,9 +6,8 @@ from poium import Page
 from poium.common import logging
 from os.path import dirname, abspath
 from test_dir.test_001_boss_login import check_boss_login
-# from test_dir.test_001_boss_login import test_boss_login
 sys.path.insert(0, dirname(dirname(abspath(__file__))))
-from page.boss_page import HomePage, CustomerCenter
+from page.boss_page import HomePage, CustomerCenterPage
 
 
 """
@@ -22,12 +21,18 @@ def setup():
 
 def test_create_merchant(browser, test_url='https://boss-uat.lifekh.com/boss#/home'):
     page_home = HomePage(browser)
+    page_customer_center = CustomerCenterPage(browser)
     page_home.get(test_url)
     time.sleep(1)
     check_boss_login(browser, test_url)
     current_url = browser.current_url
     if current_url == test_url:
-        print('pass')
+        page_home.customer_center.click()
+        page_customer_center.merchant_management.click()
+        page_customer_center.merchant_list.click()
+        page_customer_center.add_merchant.click()
+        time.sleep(5)
+
     else:
         print('failure')
     assert browser.title == 'boss管理后台'

@@ -45,6 +45,7 @@ from poium import Page, PageElement, PageElements, NewPageElement
     6）使用text()方法
         text()用于匹配显示文本信息，实现了partial link定位的效果
         xpath='//a[text(), "新闻"]' 
+        xpath='//span[contains(text(),"商户管理")]'  span标签内文字内容包含"商户管理"
     
     css详细定位
     1）通过class定位
@@ -86,14 +87,17 @@ class HomePage(Page):
     order_management = NewPageElement(xpath='//*[@class="main-menu-list"]/li[4]', describe='订单管理')
     marketing_management = NewPageElement(xpath='//*[@class="main-menu-list"]/li[5]', describe='平台营销')
     system_configuration = NewPageElement(xpath='//*[@class="main-menu-list"]/li[6]', describe='系统配置')
+    member_management = NewPageElement(xpath='//span[contains(text(),"会员管理")]', describe='会员管理')
+    merchant_management = NewPageElement(xpath='//span[contains(text(),"商户管理")]', describe='商户管理')
+    merchant_list = NewPageElement(xpath='//span[contains(text(),"商户列表")]', describe='商户列表')
+    add_merchant = NewPageElement(xpath='//span[contains(text(),"新增")]', describe='+新增（商户）btn')
 
 
-class CustomerCenter(Page):
-    member_management = NewPageElement(link_text='会员管理', describe='会员管理')
-    merchant_management = NewPageElement(link_text='商户管理', describe='商户管理')
-
-
-    pass
+class CustomerCenterPage(Page):
+    member_management = NewPageElement(xpath='//span[contains(text(),"会员管理")]', describe='会员管理')
+    merchant_management = NewPageElement(xpath='//span[contains(text(),"商户管理")]', describe='商户管理')
+    merchant_list = NewPageElement(xpath='//span[contains(text(),"商户列表")]', describe='商户列表')
+    add_merchant = NewPageElement(xpath='//span[contains(text(),"新增")]', describe='+新增（商户）btn')
 
 
 class CreateStore(Page):
