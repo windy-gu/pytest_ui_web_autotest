@@ -63,6 +63,7 @@ from poium import Page, PageElement, PageElements, NewPageElement
 
 
 class BossLoginPage(Page):
+    # boss登录页面元素
     boss_login_name = NewPageElement(xpath='//*[@id="app"]/div/div/div/div/div[2]/form/div[1]/div/div/div[2]/input',
                                      describe='登录用户名')
     boss_login_password = NewPageElement(xpath='//*[@id="app"]/div/div/div/div/div[2]/form/div[2]/div/div/div[2]/input',
@@ -75,6 +76,7 @@ class BossLoginPage(Page):
 
 
 class HomePage(Page):
+    # 切换boss登录语言元素
     language_button_span = NewPageElement(xpath='//*[@id="app"]/div/div/div[3]/div/div[1]/div[3]/div/div[1]/a/span',
                                           describe='语言button_span')
     language_text_span = NewPageElement(xpath='//*[@id="app"]/div/div/div[3]/div/div[1]/div[3]/div/div[1]/a/span/span',
@@ -83,19 +85,18 @@ class HomePage(Page):
                                           describe='语言_切换选项_中文')
     language_selector_en = NewPageElement(xpath='//*[@class="left"]/div/div[2]/div/div[2]/div/div/div/div[2]',
                                           describe='语言_切换选项_English')
+
+    # 首页左侧导航栏元素
     customer_center = NewPageElement(xpath='//*[@class="main-menu-list"]/li[1]', describe='客户中心')
     yumnow_management = NewPageElement(xpath='//*[@class="main-menu-list"]/li[2]', describe='外卖管理')
     distribution_management = NewPageElement(xpath='//*[@class="main-menu-list"]/li[3]', describe='配送管理')
     order_management = NewPageElement(xpath='//*[@class="main-menu-list"]/li[4]', describe='订单管理')
     marketing_management = NewPageElement(xpath='//*[@class="main-menu-list"]/li[5]', describe='平台营销')
     system_configuration = NewPageElement(xpath='//*[@class="main-menu-list"]/li[6]', describe='系统配置')
-    member_management = NewPageElement(xpath='//span[contains(text(),"会员管理")]', describe='会员管理')
-    merchant_management = NewPageElement(xpath='//span[contains(text(),"商户管理")]', describe='商户管理')
-    merchant_list = NewPageElement(xpath='//span[contains(text(),"商户列表")]', describe='商户列表')
-    add_merchant = NewPageElement(xpath='//span[contains(text(),"新增")]', describe='+新增（商户）btn')
 
 
 class CustomerCenterPage(Page):
+    # 客户中心 - 次级元素
     member_management = NewPageElement(xpath='//span[contains(text(),"会员管理")]', describe='会员管理')
     merchant_management = NewPageElement(xpath='//span[contains(text(),"商户管理")]', describe='商户管理')
     merchant_list = NewPageElement(xpath='//span[contains(text(),"商户列表")]', describe='商户列表')
