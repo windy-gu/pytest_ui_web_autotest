@@ -56,6 +56,8 @@ from poium import Page, PageElement, PageElements, NewPageElement
     6）组合定位
     7）更多定位方法
     
+    def __init__(self, timeout=5, describe="undefined", index=0, **kwargs):
+    NewPageElement(xx='xx')
     
 """
 
@@ -97,7 +99,56 @@ class CustomerCenterPage(Page):
     member_management = NewPageElement(xpath='//span[contains(text(),"会员管理")]', describe='会员管理')
     merchant_management = NewPageElement(xpath='//span[contains(text(),"商户管理")]', describe='商户管理')
     merchant_list = NewPageElement(xpath='//span[contains(text(),"商户列表")]', describe='商户列表')
-    add_merchant = NewPageElement(xpath='//span[contains(text(),"新增")]', describe='+新增（商户）btn')
+    add_merchant = NewPageElement(xpath='//span[contains(text(),"新增")]', describe='+ 新增（商户）btn')
+
+    # 商户基本信息
+    merchant_name_en = NewPageElement(xpath='//*[@class="ivu-card-body"]/div/div[1]/div/div/div/input',
+                                      describe='商户名称_en', index=0)
+    merchant_name_zh = NewPageElement(xpath='//*[@class="ivu-card-body"]/div/div[2]/div/div/div/input',
+                                      describe='商户名称_zh', index=0)
+    merchant_name_cb = NewPageElement(xpath='//*[@class="ivu-card-body"]/div/div[3]/div/div/div/input',
+                                      describe='商户名称_cb', index=0)
+    merchant_style_person = NewPageElement(xpath='//*[@class="ivu-card-body"]/div/div[4]/div/div/label[1]',
+                                           describe='商户类型_个体商户', index=0)
+    merchant_style_enterprise = NewPageElement(xpath='//*[@class="ivu-card-body"]/div/div[4]/div/div/label[2]',
+                                               describe='商户类型_企业商户', index=0)
+    merchant_charge_name = NewPageElement(xpath='//*[@class="ivu-card-body"]/div/div[5]/div[1]/div/div[1]/div/input',
+                                          describe='负责人_名称', index=0)
+    merchant_charge_surname = NewPageElement(xpath='//*[@class="ivu-card-body"]/div/div[5]/div[1]/div/div[2]/div/input',
+                                             describe='负责人_姓', index=0)
+    merchant_certificate_type = NewPageElement(xpath='//*[@class="ivu-card-body"]/div/div[5]/div[2]/div/div',
+                                               describe='证件类型', index=0)
+    merchant_identity_card = NewPageElement(xpath='//*[@class="ivu-card-body"]/div/div[5]/div[2]/div/div/div[2]/ul[2]/li[1]',
+                                            describe='身份证', index=0)
+    merchant_passport = NewPageElement(xpath='//*[@class="ivu-card-body"]/div/div[5]/div[2]/div/div/div[2]/ul[2]/li[2]',
+                                       describe='护照', index=0)
+    merchant_certificate_no = NewPageElement(xpath='//*[@class="ivu-card-body"]/div/div[5]/div[3]/div/div/div/input',
+                                             describe='证件号码', index=0)
+    merchant_certificate_photo = NewPageElement(xpath='//*[@class="ivu-upload-input"]', describe='证件照片', index=0)
+    merchant_statue_open = NewPageElement(xpath='//*[@class="ivu-card-body"]/div/div[6]/div/div/label[1]/span/input',
+                                          describe='状态_启用', index=0)
+    merchant_statue_close = NewPageElement(xpath='//*[@class="ivu-card-body"]/div/div[6]/div/div/label[2]/span/input',
+                                           describe='状态_停用', index=0)
+
+    # 业务协议
+    merchant_business_yumnow = NewPageElement(xpath='//label[contains(text(),"外卖业务")]', describe='外卖业务')
+    merchant_business_tinhnow = NewPageElement(xpath='//label[contains(text(),"电商业务")]', describe='电商业务')
+    merchant_business_OTA = NewPageElement(xpath='//label[contains(text(),"OTA")]', describe='OTA')
+    merchant_connect_name = NewPageElement(xpath='//*[@class="ivu-form ivu-form-label-right"]/div[2]/div[2]/div/div[2]/div/div[1]/div/input', describe='联系人_名称')
+    merchant_connect_surname = NewPageElement(xpath='//*[@class="ivu-form ivu-form-label-right"]/div[2]/div[2]/div/div[2]/div/div[2]/div/input', describe='联系人_姓')
+    merchant_connect_phoneNo = NewPageElement(xpath='//*[@class="ivu-form ivu-form-label-right"]/div[2]/div[2]/div/div[3]/div/div/div[2]/input', describe='联系电话')
+    merchant_contract_photo = NewPageElement(xpath='//*[@class="ivu-form ivu-form-label-right"]/div[2]/div[2]/div/div[4]/div/div/div[1]/div/input', describe='合同扫描件')
+
+    # 管理账号信息
+    merchant_login_phoneNo = NewPageElement(xpath='//*[@class="ivu-form ivu-form-label-right"]/div[3]/div[2]/div/div[1]/div/div/div[2]/input', describe='登录手机号')
+    merchant_email = NewPageElement(xpath='//*[@class="ivu-form ivu-form-label-right"]/div[3]/div[2]/div/div[2]/div/div/div/input', describe='邮箱')
+    merchant_user_name = NewPageElement(xpath='//*[@class="ivu-form ivu-form-label-right"]/div[3]/div[2]/div/div[3]/div/div/div/input', describe='用户名')
+    merchant_password = NewPageElement(xpath='//*[@class="ivu-form ivu-form-label-right"]/div[3]/div[2]/div/div[4]/div/div/div/input', describe='登录密码')
+    merchant_password_second = NewPageElement(xpath='//*[@class="ivu-form ivu-form-label-right"]/div[3]/div[2]/div/div[5]/div/div/div/input', describe='确认密码')
+
+    # 添加商户 - 操作btn
+    merchant_back = NewPageElement(xpath='//*[@class="pub_btns"]/button[1]', describe='返回')
+    merchant_submit = NewPageElement(xpath='//*[@class="pub_btns"]/button[2]', describe='提交')
 
 
 class CreateStore(Page):
