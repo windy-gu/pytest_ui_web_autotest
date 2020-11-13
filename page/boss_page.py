@@ -96,7 +96,7 @@ class HomePage(Page):
 
 
 class CustomerCenterPage(Page):
-    # 客户中心 - 次级元素
+    # 客户中心 - 次级导航栏元素
     member_management = NewPageElement(xpath='//span[contains(text(),"会员管理")]', describe='会员管理')
     merchant_management = NewPageElement(xpath='//span[contains(text(),"商户管理")]', describe='商户管理')
     merchant_list = NewPageElement(xpath='//span[contains(text(),"商户列表")]', describe='商户列表')
@@ -150,6 +150,21 @@ class CustomerCenterPage(Page):
     # 添加商户 - 操作btn
     merchant_back = NewPageElement(xpath='//*[@class="pub_btns"]/button[1]', describe='返回')
     merchant_submit = NewPageElement(xpath='//*[@class="pub_btns"]/button[2]', describe='提交')
+
+
+class YumnowManagementPage(Page):
+    # 外卖管理 - 次级导航栏元素
+    store_management = NewPageElement(xpath='//span[contains(text(),"门店管理")]', describe='门店管理')
+    order_management = NewPageElement(xpath='//span[contains(text(),"订单管理")]', describe='订单管理')
+    financial_management = NewPageElement(xpath='//span[contains(text(),"财务管理")]', describe='财务管理')
+    marketing_management = NewPageElement(xpath='//span[contains(text(),"营销管理")]', describe='营销管理')
+    page_setting = NewPageElement(xpath='//span[contains(text(),"页面管理")]', describe='页面管理')
+
+    # 门店管理 - 第二刺激导航栏元素
+    business_scope = NewPageElement(xpath='//span[contains(text(),"经营范围")]', describe='经营范围')
+    store_list = NewPageElement(xpath='//span[contains(text(),"门店列表")]', describe='门店列表')
+    store_authority_management = NewPageElement(xpath='//span[contains(text(),"门店权限管理")]', describe='门店权限管理')
+    goods_label_management = NewPageElement(xpath='//span[contains(text(),"商品标签管理")]', describe='商品标签管理')
 
 
 class CreateStore(Page):

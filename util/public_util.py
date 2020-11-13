@@ -2,6 +2,7 @@ import csv
 import time
 import random
 import cx_Oracle
+import pymysql
 
 
 def random_text_base_date(pre: str = None, suffix: str = None):
@@ -63,10 +64,9 @@ def get_phone_number_cambodia(pre: bool = True, check: bool = False):
 
 def write_csv_loginname(file: str, first_line_data: str = 'loginName', times=1):
     """
-
-    :param file:
-    :param first_line_data:
-    :param times:
+    :param file:需要写入的文件路径
+    :param first_line_data:写入文件首行需要填写的内容，默认值：loginName
+    :param times:循环次数，默认值：1次
     :return:
     """
     with open(file, newline='', encoding='utf-8', mode='w') as f:
@@ -78,7 +78,14 @@ def write_csv_loginname(file: str, first_line_data: str = 'loginName', times=1):
 
 
 class Oracle:
-    def __init__(self, username: str, password: str, address: str):
+    def __init__(self, username: str = 'lifekh_mp_customer', password: str = 'djk876KKJJhyyhg787654J',
+                 address: str = '172.17.2.240:1521/lifekh'):
+        """
+        默认连接表：lifekh_mp_customer
+        :param username:
+        :param password:
+        :param address:
+        """
         self.username = username
         self.password = password
         self.address = address
