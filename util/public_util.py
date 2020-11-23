@@ -24,7 +24,86 @@ def random_text_base_date(pre: str = None, suffix: str = None):
         return date_text + '_' + suffix
 
 
-def get_phone_number_cambodia(pre: bool = True, check: bool = False):
+def get_product_info_on_performance(store_no: str, file: str):
+    """
+    通过门店no查询当前门店下的产品信息， 包括：商品id、规格id、快照版本id、属性id、属性选项id
+    :param store_no:
+    :return:
+    """
+    select_mysql = MySQL(user='lifekh_takeaway', password='fpgX5XYNVLMqVFjEC1hK',
+                         host='172.17.2.241', port=3306, database='lifekh_takeaway')
+    select_product_id_list = select_mysql.select_all("SELECT id as 商品id FROM `lifekh_takeaway`.`product` WHERE `store_no` = '{}' and `del_state` = 10".format(store_no))
+    product_id_list = []  # 商品id list
+    result = []
+    for n in range(len(select_product_id_list)):
+        # 将查询 - 商品id 单独添加的对应的list中
+        product_id_list.append(select_product_id_list[n]['商品id'])
+
+    for m in range(len(product_id_list)):
+        select_product_specification_id_list = select_mysql.select_all(
+            "SELECT id as 规格id FROM `lifekh_takeaway`.`product_specification` WHERE `product_id` = '{}'".format(
+                product_id_list[m]))
+        product_specification_id_list = []  # 商品规格id list
+        for k in range(len(select_product_specification_id_list)):
+            # 将查询 - 规格id 单独添加的对应的list中
+            product_specification_id_list.append((select_product_specification_id_list[k]['规格id']))
+
+            select_product_multiple_version_id_list = select_mysql.select_all(
+                "SELECT id as 快照版本id FROM `lifekh_takeaway`.`product_multiple_version` WHERE `product_id` = '{}' order by `update_time` Desc limit 0,1".format(
+                    product_id_list[m]))
+            product_multiple_version_id_list = []  # 商品快照版本id list
+            for q in range(len(select_product_multiple_version_id_list)):
+                # 将查询 - 快照版本id 单独添加的对应的list中
+                product_multiple_version_id_list.append(select_product_multiple_version_id_list[q]['快照版本id'])
+
+                select_product_property_id_list = select_mysql.select_all(
+                    "SELECT id as 属性id FROM `lifekh_takeaway`.`product_property` WHERE `product_id` = '{}'".format(
+                        product_id_list[m]))
+                product_property_id_list = []  # 商品属性id list
+                if len(select_product_property_id_list) > 0:
+                    for x in range(len(select_product_property_id_list)):
+                        # 将查询 - 属性id 单独添加的对应的list中
+                        product_property_id_list.append(select_product_property_id_list[x]['属性id'])
+
+                        select_product_property_selection_id_list = select_mysql.select_all(
+                            "SELECT id as 属性选项id FROM `lifekh_takeaway`.`product_property_selection` WHERE `product_property_id` = '{}'".format(
+                                product_property_id_list[x]))
+                        product_property_selection_id_list = []  # 商品属性选项id list
+                        for l in range(len(select_product_property_selection_id_list)):
+                            # 将查询 - 商品属性选项id 单独添加的对应的list中
+                            product_property_selection_id_list.append(select_product_property_selection_id_list[l]['属性选项id'])
+                            # print('商品id：'+str(product_id_list[m]) +
+                            #       ',规格id：'+str(product_specification_id_list[k]) +
+                            #       ',快照版本id：'+str(product_multiple_version_id_list[q]) +
+                            #       ',属性id：'+str(product_property_id_list[x]) +
+                            #       ',属性选项id：'+str(product_property_selection_id_list[l]))
+                            result.append(store_no +
+                                          ','+str(product_id_list[m]) +
+                                          ','+str(product_specification_id_list[k]) +
+                                          ','+str(product_multiple_version_id_list[q]) +
+                                          ','+str(product_property_id_list[x]) +
+                                          ','+str(product_property_selection_id_list[l]))
+                else:
+                    print('当前商品id：{},无属性id'.format(str(product_id_list[m])))
+    first_line_data = 'storeNo,productId,productSpecificationId,productMultipleVersionId,productPropertyId,' \
+                      'productPropertySelectionId'
+    # print(first_line_data)
+    # print(result[1])
+    write_csv_product_info(file=file, data=result, first_line_data=first_line_data)
+
+
+def write_csv_product_info(file: str, data: list,
+                           first_line_data: str):
+    with open(file, newline='', encoding='utf-8', mode='w') as f:
+        csv_writer = csv.writer(f)
+        csv_writer.writerow([first_line_data])
+        for i in range(len(data)):
+            data_info = data[i]
+            csv_writer.writerow([data_info])
+        print('此方法输出csv文件需要手动替换""，否则jmeter中执行会报错！！！！！')
+
+
+def get_phone_number_cambodia(prefix: bool = True, check: bool = False):
     """
     随机生成855可用运营商号段号码
     :param check:
@@ -43,7 +122,7 @@ def get_phone_number_cambodia(pre: bool = True, check: bool = False):
         num_length = random.randint(7, 7)
     else:
         num_length = random.randint(6, 6)
-    if pre:
+    if prefix:
         register_number = '8550' + phone_segment + "".join(random.choice("0123456789") for i in range(num_length))
     else:
         register_number = phone_segment + "".join(random.choice("0123456789") for i in range(num_length))
@@ -101,12 +180,57 @@ class Oracle:
 
 
 class MySQL:
-    def __init__(self, username: str, password: str, address: str):
-        self.username = username
+    def __init__(self, user: str = 'lifekh_takeaway', password: str = 'fpgX5XYNVLMqVFjEC1hK',
+                 host: str = '172.17.2.241', port: int = 3306, database: str = 'lifekh_takeaway'):
+        """
+
+        :param user:
+        :param password:
+        :param host:
+        :param port:
+        :param database:
+        """
+        self.user = user
         self.password = password
-        self.address = address
+        self.host = host
+        self.port = port
+        self.database = database
+
+    def select_all(self, sql: str, mode='r'):
+        """
+
+        :param sql:
+        :param mode:
+        :return:
+        """
+        py = pymysql.connect(user=self.user, password=self.password, host=self.host, port=self.port,
+                             database=self.database, charset="utf8", cursorclass=pymysql.cursors.DictCursor)
+        cursor = py.cursor()
+        try:
+            cursor.execute(sql)
+            if mode == 'r':
+                data = cursor.fetchall()
+            elif mode == 'w':
+                py.commit()
+                data = cursor.rowcount
+        except:
+            data = False
+            py.rollback()
+        py.close()
+        return data
+
+
 
 
 if __name__ == '__main__':
-    print(random_text_base_date(suffix='en'))
+    # print(random_text_base_date(suffix='en'))
+    test  = get_product_info_on_performance('MS1320194834269442048',
+                                            file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/test_data/test_store_info.csv')
+
+    # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/test_data/test_loginName.csv')
+
+
+
+
+
 

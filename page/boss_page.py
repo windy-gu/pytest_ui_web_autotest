@@ -161,10 +161,14 @@ class YumnowManagementPage(Page):
     page_setting = NewPageElement(xpath='//span[contains(text(),"页面管理")]', describe='页面管理')
 
     # 门店管理 - 第二刺激导航栏元素
+    store_ranking = NewPageElement(xpath='//span[contains(text(),"付费排名")]', describe='付费排名')
     business_scope = NewPageElement(xpath='//span[contains(text(),"经营范围")]', describe='经营范围')
     store_list = NewPageElement(xpath='//span[contains(text(),"门店列表")]', describe='门店列表')
     store_authority_management = NewPageElement(xpath='//span[contains(text(),"门店权限管理")]', describe='门店权限管理')
     goods_label_management = NewPageElement(xpath='//span[contains(text(),"商品标签管理")]', describe='商品标签管理')
+
+    # 添加门店 - 相关元素
+    add_store = NewPageElement(xpath='//span[contains(text(),"新增")]', describe='+ 新增（门店）btn')
 
 
 class CreateStore(Page):

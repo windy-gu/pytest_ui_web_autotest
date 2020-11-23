@@ -56,7 +56,7 @@ def test_create_merchant(browser, test_url='https://boss-uat.lifekh.com/boss#/ho
         time.sleep(1)
 
         # 管理账号信息
-        page_customer_center.merchant_login_phoneNo = get_phone_number_cambodia(pre=False)
+        page_customer_center.merchant_login_phoneNo = get_phone_number_cambodia(prefix=False)
         page_customer_center.merchant_email = '111222333@qq.com'
         page_customer_center.merchant_user_name = random_text_base_date(pre='UITester')
         page_customer_center.merchant_password = '123456'
