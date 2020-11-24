@@ -30,8 +30,13 @@ def get_product_info_on_performance(store_no: str, file: str):
     :param store_no:
     :return:
     """
-    select_mysql = MySQL(user='lifekh_takeaway', password='fpgX5XYNVLMqVFjEC1hK',
-                         host='172.17.2.241', port=3306, database='lifekh_takeaway')
+    # UAT环境
+    # select_mysql = MySQL(user='lifekh_takeaway', password='fpgX5XYNVLMqVFjEC1hK',
+    #                      host='172.17.2.241', port=3306, database='lifekh_takeaway')
+    # 金边机房
+    select_mysql = MySQL(user='lifekh_takeaway_query', password='q1h9MqKpgX5V9qVFfFjEC',
+                         host='10.24.255.42', port=3300, database='lifekh_takeaway')
+
     select_product_id_list = select_mysql.select_all("SELECT id as 商品id FROM `lifekh_takeaway`.`product` WHERE `store_no` = '{}' and `del_state` = 10".format(store_no))
     product_id_list = []  # 商品id list
     result = []
@@ -87,13 +92,17 @@ def get_product_info_on_performance(store_no: str, file: str):
                     print('当前商品id：{},无属性id'.format(str(product_id_list[m])))
     first_line_data = 'storeNo,productId,productSpecificationId,productMultipleVersionId,productPropertyId,' \
                       'productPropertySelectionId'
-    # print(first_line_data)
-    # print(result[1])
     write_csv_product_info(file=file, data=result, first_line_data=first_line_data)
 
 
-def write_csv_product_info(file: str, data: list,
-                           first_line_data: str):
+def write_csv_product_info(file: str, data: list, first_line_data: str):
+    """
+
+    :param file: 写入文件目录，需包含文件本身
+    :param data: 需要写入的数据
+    :param first_line_data:
+    :return:
+    """
     with open(file, newline='', encoding='utf-8', mode='w') as f:
         csv_writer = csv.writer(f)
         csv_writer.writerow([first_line_data])
@@ -101,6 +110,22 @@ def write_csv_product_info(file: str, data: list,
             data_info = data[i]
             csv_writer.writerow([data_info])
         print('此方法输出csv文件需要手动替换""，否则jmeter中执行会报错！！！！！')
+
+
+def read_txt(file: str, key_word: str):
+    """
+    读取接口报错中相关关键值的读取
+    :param file:
+    :return:
+    """
+    with open(file, encoding='utf-8', mode='r') as f:
+        result = []
+        for i in f.readlines():
+            if key_word in i:
+                i = i.strip().replace('"', '').replace('\\n', '').replace(key_word + ':', '').replace(',', '').strip()
+                result.append(i)
+                print(i)
+    return result
 
 
 def get_phone_number_cambodia(prefix: bool = True, check: bool = False):
@@ -224,10 +249,12 @@ class MySQL:
 
 if __name__ == '__main__':
     # print(random_text_base_date(suffix='en'))
-    test  = get_product_info_on_performance('MS1320194834269442048',
-                                            file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/test_data/test_store_info.csv')
+    # test  = get_product_info_on_performance('MS1287956853084450816',
+    #                                         file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/test_data/test_store_info.csv')
 
-    # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/test_data/test_loginName.csv')
+    # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/test_data/test_loginName.csv',
+    #                                      times=2000)
+    a = read_txt('/Users/windy/Desktop/error_loginpsw.txt', 'loginName')
 
 
 
