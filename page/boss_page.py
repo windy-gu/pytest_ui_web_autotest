@@ -169,6 +169,25 @@ class YumnowManagementPage(Page):
 
     # 添加门店 - 相关元素
     add_store = NewPageElement(xpath='//span[contains(text(),"新增")]', describe='+ 新增（门店）btn')
+    add_store_relate_merchant =NewPageElement(xpath='//input[@class="请选择"]', describe='+ 新增（门店）btn')
+    # add_store_login_no =
+    # add_store_password =
+    # add_store_store_name_en =
+    # add_store_store_name_zh =
+    # add_store_store_name_cb =
+    # add_store_longitude =
+    # add_store_latitude =
+    # add_store_address =
+    # add_store_logo =
+    # add_store_business_scope_first =
+    # add_store_contact =
+    # add_store_contact_phone =
+    # add_store_store_partition =
+    # add_store_vat =
+    # add_store_delivery_station =
+    # add_store_delivery_station_first =
+    # add_store_delivery_service_fee = NewPageElement(xpath='//span[contains(text(),"新增")]', describe='+ 新增（门店）btn')
+
 
 
 class CreateStore(Page):

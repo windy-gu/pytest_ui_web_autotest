@@ -37,7 +37,7 @@ def get_product_info_on_performance(store_no: str, file: str):
     select_mysql = MySQL(user='lifekh_takeaway_query', password='q1h9MqKpgX5V9qVFfFjEC',
                          host='10.24.255.42', port=3300, database='lifekh_takeaway')
 
-    select_product_id_list = select_mysql.select_all("SELECT id as 商品id FROM `lifekh_takeaway`.`product` WHERE `store_no` = '{}' and `del_state` = 10".format(store_no))
+    select_product_id_list = select_mysql.select("SELECT id as 商品id FROM `lifekh_takeaway`.`product` WHERE `store_no` = '{}' and `del_state` = 10".format(store_no))
     product_id_list = []  # 商品id list
     result = []
     for n in range(len(select_product_id_list)):
@@ -45,7 +45,7 @@ def get_product_info_on_performance(store_no: str, file: str):
         product_id_list.append(select_product_id_list[n]['商品id'])
 
     for m in range(len(product_id_list)):
-        select_product_specification_id_list = select_mysql.select_all(
+        select_product_specification_id_list = select_mysql.select(
             "SELECT id as 规格id FROM `lifekh_takeaway`.`product_specification` WHERE `product_id` = '{}'".format(
                 product_id_list[m]))
         product_specification_id_list = []  # 商品规格id list
@@ -53,7 +53,7 @@ def get_product_info_on_performance(store_no: str, file: str):
             # 将查询 - 规格id 单独添加的对应的list中
             product_specification_id_list.append((select_product_specification_id_list[k]['规格id']))
 
-            select_product_multiple_version_id_list = select_mysql.select_all(
+            select_product_multiple_version_id_list = select_mysql.select(
                 "SELECT id as 快照版本id FROM `lifekh_takeaway`.`product_multiple_version` WHERE `product_id` = '{}' order by `update_time` Desc limit 0,1".format(
                     product_id_list[m]))
             product_multiple_version_id_list = []  # 商品快照版本id list
@@ -61,7 +61,7 @@ def get_product_info_on_performance(store_no: str, file: str):
                 # 将查询 - 快照版本id 单独添加的对应的list中
                 product_multiple_version_id_list.append(select_product_multiple_version_id_list[q]['快照版本id'])
 
-                select_product_property_id_list = select_mysql.select_all(
+                select_product_property_id_list = select_mysql.select(
                     "SELECT id as 属性id FROM `lifekh_takeaway`.`product_property` WHERE `product_id` = '{}'".format(
                         product_id_list[m]))
                 product_property_id_list = []  # 商品属性id list
@@ -70,18 +70,18 @@ def get_product_info_on_performance(store_no: str, file: str):
                         # 将查询 - 属性id 单独添加的对应的list中
                         product_property_id_list.append(select_product_property_id_list[x]['属性id'])
 
-                        select_product_property_selection_id_list = select_mysql.select_all(
+                        select_product_property_selection_id_list = select_mysql.select(
                             "SELECT id as 属性选项id FROM `lifekh_takeaway`.`product_property_selection` WHERE `product_property_id` = '{}'".format(
                                 product_property_id_list[x]))
                         product_property_selection_id_list = []  # 商品属性选项id list
                         for l in range(len(select_product_property_selection_id_list)):
                             # 将查询 - 商品属性选项id 单独添加的对应的list中
                             product_property_selection_id_list.append(select_product_property_selection_id_list[l]['属性选项id'])
-                            # print('商品id：'+str(product_id_list[m]) +
-                            #       ',规格id：'+str(product_specification_id_list[k]) +
-                            #       ',快照版本id：'+str(product_multiple_version_id_list[q]) +
-                            #       ',属性id：'+str(product_property_id_list[x]) +
-                            #       ',属性选项id：'+str(product_property_selection_id_list[l]))
+                            print('商品id：'+str(product_id_list[m]) +
+                                  ',规格id：'+str(product_specification_id_list[k]) +
+                                  ',快照版本id：'+str(product_multiple_version_id_list[q]) +
+                                  ',属性id：'+str(product_property_id_list[x]) +
+                                  ',属性选项id：'+str(product_property_selection_id_list[l]))
                             result.append(store_no +
                                           ','+str(product_id_list[m]) +
                                           ','+str(product_specification_id_list[k]) +
@@ -114,7 +114,7 @@ def write_csv_product_info(file: str, data: list, first_line_data: str):
 
 def read_txt(file: str, key_word: str):
     """
-    读取接口报错中相关关键值的读取
+    读取接口报错中相关关键值的键值
     :param file:
     :return:
     """
@@ -156,7 +156,7 @@ def get_phone_number_cambodia(prefix: bool = True, check: bool = False):
     if check:
         check_oracle = Oracle(username='lifekh_mp_customer', password='djk876KKJJhyyhg787654J',
                               address='172.17.2.240:1521/lifekh')
-        check_data = check_oracle.select_all('SELECT LOGIN_NAME from "LIFEKH_MP_CUSTOMER"."USER_OPERATOR_LOGIN_INFO" WHERE "LOGIN_NAME" =' + "'%s'" % register_number)
+        check_data = check_oracle.select('SELECT LOGIN_NAME from "LIFEKH_MP_CUSTOMER"."USER_OPERATOR_LOGIN_INFO" WHERE "LOGIN_NAME" =' + "'%s'" % register_number)
         if len(check_data) != 0:
             if register_number in ''.join(check_data[0]):
                 print('%s 账号已注册' % register_number)
@@ -194,7 +194,7 @@ class Oracle:
         self.password = password
         self.address = address
 
-    def select_all(self, expression: str):
+    def select(self, expression: str):
         db = cx_Oracle.connect(self.username, self.password, self.address)
         cur = db.cursor()
         cur.execute(expression)
@@ -202,6 +202,9 @@ class Oracle:
         cur.close()
         db.close()
         return rows
+
+    def update(self, expression: str):
+        pass
 
 
 class MySQL:
@@ -221,7 +224,7 @@ class MySQL:
         self.port = port
         self.database = database
 
-    def select_all(self, sql: str, mode='r'):
+    def select(self, sql: str, mode='r'):
         """
 
         :param sql:
@@ -244,17 +247,19 @@ class MySQL:
         py.close()
         return data
 
-
+    def update(self, sql: str):
+        pass
 
 
 if __name__ == '__main__':
     # print(random_text_base_date(suffix='en'))
-    # test  = get_product_info_on_performance('MS1287956853084450816',
-    #                                         file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/test_data/test_store_info.csv')
+    test  = get_product_info_on_performance('MS1310902438101032960',
+                                            file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/test_data/test_store_info.csv')
 
-    # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/test_data/test_loginName.csv',
-    #                                      times=2000)
-    a = read_txt('/Users/windy/Desktop/error_loginpsw.txt', 'loginName')
+    # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/test_data/test_loginName_unrigister.csv',
+    #                                      times=3000)
+
+    a = read_txt('/Users/windy/Desktop/error.txt', 'loginName')
 
 
 
