@@ -1,4 +1,4 @@
 *.pytest_cache
 /test_report
 /venv
-conftest_my.py
+test_dir/conftest_my.py

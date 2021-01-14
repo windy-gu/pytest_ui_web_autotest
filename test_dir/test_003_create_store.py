@@ -20,7 +20,7 @@ def setup():
     pass
 
 
-def test_create_store(browser, test_url='https://boss-uat.lifekh.com/boss#/home'):
+def test_create_store(browser, test_url='https://boss-uat.lifekh.com/boss/home'):
     page_home = HomePage(browser)
     page_yumnow_management = YumnowManagementPage(browser)
     page_home.get(test_url)

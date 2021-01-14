@@ -3,6 +3,10 @@ import time
 import random
 import cx_Oracle
 import pymysql
+import openpyxl
+import calendar
+import xlrd
+import xlwt
 
 
 def random_text_base_date(pre: str = None, suffix: str = None):
@@ -112,6 +116,36 @@ def write_csv_product_info(file: str, data: list, first_line_data: str):
         print('此方法输出csv文件需要手动替换""，否则jmeter中执行会报错！！！！！')
 
 
+def rest_by_month(check_year: str, check_month: str, xls_list_data: list):
+    """
+
+    :param check_year:
+    :param check_month:
+    :param xls_list_data:
+    :return:
+    """
+    check_true_list = []
+    for i in range(len(xls_list_data)):
+        begin_date = xls_list_data[i][3]
+        begin_year = begin_date.split('-')[0]
+        begin_month = begin_date.split('-')[1]
+        if begin_year != check_year:
+            pass
+        else:
+            if begin_month == check_month:
+                monthRange = calendar._monthlen(int(begin_year), int(begin_month))
+                check_month_first_date = begin_year + '-' + begin_month + '-01'
+                check_month_last_date = begin_year + '-' + begin_month + '-' + str(monthRange)
+                if begin_date > check_month_first_date:
+                    check_true_list.append(xls_list_data[i])
+                    # print('当前日期在生效日期内')
+                    # print(check_true_list)
+                else:
+                    pass
+                    # print('当前日期不在生效日期内')
+    return check_true_list
+
+
 def read_txt(file: str, key_word: str):
     """
     读取接口报错中相关关键值的键值
@@ -181,6 +215,56 @@ def write_csv_loginname(file: str, first_line_data: str = 'loginName', times=1):
             csv_writer.writerow([login_no])
 
 
+class Operator_xls():
+    """
+
+    """
+
+    def create_xls(self, sheet_name: str, file_name: str):
+        """
+
+        :param sheet_name:
+        :param file_name:
+        :return:
+        """
+        wb = openpyxl.Workbook()
+        wb.create_sheet(sheet_name)
+        wb.save(file_name)
+
+    def open_xls_by_row(self, file_name: str, row_number: int = 1):
+        """
+        此方法仅适用于获取xls中加班申请的数据
+        :param file_name:
+        :param row_number:
+        :return:
+        """
+        wb = xlrd.open_workbook_xls(filename=file_name)
+        sh = wb.sheets()[0]
+        test_list = []
+        for i in range(sh.nrows):
+            if i == 0:
+                pass
+            else:
+                temp = sh.row_values(i)[4:-2]
+                temp.pop(-4)  # 去除：休假事由 字段
+                temp.pop(1)  # 去除：申请日期 字段
+                temp.pop(2)  # 去除：职务 字段
+                test_list.append(temp)
+        print(test_list)
+        return test_list
+
+    def create_write_xls(self, data: list):
+        wb = xlwt.Workbook(encoding='utf-8')
+        ws = wb.add_sheet('Sheet1')
+        for i in range(len(data)):
+            for n in range(len(data[i])):
+                print(data[i][n])
+                ws.write(i, n, data[i][n])
+
+        wb.save('test_001.xls')
+
+
+
 class Oracle:
     def __init__(self, username: str = 'lifekh_mp_customer', password: str = 'djk876KKJJhyyhg787654J',
                  address: str = '172.17.2.240:1521/lifekh'):
@@ -231,16 +315,18 @@ class MySQL:
         :param mode:
         :return:
         """
+        # 创建connect连接
         py = pymysql.connect(user=self.user, password=self.password, host=self.host, port=self.port,
                              database=self.database, charset="utf8", cursorclass=pymysql.cursors.DictCursor)
-        cursor = py.cursor()
+        # 获取cursor对象
+        cs = py.cursor()
         try:
-            cursor.execute(sql)
+            cs.execute(sql)
             if mode == 'r':
-                data = cursor.fetchall()
+                data = cs.fetchall()
             elif mode == 'w':
                 py.commit()
-                data = cursor.rowcount
+                data = cs.rowcount
         except:
             data = False
             py.rollback()
@@ -250,16 +336,35 @@ class MySQL:
     def update(self, sql: str):
         pass
 
+    def delete(self):
+
+        pass
+
 
 if __name__ == '__main__':
     # print(random_text_base_date(suffix='en'))
-    test  = get_product_info_on_performance('MS1310902438101032960',
-                                            file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/test_data/test_store_info.csv')
+    # test  = get_product_info_on_performance('MS1310902438101032960',
+    #                                         file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/test_data/test_store_info.csv')
+    #
+    # # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/test_data/test_loginName_unrigister.csv',
+    # #                                      times=3000)
+    #
+    # a = read_txt('/Users/windy/Desktop/error.txt', 'loginName')
+    # test_date = '2020-09-08'
+    # a = test_date.split('-')[1]
+    # check_month = '10'
+    # check_year = '2020'
+    # check_month = '02'
+    # monthRange = calendar._monthlen(int(check_year), int(check_month))
+    # print(monthRange)
+    # print(type(monthRange))
+    lala = input('请输入需要获取的xls文件路径')
+    print(lala)
+    xls = Operator_xls()
+    test = xls.open_xls_by_row(file_name='/Users/windy/Desktop/S-app(23).xls', row_number=1)
+    need_list = rest_by_month('2020', '12', test)
+    xls.create_write_xls(need_list)
 
-    # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/test_data/test_loginName_unrigister.csv',
-    #                                      times=3000)
-
-    a = read_txt('/Users/windy/Desktop/error.txt', 'loginName')
 
 
 

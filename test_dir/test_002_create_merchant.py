@@ -20,7 +20,7 @@ def setup():
     pass
 
 
-def test_create_merchant(browser, test_url='https://boss-uat.lifekh.com/boss#/home'):
+def test_create_merchant(browser, test_url='https://boss-uat.lifekh.com/boss/home'):
     page_home = HomePage(browser)
     page_customer_center = CustomerCenterPage(browser)
     page_home.get(test_url)
