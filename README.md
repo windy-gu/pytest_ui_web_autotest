@@ -15,4 +15,5 @@ pip install -r requirements.txt //根据rf.txt安装项目依赖包
 
 ###其他
 Google driver 下载地址：http://chromedriver.storage.googleapis.com/index.html
-mac系统chromedriver应该放的位置！usr/local/bin
+mac系统chromedriver应该放的位置！/usr/local/bin
+win系统chromedriver存放到python目录即可
