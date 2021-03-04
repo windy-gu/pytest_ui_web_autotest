@@ -10,6 +10,7 @@ from selenium.webdriver.firefox.options import Options as FF_Options
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 REPORT_DIR = BASE_DIR + "/test_report/"
 
+
 ############################
 
 # 配置浏览器驱动类型(chrome/firefox/chrome-headless/firefox-headless)。
@@ -19,7 +20,7 @@ driver_type = "chrome"
 url = "https://www.baidu.com"
 
 # 失败重跑次数
-rerun = "3"
+rerun = "0"
 
 # 当达到最大失败数，停止执行
 max_fail = "5"
@@ -71,12 +72,17 @@ def pytest_runtest_makereport(item):
                 case_name = case_path.split("-")[0] + "].png"
             else:
                 case_name = case_path
-            capture_screenshot(case_name)
-            img_path = "image/" + case_name.split("/")[-1]
-            if img_path:
-                html = '<div><img src="%s" alt="screenshot" style="width:304px;height:228px;" ' \
+            screen_img_path = capture_screenshot(case_name)
+            img_path = "/image/" + case_name.split("/")[-1]
+            if os.path.exists(screen_img_path):  # 判断图片文件是否存在，存在则添加日志报告中
+                # 此处使用绝对路径获取图片文件
+                # html = '<div><img src="file://%s" alt="screenshot" style="width:304px;height:228px;" ' \
+                #        'onclick="window.open(this.src)" align="right"/></div>' % screen_img_path
+
+                # 此处使用相对路径获取图片文件
+                html = '<div><img src=".%s" alt="screenshot" style="width:304px;height:228px;" ' \
                        'onclick="window.open(this.src)" align="right"/></div>' % img_path
-                # print('截图输出日志==========')
+
                 extra.append(pytest_html.extras.html(html))
         report.extra = extra
 
@@ -101,9 +107,12 @@ def description_html(desc):
     desc_lines = desc_.split(";")
     desc_html = html.html(
         html.head(
-            html.meta(name="Content-Type", value="text/html; charset=latin1")),
+            html.meta(name="Content-Type", value="text/html; charset=latin1")
+        ),
         html.body(
-            [html.p(line) for line in desc_lines]))
+            [html.p(line) for line in desc_lines]
+        )
+    )
     return desc_html
 
 
@@ -119,14 +128,18 @@ def capture_screenshot(case_name):
     if new_report_dir is None:
         raise RuntimeError('没有初始化测试目录')
     image_dir = os.path.join(REPORT_DIR, new_report_dir, "image", file_name)
-    # driver.save_screenshot(image_dir)
-    # print("打印输出日志-----------截图")
+    driver.save_screenshot(image_dir)
 
+    return image_dir
 
 def new_report_time():
     """
     获取最新报告的目录名（即运行时间，例如：2018_11_21_17_40_44）
+    先判断当前是否存在报告目录，不存在则创建
     """
+    is_report_path_exist = os.path.exists(REPORT_DIR)
+    if is_report_path_exist is False:
+        os.makedirs(REPORT_DIR)
     files = os.listdir(REPORT_DIR)
     files.sort()
     try:

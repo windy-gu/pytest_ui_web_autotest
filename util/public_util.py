@@ -25,7 +25,8 @@ def random_text_base_date(pre: str = None, suffix: str = None):
         else:
             return pre + '_' + date_text
     else:
-        return date_text + '_' + suffix
+        if suffix is not None:
+            return date_text + '_' + suffix
 
 
 def get_product_info_on_performance(store_no: str, file: str):
