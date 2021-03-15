@@ -36,11 +36,11 @@ def get_product_info_on_performance(store_no: str, file: str):
     :return:
     """
     # UAT环境
-    # select_mysql = MySQL(user='lifekh_takeaway', password='fpgX5XYNVLMqVFjEC1hK',
-    #                      host='172.17.2.241', port=3306, database='lifekh_takeaway')
+    select_mysql = MySQL(user='lifekh_takeaway', password='fpgX5XYNVLMqVFjEC1hK',
+                         host='172.17.2.241', port=3306, database='lifekh_takeaway')
     # 金边机房
-    select_mysql = MySQL(user='lifekh_takeaway_query', password='q1h9MqKpgX5V9qVFfFjEC',
-                         host='10.24.255.42', port=3300, database='lifekh_takeaway')
+    # select_mysql = MySQL(user='lifekh_takeaway_query', password='q1h9MqKpgX5V9qVFfFjEC',
+    #                      host='10.24.255.42', port=3300, database='lifekh_takeaway')
 
     select_product_id_list = select_mysql.select("SELECT id as 商品id FROM `lifekh_takeaway`.`product` WHERE `store_no` = '{}' and `del_state` = 10".format(store_no))
     product_id_list = []  # 商品id list
@@ -344,11 +344,11 @@ class MySQL:
 
 if __name__ == '__main__':
     # print(random_text_base_date(suffix='en'))
-    # test  = get_product_info_on_performance('MS1310902438101032960',
-    #                                         file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/test_data/test_store_info.csv')
+    test1  = get_product_info_on_performance('MS1320194834269442048',
+                                            file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_store_info.csv')
     #
-    # # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/test_data/test_loginName_unrigister.csv',
-    # #                                      times=3000)
+    # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_new_user.csv',
+    #                                      times=100)
     #
     # a = read_txt('/Users/windy/Desktop/error.txt', 'loginName')
     # test_date = '2020-09-08'
@@ -359,12 +359,12 @@ if __name__ == '__main__':
     # monthRange = calendar._monthlen(int(check_year), int(check_month))
     # print(monthRange)
     # print(type(monthRange))
-    lala = input('请输入需要获取的xls文件路径')
-    print(lala)
-    xls = Operator_xls()
-    test = xls.open_xls_by_row(file_name='/Users/windy/Desktop/S-app(23).xls', row_number=1)
-    need_list = rest_by_month('2020', '12', test)
-    xls.create_write_xls(need_list)
+    # lala = input('请输入需要获取的xls文件路径')
+    # print(lala)
+    # xls = Operator_xls()
+    # test = xls.open_xls_by_row(file_name='/Users/windy/Desktop/S-app(23).xls', row_number=1)
+    # need_list = rest_by_month('2020', '12', test)
+    # xls.create_write_xls(need_list)
 
 
 
