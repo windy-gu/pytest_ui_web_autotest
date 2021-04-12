@@ -1,4 +1,6 @@
 import time
+from poium.page_objects import NewPageElement
+from selenium.webdriver.remote.webdriver import WebDriver
 
 
 class BasePage:
@@ -47,5 +49,14 @@ class BasePage:
     def js(self, script):
         self.driver.execute_script(script)
 
+
+class Page(NewPageElement):
+    def __init__(self):
+        ...
+
+
+class Driver(WebDriver):
+    def __init__(self, web_driver: WebDriver):
+        ...
 
 

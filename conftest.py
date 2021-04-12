@@ -158,6 +158,10 @@ def browser():
     global driver
     global driver_type
 
+    # windows - platform.system() win系统中返回的内容
+    # darwin - platform.system() macOS系统中返回的内容
+    # linus - platform.system() macOS系统中返回的内容
+
     if driver_type == "chrome":
         # 本地chrome浏览器
         driver = webdriver.Chrome()

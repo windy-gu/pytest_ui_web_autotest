@@ -198,6 +198,7 @@ def get_phone_number_cambodia(prefix: bool = True, check: bool = False):
                 get_phone_number_cambodia()
         else:
             print('%s 可正常使用' % register_number)
+
     return register_number
 
 
@@ -347,8 +348,8 @@ if __name__ == '__main__':
     test1  = get_product_info_on_performance('MS1320194834269442048',
                                             file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_store_info.csv')
     #
-    # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_new_user.csv',
-    #                                      times=100)
+    test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_new_user.csv',
+                                         times=100)
     #
     # a = read_txt('/Users/windy/Desktop/error.txt', 'loginName')
     # test_date = '2020-09-08'
