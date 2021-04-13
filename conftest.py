@@ -1,5 +1,6 @@
 import os
 import pytest
+from driver.browserdriver import get_driver_file_path
 from py.xml import html
 from selenium import webdriver
 from selenium.webdriver import Remote
@@ -132,6 +133,7 @@ def capture_screenshot(case_name):
 
     return image_dir
 
+
 def new_report_time():
     """
     获取最新报告的目录名（即运行时间，例如：2018_11_21_17_40_44）
@@ -158,13 +160,10 @@ def browser():
     global driver
     global driver_type
 
-    # windows - platform.system() win系统中返回的内容
-    # darwin - platform.system() macOS系统中返回的内容
-    # linus - platform.system() macOS系统中返回的内容
 
     if driver_type == "chrome":
         # 本地chrome浏览器
-        driver = webdriver.Chrome()
+        driver = webdriver.Chrome(executable_path=get_driver_file_path())
         driver.maximize_window()
 
     elif driver_type == "firefox":
