@@ -160,10 +160,10 @@ def browser():
     global driver
     global driver_type
 
-
     if driver_type == "chrome":
         # 本地chrome浏览器
-        driver = webdriver.Chrome(executable_path=get_driver_file_path())
+        # driver = webdriver.Chrome(executable_path=get_driver_file_path())
+        driver = webdriver.Chrome()
         driver.maximize_window()
 
     elif driver_type == "firefox":

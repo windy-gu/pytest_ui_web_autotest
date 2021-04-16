@@ -1,5 +1,5 @@
 from poium import Page, PageElement, PageElements, NewPageElement
-
+from util.page_by_keiven import Element
 
 class OAPage(Page):
 
@@ -23,5 +23,11 @@ class OAPage(Page):
 
 # 已办事宜 https://oa.wownow.net/wui/index.html#/main/workflow/listDone?menuIds=1,90&_key=93vuhu
 
+
+
+class NewOAPage(Element):
+    login_name = NewPageElement(id_='loginid', describe='登录名')
+    login_password = NewPageElement(id_='userpassword', describe='登录密码')
+    login_btn = NewPageElement(id_='submit', describe='登录_btn')
 
 
