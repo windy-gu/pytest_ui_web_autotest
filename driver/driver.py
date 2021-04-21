@@ -24,10 +24,11 @@ class Driver(WebDriver):
         wd = chrome_driver(**kwargs)
         return Driver(wd)
 
-
     @staticmethod
     def firefox(**kwargs):
-        pass
+        from driver.browserdriver import firefox_driver
+        wd = firefox_driver(**kwargs)
+        return Driver(wd)
 
     def get(self, url):
         log.info(f'打开网址，url:[ {url} ]')

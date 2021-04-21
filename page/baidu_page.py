@@ -5,4 +5,5 @@ class BaiduPage(Page):
     search_input = NewPageElement(id_='kw', describe='搜索框')
     search_button = NewPageElement(id_='su', describe='搜索按钮')
 
+
     pass

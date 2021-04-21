@@ -1,13 +1,22 @@
 # author:windy
 # datetime:2021/4/15 5:09 下午
 # software: PyCharm
+import platform
+
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import StaleElementReferenceException
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import WebDriverException
 from poium.common.exceptions import PageElementError
 from poium.common.exceptions import FindElementTypesError
 from appium.webdriver.common.mobileby import MobileBy
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support.select import Select
+from util.log import Log
+from time import sleep
 
 
 # 可以识别的定位类型
@@ -35,8 +44,14 @@ LOCATOR_LIST = {
     'custom': MobileBy.CUSTOM,
 }
 
+log = Log()
 
-class Element():
+
+class Browser:
+    driver = None
+
+
+class Element(WebElement):
     def __init__(self, timeout=5, describe="undefined", index=0, **kwargs):
         self.timeout = timeout
         self.index = index
@@ -62,34 +77,26 @@ class Element():
         self.__get__(instance, instance.__class__)
         self.send_keys(value)
 
-    @func_set_timeout(0.5)
-    def __elements(self, key, vlaue):
-        elems = Browser.driver.find_elements(by=key, value=vlaue)
-        return elems
-
     def __find_element(self, elem):
         """
         Find if the element exists.
         """
         for i in range(self.timeout):
-            try:
-                elems = self.__elements(elem[0], elem[1])
-            except FunctionTimedOut:
-                elems = []
+            elems = Browser.driver.find_elements(by=elem[0], value=elem[1])
 
             if len(elems) == 1:
-                logging.info("✅ Find element: {by}={value} ".format(
+                log.info("✅ Find element: {by}={value} ".format(
                     by=elem[0], value=elem[1]))
                 break
             elif len(elems) > 1:
-                logging.info("❓ Find {n} elements through: {by}={value}".format(
+                log.info("❓ Find {n} elements through: {by}={value}".format(
                     n=len(elems), by=elem[0], value=elem[1]))
                 break
             else:
                 sleep(1)
         else:
             error_msg = "❌ Find 0 elements through: {by}={value}".format(by=elem[0], value=elem[1])
-            logging.error(error_msg)
+            log.error(error_msg)
             raise NoSuchElementException(error_msg)
 
     def __get_element(self, by, value):
@@ -123,105 +130,132 @@ class Element():
             self.__find_element((By.CSS_SELECTOR, value))
             elem = Browser.driver.find_elements_by_css_selector(value)[self.index]
 
-        # appium
-        elif by == "ios_uiautomation":
-            self.__find_element((MobileBy.IOS_UIAUTOMATION, value))
-            elem = Browser.driver.find_elements_by_ios_uiautomation(value)[self.index]
-        elif by == "ios_predicate":
-            self.__find_element((MobileBy.IOS_PREDICATE, value))
-            elem = Browser.driver.find_elements_by_ios_predicate(value)[self.index]
-        elif by == "ios_class_chain":
-            self.__find_element((MobileBy.IOS_CLASS_CHAIN, value))
-            elem = Browser.driver.find_elements_by_ios_class_chain(value)[self.index]
-        elif by == "android_uiautomator":
-            self.__find_element((MobileBy.ANDROID_UIAUTOMATOR, value))
-            elem = Browser.driver.find_elements_by_android_uiautomator(value)[self.index]
-        elif by == "android_viewtag":
-            self.__find_element((MobileBy.ANDROID_VIEWTAG, value))
-            elem = Browser.driver.find_elements_by_android_viewtag(value)[self.index]
-        elif by == "android_data_matcher":
-            self.__find_element((MobileBy.ANDROID_DATA_MATCHER, value))
-            elem = Browser.driver.find_elements_by_android_data_matcher(value)[self.index]
-        elif by == "accessibility_id":
-            self.__find_element((MobileBy.ACCESSIBILITY_ID, value))
-            elem = Browser.driver.find_elements_by_accessibility_id(value)[self.index]
-        elif by == "android_view_matcher":
-            self.__find_element((MobileBy.ANDROID_VIEW_MATCHER, value))
-            elem = Browser.driver.find_elements_by_android_view_matcher(value)[self.index]
-        elif by == "windows_uiautomation":
-            self.__find_element((MobileBy.WINDOWS_UI_AUTOMATION, value))
-            elem = Browser.driver.find_elements_by_windows_uiautomation(value)[self.index]
-        elif by == "image":
-            self.__find_element((MobileBy.IMAGE, value))
-            elem = Browser.driver.find_elements_by_image(value)[self.index]
-        elif by == "custom":
-            self.__find_element((MobileBy.CUSTOM, value))
-            elem = Browser.driver.find_elements_by_custom(value)[self.index]
-        else:
-            raise FindElementTypesError(
-                "Please enter the correct targeting elements")
-        if Browser.show is True:
-            try:
-                style_red = 'arguments[0].style.border="2px solid #FF0000"'
-                style_blue = 'arguments[0].style.border="2px solid #00FF00"'
-                style_null = 'arguments[0].style.border=""'
-
-                for _ in range(2):
-                    Browser.driver.execute_script(style_red, elem)
-                    sleep(0.1)
-                    Browser.driver.execute_script(style_blue, elem)
-                    sleep(0.1)
-                Browser.driver.execute_script(style_blue, elem)
-                sleep(0.5)
-                Browser.driver.execute_script(style_null, elem)
-            except WebDriverException:
-                pass
+        # # appium
+        # elif by == "ios_uiautomation":
+        #     self.__find_element((MobileBy.IOS_UIAUTOMATION, value))
+        #     elem = Browser.driver.find_elements_by_ios_uiautomation(value)[self.index]
+        # elif by == "ios_predicate":
+        #     self.__find_element((MobileBy.IOS_PREDICATE, value))
+        #     elem = Browser.driver.find_elements_by_ios_predicate(value)[self.index]
+        # elif by == "ios_class_chain":
+        #     self.__find_element((MobileBy.IOS_CLASS_CHAIN, value))
+        #     elem = Browser.driver.find_elements_by_ios_class_chain(value)[self.index]
+        # elif by == "android_uiautomator":
+        #     self.__find_element((MobileBy.ANDROID_UIAUTOMATOR, value))
+        #     elem = Browser.driver.find_elements_by_android_uiautomator(value)[self.index]
+        # elif by == "android_viewtag":
+        #     self.__find_element((MobileBy.ANDROID_VIEWTAG, value))
+        #     elem = Browser.driver.find_elements_by_android_viewtag(value)[self.index]
+        # elif by == "android_data_matcher":
+        #     self.__find_element((MobileBy.ANDROID_DATA_MATCHER, value))
+        #     elem = Browser.driver.find_elements_by_android_data_matcher(value)[self.index]
+        # elif by == "accessibility_id":
+        #     self.__find_element((MobileBy.ACCESSIBILITY_ID, value))
+        #     elem = Browser.driver.find_elements_by_accessibility_id(value)[self.index]
+        # elif by == "android_view_matcher":
+        #     self.__find_element((MobileBy.ANDROID_VIEW_MATCHER, value))
+        #     elem = Browser.driver.find_elements_by_android_view_matcher(value)[self.index]
+        # elif by == "windows_uiautomation":
+        #     self.__find_element((MobileBy.WINDOWS_UI_AUTOMATION, value))
+        #     elem = Browser.driver.find_elements_by_windows_uiautomation(value)[self.index]
+        # elif by == "image":
+        #     self.__find_element((MobileBy.IMAGE, value))
+        #     elem = Browser.driver.find_elements_by_image(value)[self.index]
+        # elif by == "custom":
+        #     self.__find_element((MobileBy.CUSTOM, value))
+        #     elem = Browser.driver.find_elements_by_custom(value)[self.index]
+        # else:
+        #     raise FindElementTypesError(
+        #         "Please enter the correct targeting elements")
+        # if Browser.show is True:
+        #     try:
+        #         style_red = 'arguments[0].style.border="2px solid #FF0000"'
+        #         style_blue = 'arguments[0].style.border="2px solid #00FF00"'
+        #         style_null = 'arguments[0].style.border=""'
+        #
+        #         for _ in range(2):
+        #             Browser.driver.execute_script(style_red, elem)
+        #             sleep(0.1)
+        #             Browser.driver.execute_script(style_blue, elem)
+        #             sleep(0.1)
+        #         Browser.driver.execute_script(style_blue, elem)
+        #         sleep(0.5)
+        #         Browser.driver.execute_script(style_null, elem)
+        #     except WebDriverException:
+        #         pass
 
         return elem
 
     def clear(self):
         """Clears the text if it's a text entry element."""
         elem = self.__get_element(self.k, self.v)
-        logging.info("clear element: {}".format(self.desc))
+        if self.desc != 'undefined':
+            log.info("clear element: 类型{} 值{}  desc：{}".format(self.k, self.v, self.desc))
+        else:
+            log.info("clear element: 类型{} 值{}".format(self.k, self.v))
         elem.clear()
 
-    def send_keys(self, value):
+    def send_keys(self, input_value):
         """
         Simulates typing into the element.
         """
         elem = self.__get_element(self.k, self.v)
-        logging.info("🖋 input element: {}".format(self.desc))
-        elem.send_keys(value)
+        if self.desc != 'undefined':
+            log.info("🖋 input element: {} 类型{} 值{}  desc：{}".format(input_value, self.k, self.v, self.desc))
+        else:
+            log.info("🖋 input element: {} 类型{} 值{}".format(input_value, self.k, self.v))
+        elem.send_keys(input_value)
 
     def click(self):
         """Clicks the element."""
         elem = self.__get_element(self.k, self.v)
-        logging.info("🖱 click element: {}".format(self.desc))
+        if self.desc != 'undefined':
+            log.info("🖱 click element: 类型{} 值{}  desc：{}".format(self.k, self.v, self.desc))
+        else:
+            log.info("🖱 click element: 类型{} 值{}".format(self.k, self.v))
         elem.click()
 
     def submit(self):
         """Submits a form."""
         elem = self.__get_element(self.k, self.v)
-        logging.info("submit element: {}".format(self.desc))
+        if self.desc != 'undefined':
+            log.info("submit element: 类型{} 值{}  desc：{}".format(self.k, self.v, self.desc))
+        else:
+            log.info("submit element: 类型{} 值{}".format(self.k, self.v))
         elem.submit()
 
     @property
     def tag_name(self):
         """This element's ``tagName`` property."""
         elem = self.__get_element(self.k, self.v)
-        return elem.tag_name
+        tag_name = elem.tag_name
+        if self.desc != 'undefined':
+            log.info("get element tag_name:{} - 类型{} 值{}  desc：{}".format(tag_name, self.k, self.v, self.desc))
+        else:
+            log.info("get element tag_name:{} - 类型{} 值{}".format(tag_name, self.k, self.v))
+        return tag_name
 
     @property
     def text(self):
         """Clears the text if it's a text entry element."""
         elem = self.__get_element(self.k, self.v)
-        return elem.text
+        text = elem.text
+        if self.desc != 'undefined':
+            log.info("get element text:{} -  类型{} 值{}  desc：{}".format(text, self.k, self.v, self.desc))
+        else:
+            log.info("get element text:{} -  类型{} 值{}".format(text, self.k, self.v))
+        return text
 
     @property
     def size(self):
         """The size of the element."""
         elem = self.__get_element(self.k, self.v)
-        return elem.size
+        size = elem.size
+        if self.desc != 'undefined':
+            log.info("get element size:{} -  类型{} 值{}  desc：{}".format(size, self.k, self.v, self.desc))
+        else:
+            log.info("get element size:{} -  类型{} 值{}".format(size, self.k, self.v))
+        return size
 
     def get_property(self, name):
         """

@@ -18,8 +18,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
-logging = Log()
+log = Log()
 # 可以识别的定位类型
+
 LOCATOR_LIST = {
     # selenium
     'css': By.CSS_SELECTOR,
@@ -348,18 +349,18 @@ class Element(WebElement):
                 elems = []
 
             if len(elems) == 1:
-                logging.info("✅ Find element: {by}={value} ".format(
+                log.info("✅ Find element: {by}={value} ".format(
                     by=elem[0], value=elem[1]))
                 break
             elif len(elems) > 1:
-                logging.info("❓ Find {n} elements through: {by}={value}".format(
+                log.info("❓ Find {n} elements through: {by}={value}".format(
                     n=len(elems), by=elem[0], value=elem[1]))
                 break
             else:
                 sleep(1)
         else:
             error_msg = "❌ Find 0 elements through: {by}={value}".format(by=elem[0], value=elem[1])
-            logging.error(error_msg)
+            log.error(error_msg)
             raise NoSuchElementException(error_msg)
 
     def __get_element(self, by, value):
@@ -454,7 +455,7 @@ class Element(WebElement):
     def clear(self):
         """Clears the text if it's a text entry element."""
         elem = self.__get_element(self.by, self.value)
-        logging.info("clear element: 类型{} 值{}  {}".format(self.by, self.value, self.desc))
+        log.info("clear element: 类型{} 值{}  desc：{}".format(self.by, self.value, self.desc))
         elem.clear()
 
     def send_keys(self, input_value):
@@ -462,19 +463,19 @@ class Element(WebElement):
         Simulates typing into the element.
         """
         elem = self.__get_element(self.by, self.value)
-        logging.info("🖋 input element: {} 类型{} 值{}  {}".format(input_value, self.by, self.value, self.desc))
+        log.info("🖋 input element: {} 类型{} 值{}  desc：{}".format(input_value, self.by, self.value, self.desc))
         elem.send_keys(input_value)
 
     def click(self):
         """Clicks the element."""
         elem = self.__get_element(self.by, self.value)
-        logging.info("🖱 click element: 类型{} 值{}  {}".format(self.by, self.value, self.desc))
+        log.info("🖱 click element: 类型{} 值{}  desc：{}".format(self.by, self.value, self.desc))
         elem.click()
 
     def submit(self):
         """Submits a form."""
         elem = self.__get_element(self.by, self.value)
-        logging.info("submit element: 类型{} 值{}  {}".format(self.by, self.value, self.desc))
+        log.info("submit element: 类型{} 值{}  desc：{}".format(self.by, self.value, self.desc))
         elem.submit()
 
     @property
@@ -482,7 +483,7 @@ class Element(WebElement):
         """This element's ``tagName`` property."""
         elem = self.__get_element(self.by, self.value)
         tag_name = elem.tag_name
-        logging.info("get element tag_name:{} - 类型{} 值{}  {}".format(tag_name, self.by, self.value, self.desc))
+        log.info("get element tag_name:{} - 类型{} 值{}  desc：{}".format(tag_name, self.by, self.value, self.desc))
         return tag_name
 
     @property
@@ -490,7 +491,7 @@ class Element(WebElement):
         """Clears the text if it's a text entry element."""
         elem = self.__get_element(self.by, self.value)
         text = elem.text
-        logging.info("get element text:{} -  类型{} 值{}  {}".format(text, self.by, self.value, self.desc))
+        log.info("get element text:{} -  类型{} 值{}  desc：{}".format(text, self.by, self.value, self.desc))
         return text
 
     @property
@@ -498,7 +499,7 @@ class Element(WebElement):
         """The size of the element."""
         elem = self.__get_element(self.by, self.value)
         size = elem.size
-        logging.info("get element size:{} -  类型{} 值{}  {}".format(size, self.by, self.value, self.desc))
+        log.info("get element size:{} -  类型{} 值{}  desc：{}".format(size, self.by, self.value, self.desc))
         return size
 
     def get_property(self, name):
