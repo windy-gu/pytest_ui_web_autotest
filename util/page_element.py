@@ -30,18 +30,18 @@ LOCATOR_LIST = {
     'partial_link_text': By.PARTIAL_LINK_TEXT,
     'tag': By.TAG_NAME,
     'class_name': By.CLASS_NAME,
-    # appium
-    'ios_uiautomation': MobileBy.IOS_UIAUTOMATION,
-    'ios_predicate': MobileBy.IOS_PREDICATE,
-    'ios_class_chain': MobileBy.IOS_CLASS_CHAIN,
-    'android_uiautomator': MobileBy.ANDROID_UIAUTOMATOR,
-    'android_viewtag': MobileBy.ANDROID_VIEWTAG,
-    'android_data_matcher': MobileBy.ANDROID_DATA_MATCHER,
-    'android_view_matcher': MobileBy.ANDROID_VIEW_MATCHER,
-    'windows_uiautomation': MobileBy.WINDOWS_UI_AUTOMATION,
-    'accessibility_id': MobileBy.ACCESSIBILITY_ID,
-    'image': MobileBy.IMAGE,
-    'custom': MobileBy.CUSTOM,
+    # # appium
+    # 'ios_uiautomation': MobileBy.IOS_UIAUTOMATION,
+    # 'ios_predicate': MobileBy.IOS_PREDICATE,
+    # 'ios_class_chain': MobileBy.IOS_CLASS_CHAIN,
+    # 'android_uiautomator': MobileBy.ANDROID_UIAUTOMATOR,
+    # 'android_viewtag': MobileBy.ANDROID_VIEWTAG,
+    # 'android_data_matcher': MobileBy.ANDROID_DATA_MATCHER,
+    # 'android_view_matcher': MobileBy.ANDROID_VIEW_MATCHER,
+    # 'windows_uiautomation': MobileBy.WINDOWS_UI_AUTOMATION,
+    # 'accessibility_id': MobileBy.ACCESSIBILITY_ID,
+    # 'image': MobileBy.IMAGE,
+    # 'custom': MobileBy.CUSTOM,
 }
 
 log = Log()
