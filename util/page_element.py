@@ -2,7 +2,10 @@
 # datetime:2021/4/15 5:09 下午
 # software: PyCharm
 import platform
+from time import sleep
+from util.log import Log
 from driver.driver import Driver
+from conftest import browser_show
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
@@ -15,8 +18,6 @@ from appium.webdriver.common.mobileby import MobileBy
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.select import Select
-from util.log import Log
-from time import sleep
 
 
 # 可以识别的定位类型
@@ -69,7 +70,6 @@ class Element(WebElement, Driver):
     def __get__(self, instance, owner):
         if instance is None:
             return None
-
         Browser.driver = instance.driver
         return self
 
@@ -164,25 +164,25 @@ class Element(WebElement, Driver):
         # elif by == "custom":
         #     self.__find_element((MobileBy.CUSTOM, value))
         #     elem = Browser.driver.find_elements_by_custom(value)[self.index]
-        # else:
-        #     raise FindElementTypesError(
-        #         "Please enter the correct targeting elements")
-        # if Browser.show is True:
-        #     try:
-        #         style_red = 'arguments[0].style.border="2px solid #FF0000"'
-        #         style_blue = 'arguments[0].style.border="2px solid #00FF00"'
-        #         style_null = 'arguments[0].style.border=""'
-        #
-        #         for _ in range(2):
-        #             Browser.driver.execute_script(style_red, elem)
-        #             sleep(0.1)
-        #             Browser.driver.execute_script(style_blue, elem)
-        #             sleep(0.1)
-        #         Browser.driver.execute_script(style_blue, elem)
-        #         sleep(0.5)
-        #         Browser.driver.execute_script(style_null, elem)
-        #     except WebDriverException:
-        #         pass
+        else:
+            raise FindElementTypesError(
+                "Please enter the correct targeting elements")
+        if browser_show is True:
+            try:
+                style_red = 'arguments[0].style.border="2px solid #FF0000"'
+                style_blue = 'arguments[0].style.border="2px solid #00FF00"'
+                style_null = 'arguments[0].style.border=""'
+
+                for _ in range(2):
+                    Browser.driver.execute_script(style_red, elem)
+                    sleep(0.2)
+                    Browser.driver.execute_script(style_blue, elem)
+                    sleep(0.2)
+                Browser.driver.execute_script(style_blue, elem)
+                sleep(0.5)
+                Browser.driver.execute_script(style_null, elem)
+            except WebDriverException:
+                pass
 
         return elem
 

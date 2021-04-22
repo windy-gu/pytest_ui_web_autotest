@@ -1,4 +1,4 @@
-from poium import Page, PageElement, PageElements, NewPageElement
+from selenium.webdriver.common.by import By
 from util.page_browser import PageBrowser
 from util.page_element import Element
 
@@ -10,6 +10,7 @@ from util.page_element import Element
 class BaiduPage(PageBrowser):
     search_input = Element(id='kw', describe='搜索框')
     search_button = Element(id='su', describe='搜索按钮')
+    # search_button1 = Element(By.ID='su', describe='搜索按钮')
 
+    # def search_
 
-    pass

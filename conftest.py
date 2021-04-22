@@ -29,6 +29,9 @@ max_fail = "5"
 # 运行测试用例的目录或文件
 cases_path = "./test_dir/"
 
+# 是否显示操作标注框
+browser_show = True
+
 
 ############################
 
