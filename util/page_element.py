@@ -2,7 +2,7 @@
 # datetime:2021/4/15 5:09 下午
 # software: PyCharm
 import platform
-
+from driver.driver import Driver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
@@ -23,7 +23,7 @@ from time import sleep
 LOCATOR_LIST = {
     # selenium
     'css': By.CSS_SELECTOR,
-    'id_': By.ID,
+    'id': By.ID,
     'name': By.NAME,
     'xpath': By.XPATH,
     'link_text': By.LINK_TEXT,
@@ -51,7 +51,7 @@ class Browser:
     driver = None
 
 
-class Element(WebElement):
+class Element(WebElement, Driver):
     def __init__(self, timeout=5, describe="undefined", index=0, **kwargs):
         self.timeout = timeout
         self.index = index
@@ -105,7 +105,7 @@ class Element(WebElement):
         """
 
         # selenium
-        if by == "id_":
+        if by == "id":
             self.__find_element((By.ID, value))
             elem = Browser.driver.find_elements_by_id(value)[self.index]
         elif by == "name":
@@ -190,9 +190,9 @@ class Element(WebElement):
         """Clears the text if it's a text entry element."""
         elem = self.__get_element(self.k, self.v)
         if self.desc != 'undefined':
-            log.info("clear element: 类型{} 值{}  desc：{}".format(self.k, self.v, self.desc))
+            log.info("clear element: {k}={v},  desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("clear element: 类型{} 值{}".format(self.k, self.v))
+            log.info("clear element: {}={},".format(self.k, self.v))
         elem.clear()
 
     def send_keys(self, input_value):
@@ -201,27 +201,27 @@ class Element(WebElement):
         """
         elem = self.__get_element(self.k, self.v)
         if self.desc != 'undefined':
-            log.info("🖋 input element: {} 类型{} 值{}  desc：{}".format(input_value, self.k, self.v, self.desc))
+            log.info("🖋 input element: {}, {k}={v},  desc：{desc}".format(input_value, k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("🖋 input element: {} 类型{} 值{}".format(input_value, self.k, self.v))
+            log.info("🖋 input element: {}, {k}={v},".format(input_value, k=self.k, v=self.v))
         elem.send_keys(input_value)
 
     def click(self):
         """Clicks the element."""
         elem = self.__get_element(self.k, self.v)
         if self.desc != 'undefined':
-            log.info("🖱 click element: 类型{} 值{}  desc：{}".format(self.k, self.v, self.desc))
+            log.info("🖱 click element: {k}={v},  desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("🖱 click element: 类型{} 值{}".format(self.k, self.v))
+            log.info("🖱 click element: {k}={v},".format(k=self.k, v=self.v))
         elem.click()
 
     def submit(self):
         """Submits a form."""
         elem = self.__get_element(self.k, self.v)
         if self.desc != 'undefined':
-            log.info("submit element: 类型{} 值{}  desc：{}".format(self.k, self.v, self.desc))
+            log.info("submit element: {k}={v},  desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("submit element: 类型{} 值{}".format(self.k, self.v))
+            log.info("submit element: {k}={v}".format(k=self.k, v=self.v))
         elem.submit()
 
     @property
@@ -230,9 +230,9 @@ class Element(WebElement):
         elem = self.__get_element(self.k, self.v)
         tag_name = elem.tag_name
         if self.desc != 'undefined':
-            log.info("get element tag_name:{} - 类型{} 值{}  desc：{}".format(tag_name, self.k, self.v, self.desc))
+            log.info("get element tag_name: {}, {k}={v},  desc：{desc}".format(tag_name, k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("get element tag_name:{} - 类型{} 值{}".format(tag_name, self.k, self.v))
+            log.info("get element tag_name: {}, {k}={v}".format(tag_name, k=self.k, v=self.v))
         return tag_name
 
     @property
@@ -241,9 +241,9 @@ class Element(WebElement):
         elem = self.__get_element(self.k, self.v)
         text = elem.text
         if self.desc != 'undefined':
-            log.info("get element text:{} -  类型{} 值{}  desc：{}".format(text, self.k, self.v, self.desc))
+            log.info("get element text: {}, {k}={v},  desc：{desc}".format(text, k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("get element text:{} -  类型{} 值{}".format(text, self.k, self.v))
+            log.info("get element text: {}, {k}={v}".format(text, k=self.k, v=self.v))
         return text
 
     @property
@@ -252,9 +252,9 @@ class Element(WebElement):
         elem = self.__get_element(self.k, self.v)
         size = elem.size
         if self.desc != 'undefined':
-            log.info("get element size:{} -  类型{} 值{}  desc：{}".format(size, self.k, self.v, self.desc))
+            log.info("get element size: {}, {k}={v},  desc：{desc}".format(size, k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("get element size:{} -  类型{} 值{}".format(size, self.k, self.v))
+            log.info("get element size: {}, {k}={v}".format(size, k=self.k, v=self.v))
         return size
 
     def get_property(self, name):

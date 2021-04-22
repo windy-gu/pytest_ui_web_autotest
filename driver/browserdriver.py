@@ -36,7 +36,7 @@ def chrome_driver(driver_path=None,
     options.add_argument('--disable-dev-shm-usage')  # overcome limited resource problems
     options.add_argument('--start-maximized')  # open Browser in maximized mode
     options.add_argument('--no-sandbox')  # bypass OS security model
-    wd = webdriver.Chrome()
+    # wd = webdriver.Chrome()
 
     if user_agent:  # User-agent不为空，则添加指定user-agent
         options.add_argument(f'--user-agent={user_agent}')
@@ -56,7 +56,7 @@ def chrome_driver(driver_path=None,
         log.info('窗口全屏化')
         wd.maximize_window()
 
-    atexit.register(wd.quit())  # always quit driver when done
+    # atexit.register(wd.quit())  # always quit driver when done
     return wd
 
 

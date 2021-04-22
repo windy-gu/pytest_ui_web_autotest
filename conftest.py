@@ -1,6 +1,6 @@
 import os
 import pytest
-from driver.browserdriver import get_driver_file_path
+from driver.browserdriver import chrome_driver
 from py.xml import html
 from selenium import webdriver
 from selenium.webdriver import Remote
@@ -162,9 +162,10 @@ def browser():
 
     if driver_type == "chrome":
         # 本地chrome浏览器
+        driver = chrome_driver()
         # driver = webdriver.Chrome(executable_path=get_driver_file_path())
-        driver = webdriver.Chrome()
-        driver.maximize_window()
+        # driver = webdriver.Chrome()
+        # driver.maximize_window()
 
     elif driver_type == "firefox":
         # 本地firefox浏览器
