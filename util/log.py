@@ -1,6 +1,7 @@
 import sys
 import logging.handlers
 from colorama import Fore, Style
+import colorlog
 import os, time
 
 log_file = (os.path.dirname(os.path.dirname(__file__))) + '/' + time.strftime('%Y-%m-%d') + '.log'  # log文件目录
@@ -22,22 +23,20 @@ class Log():
         # 设置日志记录级别
         logger.setLevel(logging.DEBUG)
 
-        # 创建一个handler，用于写入日志文件
-        fh = logging.FileHandler(log_file_path, 'a', encoding='utf-8')
-        fh.setLevel(logging.DEBUG)
+        # 创建一个handler，设置输出日志的级别，且设置输出日志的格式，用于写入日志文件
+        FILE_HANDLER = logging.FileHandler(log_file_path, 'a', encoding='utf-8')
+        FILE_HANDLER.setLevel(logging.DEBUG)
+        FILE_HANDLER.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
 
-        # 再创建一个handler，用于输出到控制台
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
+        # 再创建一个handler，设置输出日志的级别，且设置输出日志的格式，用于输出到控制台
+        CONSOLE_HANDLER = colorlog.StreamHandler()
+        CONSOLE_HANDLER.setLevel(logging.DEBUG)
+        CONSOLE_HANDLER.setFormatter(colorlog.ColoredFormatter('%(log_color)s%(asctime)s - %(levelname)s - %(message)s'))
 
-        # 定义handler的输出格式
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        fh.setFormatter(formatter)
-        ch.setFormatter(formatter)
 
         # 给log添加handler
-        logger.addHandler(fh)
-        logger.addHandler(ch)
+        logger.addHandler(FILE_HANDLER)
+        logger.addHandler(CONSOLE_HANDLER)
 
         # 记录一条日志
         if level == 'info':
@@ -48,11 +47,16 @@ class Log():
             logger.warning(message)
         elif level == 'error':
             logger.error(message)
-        logger.removeHandler(ch)
-        logger.removeHandler(fh)
+        elif level == 'critical':
+            logger.critical(message)
+
+        # 删除Handler避免重复输出log
+        logger.removeHandler(CONSOLE_HANDLER)
+        logger.removeHandler(FILE_HANDLER)
+
         # time.sleep(1)
-        fh.close()
-        ch.close()
+        FILE_HANDLER.close()
+        CONSOLE_HANDLER.close()
 
     def debug(self, message):
         self.print_console('debug', message)
@@ -65,3 +69,6 @@ class Log():
 
     def error(self, message):
         self.print_console('error', message)
+
+    def critical(self, message):
+        self.print_console('critical', message)

@@ -1,6 +1,6 @@
 from selenium.webdriver.common.by import By
-from util.page_browser import PageBrowser
-from util.page_element import Element
+from util.web_page_browser import PageBrowser
+from util.web_page_element import Element
 
 
 # class BaiduPage(Page):
@@ -12,5 +12,5 @@ class BaiduPage(PageBrowser):
     search_button = Element(id='su', describe='搜索按钮')
     # search_button1 = Element(By.ID='su', describe='搜索按钮')
 
-    # def search_
+
 

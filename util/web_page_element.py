@@ -8,16 +8,14 @@ from driver.driver import Driver
 from conftest import browser_show
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import StaleElementReferenceException
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.common.exceptions import WebDriverException
-from poium.common.exceptions import PageElementError
-from poium.common.exceptions import FindElementTypesError
-from appium.webdriver.common.mobileby import MobileBy
-from selenium.webdriver.remote.webdriver import WebDriver
-from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.select import Select
+from appium.webdriver.common.mobileby import MobileBy
+from selenium.common.exceptions import WebDriverException
+from poium.common.exceptions import FindElementTypesError
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import StaleElementReferenceException
 
 
 # 可以识别的定位类型
@@ -31,18 +29,18 @@ LOCATOR_LIST = {
     'partial_link_text': By.PARTIAL_LINK_TEXT,
     'tag': By.TAG_NAME,
     'class_name': By.CLASS_NAME,
-    # # appium
-    # 'ios_uiautomation': MobileBy.IOS_UIAUTOMATION,
-    # 'ios_predicate': MobileBy.IOS_PREDICATE,
-    # 'ios_class_chain': MobileBy.IOS_CLASS_CHAIN,
-    # 'android_uiautomator': MobileBy.ANDROID_UIAUTOMATOR,
-    # 'android_viewtag': MobileBy.ANDROID_VIEWTAG,
-    # 'android_data_matcher': MobileBy.ANDROID_DATA_MATCHER,
-    # 'android_view_matcher': MobileBy.ANDROID_VIEW_MATCHER,
-    # 'windows_uiautomation': MobileBy.WINDOWS_UI_AUTOMATION,
-    # 'accessibility_id': MobileBy.ACCESSIBILITY_ID,
-    # 'image': MobileBy.IMAGE,
-    # 'custom': MobileBy.CUSTOM,
+    # appium
+    'ios_uiautomation': MobileBy.IOS_UIAUTOMATION,
+    'ios_predicate': MobileBy.IOS_PREDICATE,
+    'ios_class_chain': MobileBy.IOS_CLASS_CHAIN,
+    'android_uiautomator': MobileBy.ANDROID_UIAUTOMATOR,
+    'android_viewtag': MobileBy.ANDROID_VIEWTAG,
+    'android_data_matcher': MobileBy.ANDROID_DATA_MATCHER,
+    'android_view_matcher': MobileBy.ANDROID_VIEW_MATCHER,
+    'windows_uiautomation': MobileBy.WINDOWS_UI_AUTOMATION,
+    'accessibility_id': MobileBy.ACCESSIBILITY_ID,
+    'image': MobileBy.IMAGE,
+    'custom': MobileBy.CUSTOM,
 }
 
 log = Log()
@@ -131,39 +129,39 @@ class Element(WebElement, Driver):
             elem = Browser.driver.find_elements_by_css_selector(value)[self.index]
 
         # # appium
-        # elif by == "ios_uiautomation":
-        #     self.__find_element((MobileBy.IOS_UIAUTOMATION, value))
-        #     elem = Browser.driver.find_elements_by_ios_uiautomation(value)[self.index]
-        # elif by == "ios_predicate":
-        #     self.__find_element((MobileBy.IOS_PREDICATE, value))
-        #     elem = Browser.driver.find_elements_by_ios_predicate(value)[self.index]
-        # elif by == "ios_class_chain":
-        #     self.__find_element((MobileBy.IOS_CLASS_CHAIN, value))
-        #     elem = Browser.driver.find_elements_by_ios_class_chain(value)[self.index]
-        # elif by == "android_uiautomator":
-        #     self.__find_element((MobileBy.ANDROID_UIAUTOMATOR, value))
-        #     elem = Browser.driver.find_elements_by_android_uiautomator(value)[self.index]
-        # elif by == "android_viewtag":
-        #     self.__find_element((MobileBy.ANDROID_VIEWTAG, value))
-        #     elem = Browser.driver.find_elements_by_android_viewtag(value)[self.index]
-        # elif by == "android_data_matcher":
-        #     self.__find_element((MobileBy.ANDROID_DATA_MATCHER, value))
-        #     elem = Browser.driver.find_elements_by_android_data_matcher(value)[self.index]
-        # elif by == "accessibility_id":
-        #     self.__find_element((MobileBy.ACCESSIBILITY_ID, value))
-        #     elem = Browser.driver.find_elements_by_accessibility_id(value)[self.index]
-        # elif by == "android_view_matcher":
-        #     self.__find_element((MobileBy.ANDROID_VIEW_MATCHER, value))
-        #     elem = Browser.driver.find_elements_by_android_view_matcher(value)[self.index]
-        # elif by == "windows_uiautomation":
-        #     self.__find_element((MobileBy.WINDOWS_UI_AUTOMATION, value))
-        #     elem = Browser.driver.find_elements_by_windows_uiautomation(value)[self.index]
-        # elif by == "image":
-        #     self.__find_element((MobileBy.IMAGE, value))
-        #     elem = Browser.driver.find_elements_by_image(value)[self.index]
-        # elif by == "custom":
-        #     self.__find_element((MobileBy.CUSTOM, value))
-        #     elem = Browser.driver.find_elements_by_custom(value)[self.index]
+        elif by == "ios_uiautomation":
+            self.__find_element((MobileBy.IOS_UIAUTOMATION, value))
+            elem = Browser.driver.find_elements_by_ios_uiautomation(value)[self.index]
+        elif by == "ios_predicate":
+            self.__find_element((MobileBy.IOS_PREDICATE, value))
+            elem = Browser.driver.find_elements_by_ios_predicate(value)[self.index]
+        elif by == "ios_class_chain":
+            self.__find_element((MobileBy.IOS_CLASS_CHAIN, value))
+            elem = Browser.driver.find_elements_by_ios_class_chain(value)[self.index]
+        elif by == "android_uiautomator":
+            self.__find_element((MobileBy.ANDROID_UIAUTOMATOR, value))
+            elem = Browser.driver.find_elements_by_android_uiautomator(value)[self.index]
+        elif by == "android_viewtag":
+            self.__find_element((MobileBy.ANDROID_VIEWTAG, value))
+            elem = Browser.driver.find_elements_by_android_viewtag(value)[self.index]
+        elif by == "android_data_matcher":
+            self.__find_element((MobileBy.ANDROID_DATA_MATCHER, value))
+            elem = Browser.driver.find_elements_by_android_data_matcher(value)[self.index]
+        elif by == "accessibility_id":
+            self.__find_element((MobileBy.ACCESSIBILITY_ID, value))
+            elem = Browser.driver.find_elements_by_accessibility_id(value)[self.index]
+        elif by == "android_view_matcher":
+            self.__find_element((MobileBy.ANDROID_VIEW_MATCHER, value))
+            elem = Browser.driver.find_elements_by_android_view_matcher(value)[self.index]
+        elif by == "windows_uiautomation":
+            self.__find_element((MobileBy.WINDOWS_UI_AUTOMATION, value))
+            elem = Browser.driver.find_elements_by_windows_uiautomation(value)[self.index]
+        elif by == "image":
+            self.__find_element((MobileBy.IMAGE, value))
+            elem = Browser.driver.find_elements_by_image(value)[self.index]
+        elif by == "custom":
+            self.__find_element((MobileBy.CUSTOM, value))
+            elem = Browser.driver.find_elements_by_custom(value)[self.index]
         else:
             raise FindElementTypesError(
                 "Please enter the correct targeting elements")
