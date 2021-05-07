@@ -38,7 +38,8 @@ class Log():
 
         # 给log添加handler
         self.logger.addHandler(FILE_HANDLER)
-        self.logger.addHandler(CONSOLE_HANDLER)
+        if "pytest" not in sys.modules:  # 目前在pytest中会存在重复打印日志的情况
+            self.logger.addHandler(CONSOLE_HANDLER)
 
         # 记录一条日志
         if level == 'info':
