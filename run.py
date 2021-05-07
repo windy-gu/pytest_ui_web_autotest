@@ -39,12 +39,13 @@ def run(m):
         pytest.main([
                      # "-s",  # 运行时显示详细信息
                      "-v",  # 显示打印消息
-                     cases_path,
-                     "--html=" + html_report,
-                     "--junit-xml=" + xml_report,
-                     "--self-contained-html",
-                     "--maxfail", max_fail,
-                     "--reruns", rerun])
+                     cases_path,  # 测试用例目录路径
+                     "--html=" + html_report,  # 生成报告，此报告中css是独立的，分享时会丢失样式，pip install pytest-html
+                     # "--junit-xml=" + xml_report,  #
+                     "--self-contained-html",  # 除了passed所有行都被展开
+                     "--maxfail", max_fail,  # 遇到最大错误数就停止运行
+                     "--reruns", rerun  # 失败重试次数
+                    ])
         log.info("运行结束，生成测试报告！")
     elif m == "debug":
         print("debug模式，开始执行！")

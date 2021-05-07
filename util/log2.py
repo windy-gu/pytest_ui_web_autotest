@@ -21,8 +21,6 @@ class Log():
         log_file_path = (os.path.dirname(os.path.dirname(__file__))) + '\\' \
                         + time.strftime('%Y-%m-%d') + '.log'  # log文件目录
 
-        # logger = logging.getLogger(__name__)
-
         # 设置日志记录级别
         self.logger.setLevel(logging.DEBUG)
 
