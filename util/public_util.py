@@ -1,4 +1,5 @@
 import csv
+import json
 import time
 import random
 import cx_Oracle
@@ -217,6 +218,19 @@ def write_csv_loginname(file: str, first_line_data: str = 'loginName', times=1):
             csv_writer.writerow([login_no])
 
 
+def api_data_dict_exchange_str(data: dict):
+    data_str = json.dumps(data).replace(' ','')
+    print(data_str)
+    return data_str
+
+
+def api_query_data(api_url: str, api_data: dict):
+    api_data_str = api_data_dict_exchange_str(api_data)
+    request_data = '{"apiUrl":"' + api_url + '","apiData":' + api_data_str + '"'
+    print(request_data)
+    return request_data
+
+
 class Operator_xls():
     """
 
@@ -345,8 +359,30 @@ class MySQL:
 
 if __name__ == '__main__':
     # print(random_text_base_date(suffix='en'))
+    test_dict = {
+            "storeNo":"${storeNo}",
+            "virtual":"true",
+            "orderNo":"",
+            "businessline":"TinhNow",
+            "logisticsScore":1,
+            "serviceScore":1,
+            "storeName":"",
+            "itemList":[{
+                "score":1,
+                "itemId":"${itemId}",
+                "imageUrls":[],
+                "mobile":"",
+                "anonymous":10,
+                "content":"${content}",
+                "skuId":"${skuId}"
+		        }]
+	    }
+    api_query_data(api_url='https://boss-uat.lifekh.com/boss_web/config/banner/v2/deleteCard.do', api_data=test_dict)
+    test_data = {}
+    test = api_data_dict_exchange_str({"12":12})
+
     test1  = get_product_info_on_performance('MS1320194834269442048',
-                                            file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_store_info.csv')
+                                             file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_store_info.csv')
     #
     test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_new_user.csv',
                                          times=100)
@@ -366,6 +402,7 @@ if __name__ == '__main__':
     # test = xls.open_xls_by_row(file_name='/Users/windy/Desktop/S-app(23).xls', row_number=1)
     # need_list = rest_by_month('2020', '12', test)
     # xls.create_write_xls(need_list)
+
 
 
 
