@@ -219,16 +219,28 @@ def write_csv_loginname(file: str, first_line_data: str = 'loginName', times=1):
 
 
 def api_data_dict_exchange_str(data: dict):
-    data_str = json.dumps(data).replace(' ','')
+    data_str = json.dumps(data).replace(' ', '')
     print(data_str)
     return data_str
 
 
+def escape_double_quotation_marks(data: str):
+    escape_data = ''
+    for i in data:
+        if i == '"':
+            escape_data = escape_data + '\\' + i
+        else:
+            escape_data = escape_data + i
+
+    print(escape_data)
+    return escape_data
+
+
 def api_query_data(api_url: str, api_data: dict):
     api_data_str = api_data_dict_exchange_str(api_data)
-    request_data = '{"apiUrl":"' + api_url + '","apiData":' + api_data_str + '"'
+    request_data = '{"apiUrl":"' + api_url + '","apiData":' + api_data_str
     print(request_data)
-    return request_data
+    return escape_double_quotation_marks(request_data)
 
 
 class Operator_xls():
@@ -359,6 +371,7 @@ class MySQL:
 
 if __name__ == '__main__':
     # print(random_text_base_date(suffix='en'))
+    # a = escape_double_quotation_marks('123')
     test_dict = {
             "storeNo":"${storeNo}",
             "virtual":"true",
