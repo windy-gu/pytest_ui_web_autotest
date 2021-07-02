@@ -12,6 +12,8 @@ class OAPage(Page):
     liucheng = NewPageElement(xpath='//*[@id="portal-intro1"]/div/div/div/div[1]/div/div[2]', describe='流程')
     my_request = NewPageElement(xpath='//*[@id="menuScrollWrapper"]/div/div[1]/ul/li[4]/div', describe='我的请求')
     overtime_application = NewPageElement(xpath='//div[contains(text(),"S-app 加班申请")]', describe='加班申请')
+    search_input = NewPageElement(xpath='//input[@class="ant-input undefined"]', index=1, describe='搜索输入框')
+    # search_button = NewPageElement(xpath='//span[contains(text(),"高级搜索")]', index=0, describe='高级搜索')
     rest_application = NewPageElement(xpath='//div[contains(text(),"S-app 请休假申请")]', describe='休假申请')
 
     data = NewPageElement(xpath='//tbody/tr/td[2]')  # 加班list数据

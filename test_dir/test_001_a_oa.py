@@ -33,6 +33,9 @@ def test_oa_login(browser, url='https://oa.wownow.net/wui/index.html#/?logintype
     page.my_request.click()
     time.sleep(1)
     page.overtime_application.click()
+    page.search_input.send_keys("2021-06")
+    # page.search_button.click()
+
     time.sleep(1)
     need_list = []
     for n in range(10):

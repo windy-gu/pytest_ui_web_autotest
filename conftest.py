@@ -133,7 +133,6 @@ def capture_screenshot(case_name):
         raise RuntimeError('没有初始化测试目录')
     image_dir = os.path.join(REPORT_DIR, new_report_dir, "image", file_name)
     driver.save_screenshot(image_dir)
-
     return image_dir
 
 
