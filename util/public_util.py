@@ -373,21 +373,21 @@ if __name__ == '__main__':
     # print(random_text_base_date(suffix='en'))
     # a = escape_double_quotation_marks('123')
     test_dict = {
-            "storeNo":"${storeNo}",
-            "virtual":"true",
-            "orderNo":"",
-            "businessline":"TinhNow",
-            "logisticsScore":1,
-            "serviceScore":1,
-            "storeName":"",
-            "itemList":[{
-                "score":1,
-                "itemId":"${itemId}",
-                "imageUrls":[],
-                "mobile":"",
-                "anonymous":10,
-                "content":"${content}",
-                "skuId":"${skuId}"
+            "storeNo": "${storeNo}",
+            "virtual": "true",
+            "orderNo": "",
+            "businessline": "TinhNow",
+            "logisticsScore": 1,
+            "serviceScore": 1,
+            "storeName": "",
+            "itemList": [{
+                "score": 1,
+                "itemId": "${itemId}",
+                "imageUrls": [],
+                "mobile": "",
+                "anonymous": 10,
+                "content": "${content}",
+                "skuId": "${skuId}"
 		        }]
 	    }
     api_query_data(api_url='https://boss-uat.lifekh.com/boss_web/config/banner/v2/deleteCard.do', api_data=test_dict)

@@ -43,6 +43,11 @@ def teardown():
 def test_baidu_search_case(browser, base_url):
     page = BaiduPage(browser)
     page.get(base_url)
+    page.settle_buttom.click()
+    # page.news.click()
+    page.advanced_search.click()
+    page.time_selected_default.click()
+    page.tiem_selector_list_week.click()
     page.search_input = 'pytest'
     page.search_button.click()
     sleep(2)
