@@ -16,6 +16,7 @@ class OAPage(Page):
     rest_application = NewPageElement(xpath='//div[contains(text(),"S-app 请休假申请")]', describe='休假申请')
 
     list_operator_count = NewPageElement(xpath='//span[@class="ant-pagination-total-text"]', describe='需要操作数据条数')
+    next_page = NewPageElement(xpath='//li[@class="ant-pagination-next"]', describe='下一页')
 
     data = NewPageElement(xpath='//tbody/tr/td[2]')  # 加班list数据
 
