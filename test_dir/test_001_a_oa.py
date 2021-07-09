@@ -1,18 +1,13 @@
 import os
 import sys
-import hmac
 import time
-import base64
-import struct
 import pytest
-import hashlib
-from time import sleep
-from poium.common import logging
+import datetime
+from page.oa_page import OAPage
+from poium import NewPageElement
+from selenium.webdriver.common.keys import Keys
 from os.path import dirname, abspath
 sys.path.insert(0, dirname(dirname(abspath(__file__))))
-from page.oa_page import OAPage
-from selenium.webdriver.common.keys import Keys
-from poium import Page, PageElement, PageElements, NewPageElement
 
 
 """
@@ -21,7 +16,7 @@ from poium import Page, PageElement, PageElements, NewPageElement
 """
 
 
-def test_oa_login(browser, url='https://oa.wownow.net/wui/index.html#/?logintype=1&_key=q6nnev',
+def test_oa_001_login(browser, url='https://oa.wownow.net/wui/index.html#/?logintype=1&_key=q6nnev',
                   account='guxiaofeng', psw='gxf4843860.'):
     page = OAPage(browser)
     page.get(url)
@@ -31,26 +26,59 @@ def test_oa_login(browser, url='https://oa.wownow.net/wui/index.html#/?logintype
     page.login_password = psw
     page.login_btn.click()
 
+
+def test_oa_002_get_overtime_by_month(browser):
+    over_time = auto_choose_style_by_value(browser, style_value='OVER_TIME')
+    print("加班工时：" + str(over_time))
+
+
+def test_oa_003_get_day_off_by_month(browser):
+    day_off_time = auto_choose_style_by_value(browser, style_value='DAY_OFF')
+    # 在进行调休时长获取时，会出现点击不跳转的情况
+    print("调休工时：" + str(day_off_time))
+
+
+def auto_choose_style_by_value(browser, style_value: str):
+    page = OAPage(browser)
+
     # 进入：流程 - 我的请求 - S-app 加班申请
     page.door.click_and_hold()
     time.sleep(1)
     page.liucheng.click()
+    # page.get("https://oa.wownow.net/wui/index.html#/main/workflow/listMine")
     page.my_request.click()
     time.sleep(1)
     page.my_request.click()
-    page.overtime_application.click()
 
-    # 查询指定条件的加班申请&获取符合条件的数据
-    page.search_input.send_keys("2021-06")
-    page.search_input.send_keys(Keys.ENTER)
-    list_int = int(str(page.list_operator_count.get_attribute("textContent"))[1: -1])
-    time.sleep(1)
+    if style_value == 'OVER_TIME':
+        print("进入统计加班时间流程")
+        page.overtime_application.click()
 
-    operator_by_list(browser, list_int=list_int)
-    time.sleep(3)
+        # 查询指定条件的加班申请&获取符合条件的数据
+        page.search_input.send_keys("2021-06")
+        page.search_input.send_keys(Keys.ENTER)
+        time.sleep(1.5)
+        list_int = int(str(page.list_operator_count.get_attribute("textContent"))[1: -1])
+        time.sleep(1)
+        return operator_by_list(browser, list_int=list_int, style_value=style_value)
+
+    elif style_value == 'DAY_OFF':
+        print("进入统计调休时间流程")
+        page.day_off_application.click()
+
+        # 查询指定条件的加班申请&获取符合条件的数据
+        page.search_input.send_keys(get_last_month())
+        page.search_input.send_keys(Keys.ENTER)
+        time.sleep(1.5)
+        list_int = int(str(page.list_operator_count.get_attribute("textContent"))[1: -1])
+        time.sleep(1)
+        return operator_by_list(browser, list_int=list_int, style_value=style_value)
+
+    else:
+        raise Exception('输入style_value，错误。请核对后再执行。当前输入style_value值：%s' % style_value)
 
 
-def operator_by_list(browser, list_int: int):
+def operator_by_list(browser, list_int: int, style_value: str):
     """
 
     :param browser:
@@ -63,19 +91,20 @@ def operator_by_list(browser, list_int: int):
     inside_loop = int(list_int % 10)  # 单页循环次数
 
     if outside_loop == 0:
-        hour = hour + get_info_by_detail(browser, loop=inside_loop)
-        # pass
+        hour = hour + get_info_by_detail(browser, loop=inside_loop, style_value=style_value)
+
     else:
         for i in range(outside_loop+1):
             if i < outside_loop:
-                hour = hour + get_info_by_detail(browser, loop=10)
+                hour = hour + get_info_by_detail(browser, loop=10, style_value=style_value)
 
             else:
-                hour = hour + get_info_by_detail(browser, loop=inside_loop)
-    print("加班工时：" + str(hour))
+                hour = hour + get_info_by_detail(browser, loop=inside_loop, style_value=style_value)
+
+    return hour
 
 
-def get_info_by_detail(browser, loop: int):
+def get_info_by_detail(browser, loop: int, style_value: str):
     """
 
     :param browser:
@@ -84,10 +113,10 @@ def get_info_by_detail(browser, loop: int):
     """
     hour = 0
     for n in range(loop):
-        xpath = '//tbody[@class="ant-table-tbody"]/tr[' + str(n + 1) + ']/td[2]'
+        xpath = '//tbody[@class="ant-table-tbody"]/tr[' + str(n + 1) + ']/td[2]/div[1]'
         old_handle = browser.current_window_handle  # 获取在点击-list数据前，当前浏览器的handle值
         NewPageElement(xpath=xpath, describe='list_' + str(n + 1)).click()  # 加班list数据
-        time.sleep(3)
+        time.sleep(2)
         all_handles = browser.window_handles  # 获取在点击-list数据后，当前浏览器的handles值
         for i in range(len(all_handles)):
             if old_handle == all_handles[i]:
@@ -95,16 +124,22 @@ def get_info_by_detail(browser, loop: int):
             else:
                 browser.switch_to_window(all_handles[i])
         time.sleep(1)
+        if style_value == 'OVER_TIME':
+            # 获取名称和加班时长数据
+            person_xpath = '//tbody/tr[5]/td[4]/div[1]'
+            overtime_long = '//tbody/tr[11]/td[4]/div[1]'
+            # overtime_date = '//tbody/tr[13]/td[4]/div[1]'
 
-        # 获取名称和加班时长数据
-        person_xpath = '//tbody/tr[5]/td[4]/div[1]'
-        overtime_long = '//tbody/tr[11]/td[4]/div[1]'
-        # overtime_date = '//tbody/tr[13]/td[4]/div[1]'
+        elif style_value == 'DAY_OFF':
+            # 获取名称和调休时长数据
+            person_xpath = '//tbody/tr[5]/td[6]/div[1]'
+            overtime_long = '//tbody/tr[16]/td[4]/div[1]'
 
-        name = NewPageElement(xpath=person_xpath).text
-        time.sleep(1)
+        # name = NewPageElement(xpath=person_xpath).text
+        time.sleep(0.5)
+        browser.refresh()
         long = NewPageElement(xpath=overtime_long).text
-        time.sleep(1)
+        time.sleep(0.5)
         # date = NewPageElement(xpath=overtime_date).text
         # need_list.append(name + '_' + long + '_' + date)
         hour = hour + float(long)
@@ -118,9 +153,19 @@ def get_info_by_detail(browser, loop: int):
     return float(hour)
 
 
+def get_last_month():
+    """
+    此函数返回上一个月，格式：yyyy-MM
+    :return:
+    """
+    time_now = time.strftime("%Y-%m-%d", time.localtime())
+    time_now_2 = time.localtime(time.time())
+    first_day = datetime.date(time_now_2.tm_year, time_now_2.tm_mon, 1)
+    pre_month = str(first_day - datetime.timedelta(days=1))  # timedelta是一个不错的函数
+    last_month = pre_month[0:-3]
+    return last_month
+
+
 if __name__ == '__main__':
-    a = 23
-    print(a/10)
-    print(a % 10)
     file_name = os.path.split(__file__)[-1]
     pytest.main(['-s', './{}'.format(file_name)])
