@@ -55,7 +55,7 @@ def auto_choose_style_by_value(browser, style_value: str):
         page.overtime_application.click()
 
         # 查询指定条件的加班申请&获取符合条件的数据
-        page.search_input.send_keys("2021-06")
+        page.search_input.send_keys(get_last_month())
         page.search_input.send_keys(Keys.ENTER)
         time.sleep(1.5)
         list_int = int(str(page.list_operator_count.get_attribute("textContent"))[1: -1])
@@ -113,11 +113,21 @@ def get_info_by_detail(browser, loop: int, style_value: str):
     """
     hour = 0
     for n in range(loop):
-        xpath = '//tbody[@class="ant-table-tbody"]/tr[' + str(n + 1) + ']/td[2]/div[1]'
+        if style_value == 'DAY_OFF':
+            xpath_state = '//tbody[@class="ant-table-tbody"]/tr[' + str(n + 1) + ']/td[5]/div[1]'
+            text_state = NewPageElement(xpath=xpath_state).text
+        xpath_click = '//tbody[@class="ant-table-tbody"]/tr[' + str(n + 1) + ']/td[2]/div[1]'
         old_handle = browser.current_window_handle  # 获取在点击-list数据前，当前浏览器的handle值
-        NewPageElement(xpath=xpath, describe='list_' + str(n + 1)).click()  # 加班list数据
+        NewPageElement(xpath=xpath_click, describe='list_' + str(n + 1)).click()  # 加班list数据
         time.sleep(2)
         all_handles = browser.window_handles  # 获取在点击-list数据后，当前浏览器的handles值
+        old_handle_list = []
+        old_handle_list.append(old_handle)
+
+        if len(old_handle_list) == len(all_handles):
+            NewPageElement(xpath=xpath_click+'/a[1]', describe='list_' + str(n + 1)).click()  # 加班list数据
+            all_handles = browser.window_handles  # 获取在点击-list数据后，当前浏览器的handles值
+
         for i in range(len(all_handles)):
             if old_handle == all_handles[i]:
                 pass
@@ -132,8 +142,12 @@ def get_info_by_detail(browser, loop: int, style_value: str):
 
         elif style_value == 'DAY_OFF':
             # 获取名称和调休时长数据
-            person_xpath = '//tbody/tr[5]/td[6]/div[1]'
-            overtime_long = '//tbody/tr[16]/td[4]/div[1]'
+            if text_state == '归档':
+                person_xpath = '//tbody/tr[3]/td[6]/div[1]'
+                overtime_long = '//tbody/tr[13]/td[4]/div[1]'
+            else:
+                person_xpath = '//tbody/tr[5]/td[6]/div[1]'
+                overtime_long = '//tbody/tr[16]/td[4]/div[1]'
 
         # name = NewPageElement(xpath=person_xpath).text
         time.sleep(0.5)
