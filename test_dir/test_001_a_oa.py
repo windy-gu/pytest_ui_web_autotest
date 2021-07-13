@@ -4,16 +4,14 @@ import time
 import pytest
 import datetime
 from page.oa_page import OAPage
-from poium import NewPageElement
 from selenium.webdriver.common.keys import Keys
 from os.path import dirname, abspath
-from util.web_page_browser import PageBrowser
 from util.web_page_element import Element
 sys.path.insert(0, dirname(dirname(abspath(__file__))))
 
 
 """
-    测试案例，Boss登录页面
+    测试案例，oa登录页面，统计操作人上个月加班时长和调休时长
     这里作为一个public的方法作为所有需要在boss中进行操作的前置方法
 """
 

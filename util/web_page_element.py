@@ -217,9 +217,9 @@ class Element(WebElement, Driver):
         """Submits a form."""
         elem = self.__get_element(self.k, self.v)
         if self.desc != 'undefined':
-            log.info("submit element: {k}={v},  desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))
+            log.info("Submit element: {k}={v},  desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("submit element: {k}={v}".format(k=self.k, v=self.v))
+            log.info("Submit element: {k}={v}".format(k=self.k, v=self.v))
         elem.submit()
 
     @property
@@ -228,9 +228,9 @@ class Element(WebElement, Driver):
         elem = self.__get_element(self.k, self.v)
         tag_name = elem.tag_name
         if self.desc != 'undefined':
-            log.info("get element tag_name: {}, {k}={v},  desc：{desc}".format(tag_name, k=self.k, v=self.v, desc=self.desc))
+            log.info("Get element tag_name: {}, {k}={v},  desc：{desc}".format(tag_name, k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("get element tag_name: {}, {k}={v}".format(tag_name, k=self.k, v=self.v))
+            log.info("Get element tag_name: {}, {k}={v}".format(tag_name, k=self.k, v=self.v))
         return tag_name
 
     @property
@@ -239,9 +239,9 @@ class Element(WebElement, Driver):
         elem = self.__get_element(self.k, self.v)
         text = elem.text
         if self.desc != 'undefined':
-            log.info("get element text: {}, {k}={v},  desc：{desc}".format(text, k=self.k, v=self.v, desc=self.desc))
+            log.info("Get element text: {}, {k}={v},  desc：{desc}".format(text, k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("get element text: {}, {k}={v}".format(text, k=self.k, v=self.v))
+            log.info("Get element text: {}, {k}={v}".format(text, k=self.k, v=self.v))
         return text
 
     @property
@@ -250,9 +250,9 @@ class Element(WebElement, Driver):
         elem = self.__get_element(self.k, self.v)
         size = elem.size
         if self.desc != 'undefined':
-            log.info("get element size: {}, {k}={v},  desc：{desc}".format(size, k=self.k, v=self.v, desc=self.desc))
+            log.info("Get element size: {}, {k}={v},  desc：{desc}".format(size, k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("get element size: {}, {k}={v}".format(size, k=self.k, v=self.v))
+            log.info("Get element size: {}, {k}={v}".format(size, k=self.k, v=self.v))
         return size
 
     def get_property(self, name):
