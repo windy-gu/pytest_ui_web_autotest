@@ -7,6 +7,8 @@ from page.oa_page import OAPage
 from poium import NewPageElement
 from selenium.webdriver.common.keys import Keys
 from os.path import dirname, abspath
+from util.web_page_browser import PageBrowser
+from util.web_page_element import Element
 sys.path.insert(0, dirname(dirname(abspath(__file__))))
 
 
@@ -17,7 +19,7 @@ sys.path.insert(0, dirname(dirname(abspath(__file__))))
 
 
 def test_oa_001_login(browser, url='https://oa.wownow.net/wui/index.html#/?logintype=1&_key=q6nnev',
-                  account='guxiaofeng', psw='gxf4843860.'):
+                      account='guxiaofeng', psw='gxf4843860.'):
     page = OAPage(browser)
     page.get(url)
 
@@ -115,17 +117,17 @@ def get_info_by_detail(browser, loop: int, style_value: str):
     for n in range(loop):
         if style_value == 'DAY_OFF':
             xpath_state = '//tbody[@class="ant-table-tbody"]/tr[' + str(n + 1) + ']/td[5]/div[1]'
-            text_state = NewPageElement(xpath=xpath_state).text
+            text_state = Element(xpath=xpath_state).text
         xpath_click = '//tbody[@class="ant-table-tbody"]/tr[' + str(n + 1) + ']/td[2]/div[1]'
         old_handle = browser.current_window_handle  # 获取在点击-list数据前，当前浏览器的handle值
-        NewPageElement(xpath=xpath_click, describe='list_' + str(n + 1)).click()  # 加班list数据
+        Element(xpath=xpath_click, describe='list_' + str(n + 1)).click()  # 加班list数据
         time.sleep(2)
         all_handles = browser.window_handles  # 获取在点击-list数据后，当前浏览器的handles值
         old_handle_list = []
         old_handle_list.append(old_handle)
 
         if len(old_handle_list) == len(all_handles):
-            NewPageElement(xpath=xpath_click+'/a[1]', describe='list_' + str(n + 1)).click()  # 加班list数据
+            Element(xpath=xpath_click+'/a[1]', describe='list_' + str(n + 1)).click()  # 加班list数据
             all_handles = browser.window_handles  # 获取在点击-list数据后，当前浏览器的handles值
 
         for i in range(len(all_handles)):
@@ -149,12 +151,12 @@ def get_info_by_detail(browser, loop: int, style_value: str):
                 person_xpath = '//tbody/tr[5]/td[6]/div[1]'
                 overtime_long = '//tbody/tr[16]/td[4]/div[1]'
 
-        # name = NewPageElement(xpath=person_xpath).text
+        # name = Element(xpath=person_xpath).text
         time.sleep(0.5)
         browser.refresh()
-        long = NewPageElement(xpath=overtime_long).text
+        long = Element(xpath=overtime_long).text
         time.sleep(0.5)
-        # date = NewPageElement(xpath=overtime_date).text
+        # date = Element(xpath=overtime_date).text
         # need_list.append(name + '_' + long + '_' + date)
         hour = hour + float(long)
 
