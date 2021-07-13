@@ -2,6 +2,7 @@ Appium-Python-Client==1.0.2
 attrs==20.2.0
 click==7.1.2
 colorama==0.4.4
+colorlog==5.0.1
 cx-Oracle==8.0.1
 et-xmlfile==1.0.1
 iniconfig==1.1.1
