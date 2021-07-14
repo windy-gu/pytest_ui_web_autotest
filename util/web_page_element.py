@@ -29,6 +29,7 @@ LOCATOR_LIST = {
     'partial_link_text': By.PARTIAL_LINK_TEXT,
     'tag': By.TAG_NAME,
     'class_name': By.CLASS_NAME,
+
     # appium
     'ios_uiautomation': MobileBy.IOS_UIAUTOMATION,
     'ios_predicate': MobileBy.IOS_PREDICATE,
@@ -128,7 +129,7 @@ class Element(WebElement, Driver):
             self.__find_element((By.CSS_SELECTOR, value))
             elem = Browser.driver.find_elements_by_css_selector(value)[self.index]
 
-        # # appium
+        # appium
         elif by == "ios_uiautomation":
             self.__find_element((MobileBy.IOS_UIAUTOMATION, value))
             elem = Browser.driver.find_elements_by_ios_uiautomation(value)[self.index]
@@ -201,7 +202,7 @@ class Element(WebElement, Driver):
         if self.desc != 'undefined':
             log.info("🖋 input element: {}, {k}={v},  desc：{desc}".format(input_value, k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("🖋 input element: {}, {k}={v},".format(input_value, k=self.k, v=self.v))
+            log.info("🖋 input element: {}, {k}={v} ".format(input_value, k=self.k, v=self.v))
         elem.send_keys(input_value)
 
     def click(self):
@@ -210,7 +211,7 @@ class Element(WebElement, Driver):
         if self.desc != 'undefined':
             log.info("🖱 click element: {k}={v},  desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("🖱 click element: {k}={v},".format(k=self.k, v=self.v))
+            log.info("🖱 click element: {k}={v} ".format(k=self.k, v=self.v))
         elem.click()
 
     def submit(self):
@@ -219,7 +220,7 @@ class Element(WebElement, Driver):
         if self.desc != 'undefined':
             log.info("Submit element: {k}={v},  desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("Submit element: {k}={v}".format(k=self.k, v=self.v))
+            log.info("Submit element: {k}={v} ".format(k=self.k, v=self.v))
         elem.submit()
 
     @property
@@ -230,7 +231,7 @@ class Element(WebElement, Driver):
         if self.desc != 'undefined':
             log.info("Get element tag_name: {}, {k}={v},  desc：{desc}".format(tag_name, k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("Get element tag_name: {}, {k}={v}".format(tag_name, k=self.k, v=self.v))
+            log.info("Get element tag_name: {}, {k}={v} ".format(tag_name, k=self.k, v=self.v))
         return tag_name
 
     @property
@@ -241,7 +242,7 @@ class Element(WebElement, Driver):
         if self.desc != 'undefined':
             log.info("Get element text: {}, {k}={v},  desc：{desc}".format(text, k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("Get element text: {}, {k}={v}".format(text, k=self.k, v=self.v))
+            log.info("Get element text: {}, {k}={v} ".format(text, k=self.k, v=self.v))
         return text
 
     @property
@@ -252,7 +253,7 @@ class Element(WebElement, Driver):
         if self.desc != 'undefined':
             log.info("Get element size: {}, {k}={v},  desc：{desc}".format(size, k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("Get element size: {}, {k}={v}".format(size, k=self.k, v=self.v))
+            log.info("Get element size: {}, {k}={v} ".format(size, k=self.k, v=self.v))
         return size
 
     def get_property(self, name):
@@ -301,6 +302,7 @@ class Element(WebElement, Driver):
         """
         elem = self.__get_element(self.k, self.v)
         ActionChains(Browser.driver).move_to_element(elem).perform()
+        log.info("将当前页面移动到指定定位元素，element location info:{k}={v} ".format(k=self.k, v=self.v))
 
     def click_and_hold(self):
         """

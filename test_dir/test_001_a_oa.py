@@ -106,7 +106,7 @@ def operator_by_list(browser, list_int: int, style_value: str):
 
 def get_info_by_detail(browser, loop: int, style_value: str):
     """
-
+    点击list数据跳转到对应详情页面，获取对应加班或调休的数据信息
     :param browser:
     :param loop:
     :return:
@@ -124,6 +124,7 @@ def get_info_by_detail(browser, loop: int, style_value: str):
         old_handle_list = []
         old_handle_list.append(old_handle)
 
+        # 用于判断当前点击是否出现新的弹窗
         if len(old_handle_list) == len(all_handles):
             Element(xpath=xpath_click+'/a[1]', describe='list_' + str(n + 1)).click()  # 加班list数据
             all_handles = browser.window_handles  # 获取在点击-list数据后，当前浏览器的handles值
@@ -132,7 +133,7 @@ def get_info_by_detail(browser, loop: int, style_value: str):
             if old_handle == all_handles[i]:
                 pass
             else:
-                browser.switch_to_window(all_handles[i])
+                browser.switch_to_window(all_handles[i])  # 用于切换到新打开的窗口
         time.sleep(1)
         if style_value == 'OVER_TIME':
             # 获取名称和加班时长数据

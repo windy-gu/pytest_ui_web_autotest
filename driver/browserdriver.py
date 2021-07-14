@@ -100,7 +100,7 @@ def driver_last_version(browser: str = 'chrome', system: str = 'darwin'):
         file = 'chromedriver'
 
     else:
-        raise Exception("运行操作系统，找不到对应driver驱动")
+        raise Exception("找不到对应driver驱动")
 
     driver_dir = os.path.join(driver_dir_path, browser, opera_system)  # # 将驱动目录，浏览器类型和操作系统，输出文件路径
     version_last = os.listdir(driver_dir)  # 获取当前最新浏览器版本号
