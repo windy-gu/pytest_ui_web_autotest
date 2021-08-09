@@ -84,7 +84,7 @@ def check_boss_login(browser, url, need_login=True):
 
 
 if __name__ == '__main__':
-    key = google_security_code('ZAE5JSMSOYMEYAY5')
+    key = google_security_code('7EFG3MKYKVIUR2OU')
     print(key)
     file_name = os.path.split(__file__)[-1]
     pytest.main(['-s', './{}'.format(file_name)])

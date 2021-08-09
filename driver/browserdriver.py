@@ -4,6 +4,7 @@
 
 import os
 import atexit
+import requests
 import platform
 from util.log import Log
 from selenium import webdriver
@@ -40,8 +41,13 @@ def chrome_driver(driver_path=None,
 
     if user_agent:  # User-agent不为空，则添加指定user-agent
         options.add_argument(f'--user-agent={user_agent}')
+    DRIVER_TEMP = get_driver_file_path()
+    DRIVER_LAST_VERSION_PATH = DRIVER_TEMP[0]
+    DRIVER_LAST_VERSION = DRIVER_TEMP[1]
 
-    DRIVER_LAST_VERSION_PATH = get_driver_file_path()
+    # 判断当前Chrome是否为最新版本
+    get_chrome_version_info(DRIVER_LAST_VERSION)
+
     executable_path = driver_path or DRIVER_LAST_VERSION_PATH
 
     if headless:
@@ -58,6 +64,51 @@ def chrome_driver(driver_path=None,
 
     # atexit.register(wd.quit())  # always quit driver when done
     return wd
+
+
+def get_chrome_version_info(current_chrome_driver_version: str):
+    api_url = 'http://chromedriver.storage.googleapis.com/?delimiter=/&prefix='
+    headers = {
+        'Connection': 'keep-alive',
+        'Accept-Encoding': 'Accept-Encoding',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+        'Accept': '*/*',
+        'Referer': 'http://chromedriver.storage.googleapis.com/index.html',
+        'Host': 'chromedriver.storage.googleapis.com',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                      'Chrome/80.0.3987.163 Safari/537.36'
+    }
+    r = requests.get(url=api_url, headers=headers)
+    text = r.text
+    a_text = text.split('<Prefix>')
+
+    # 获取到chrome中版本相关数据
+    temp_text = []
+
+    # 判断跟本地driver驱动和网页版本中驱动版本中差异
+    over_version = []
+    version = current_chrome_driver_version
+    for i in range(len(a_text)):
+        if '/</Prefix>' in a_text[i]:
+            temp_text.append(a_text[i].split('/</Prefix>')[0])
+
+    for i in range(len(temp_text)):
+        temp_version_int = version.split('.')[0]
+        # print(temp_version_int)
+
+        if '.' in temp_text[i]:
+            temp_list_int = temp_text[i].split('.')[0]
+            temp_int = int(temp_version_int) - int(temp_list_int)
+            if temp_int <= 0:
+                if version != temp_text[i]:
+                    over_version.append(temp_text[i])
+    if len(over_version) > 0:
+        log.warn('本地Chrome浏览器驱动，可能不是最新版本。若浏览器无法启动，请手动更新Chrome驱动')
+        log.warn('本地Chrome浏览器驱动：%s' % version)
+        log.warn('当前可更新或近期的Chrome浏览器驱动：%s' % str(over_version))
+    # print(over_version)
+
+    # pass
 
 
 def firefox_driver():
@@ -102,11 +153,11 @@ def driver_last_version(browser: str = 'chrome', system: str = 'darwin'):
     else:
         raise Exception("找不到对应driver驱动")
 
-    driver_dir = os.path.join(driver_dir_path, browser, opera_system)  # # 将驱动目录，浏览器类型和操作系统，输出文件路径
+    driver_dir = os.path.join(driver_dir_path, browser, opera_system)  # 将驱动目录，浏览器类型和操作系统，输出文件路径
     version_last = os.listdir(driver_dir)  # 获取当前最新浏览器版本号
     version_last.sort()  # 排序
     driver_file_path = os.path.join(driver_dir, version_last[-1], file)  # 将驱动文件目录，版本号和驱动文件，输出文件路径
-    return driver_file_path
+    return driver_file_path, version_last[-1]
 
 
 if __name__ == '__main__':
