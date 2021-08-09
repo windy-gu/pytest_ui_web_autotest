@@ -67,6 +67,11 @@ def chrome_driver(driver_path=None,
 
 
 def get_chrome_version_info(current_chrome_driver_version: str):
+    """
+    通过获取chromedriver页面中的版本号跟本地版本，提示更新
+    :param current_chrome_driver_version:
+    :return:
+    """
     api_url = 'http://chromedriver.storage.googleapis.com/?delimiter=/&prefix='
     headers = {
         'Connection': 'keep-alive',
@@ -94,11 +99,11 @@ def get_chrome_version_info(current_chrome_driver_version: str):
 
     for i in range(len(temp_text)):
         temp_version_int = version.split('.')[0]
-        # print(temp_version_int)
-
+        # 获取版本号.前的数字值跟本地已有的Chrome版本号进行对比
         if '.' in temp_text[i]:
             temp_list_int = temp_text[i].split('.')[0]
             temp_int = int(temp_version_int) - int(temp_list_int)
+            # 若是两个版本差值<=0，则添加在over_version中
             if temp_int <= 0:
                 if version != temp_text[i]:
                     over_version.append(temp_text[i])
@@ -106,9 +111,8 @@ def get_chrome_version_info(current_chrome_driver_version: str):
         log.warn('本地Chrome浏览器驱动，可能不是最新版本。若浏览器无法启动，请手动更新Chrome驱动')
         log.warn('本地Chrome浏览器驱动：%s' % version)
         log.warn('当前可更新或近期的Chrome浏览器驱动：%s' % str(over_version))
-    # print(over_version)
-
-    # pass
+    else:
+        log.info('本地Chrome浏览器驱动，可以正常使用')
 
 
 def firefox_driver():
