@@ -19,11 +19,12 @@ def chrome_driver(driver_path=None,
                   maximize=True
                   ):
 
+
     """
 
     :param driver_path:    使用项目工程的driver驱动
     :param headless:            无头模式
-    :param user_agent:          自定义user_gent
+    :param user_agent:          自定义user_agent
     :param maximize:            是否最大化窗口
     :return:
     """
@@ -107,6 +108,7 @@ def get_chrome_version_info(current_chrome_driver_version: str):
             if temp_int <= 0:
                 if version != temp_text[i]:
                     over_version.append(temp_text[i])
+
     if len(over_version) > 0:
         log.warn('本地Chrome浏览器驱动，可能不是最新版本。若Chrome浏览器无法启动，请手动更新Chrome驱动')
         log.warn('本地Chrome浏览器驱动：%s' % version)
