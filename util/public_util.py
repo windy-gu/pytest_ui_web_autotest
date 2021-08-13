@@ -30,75 +30,93 @@ def random_text_base_date(pre: str = None, suffix: str = None):
             return date_text + '_' + suffix
 
 
-def get_product_info_on_performance(store_no: str, file: str):
+def get_product_info_on_performance(store_no: list, file: str):
     """
     通过门店no查询当前门店下的产品信息， 包括：商品id、规格id、快照版本id、属性id、属性选项id
     :param store_no:
+    :param file:
     :return:
     """
+
     # UAT环境
-    select_mysql = MySQL(user='lifekh_takeaway', password='fpgX5XYNVLMqVFjEC1hK',
-                         host='172.17.2.241', port=3306, database='lifekh_takeaway')
+    select_mysql = MySQL(user='lifekh_takeaway_uat', password='lifekh_takeaway_uat_2020',
+                         host='172.16.27.10', port=3400, database='lifekh_takeaway_uat')
     # 金边机房
     # select_mysql = MySQL(user='lifekh_takeaway_query', password='q1h9MqKpgX5V9qVFfFjEC',
     #                      host='10.24.255.42', port=3300, database='lifekh_takeaway')
-
-    select_product_id_list = select_mysql.select("SELECT id as 商品id FROM `lifekh_takeaway`.`product` WHERE `store_no` = '{}' and `del_state` = 10".format(store_no))
-    product_id_list = []  # 商品id list
     result = []
-    for n in range(len(select_product_id_list)):
-        # 将查询 - 商品id 单独添加的对应的list中
-        product_id_list.append(select_product_id_list[n]['商品id'])
+    for i in range(len(store_no)):
+        # 根据门店号查询门店下的所有商品id，输出对应的set集合
+        select_product_id_list = select_mysql.select(
+            "SELECT id as 商品id FROM `lifekh_takeaway_uat`.`product` WHERE `store_no` = '{}' and `del_state` = 10"
+            .format(store_no[i]))
 
-    for m in range(len(product_id_list)):
-        select_product_specification_id_list = select_mysql.select(
-            "SELECT id as 规格id FROM `lifekh_takeaway`.`product_specification` WHERE `product_id` = '{}'".format(
-                product_id_list[m]))
-        product_specification_id_list = []  # 商品规格id list
-        for k in range(len(select_product_specification_id_list)):
-            # 将查询 - 规格id 单独添加的对应的list中
-            product_specification_id_list.append((select_product_specification_id_list[k]['规格id']))
+        product_id_list = []
+        for n in range(len(select_product_id_list)):
+            # 将查询 - 商品id 单独添加的对应的list中
+            product_id_list.append(select_product_id_list[n]['商品id'])
+        # print("商品id："+str(product_id_list))
 
-            select_product_multiple_version_id_list = select_mysql.select(
-                "SELECT id as 快照版本id FROM `lifekh_takeaway`.`product_multiple_version` WHERE `product_id` = '{}' order by `update_time` Desc limit 0,1".format(
-                    product_id_list[m]))
-            product_multiple_version_id_list = []  # 商品快照版本id list
-            for q in range(len(select_product_multiple_version_id_list)):
-                # 将查询 - 快照版本id 单独添加的对应的list中
-                product_multiple_version_id_list.append(select_product_multiple_version_id_list[q]['快照版本id'])
+        for m in range(len(product_id_list)):
+            # 根据商品id查询商品SKU id，输出对应的set集合
+            select_product_specification_id_list = select_mysql.select(
+                "SELECT id as 规格id FROM `lifekh_takeaway_uat`.`product_specification` WHERE `product_id` = '{}'"
+                .format(product_id_list[m]))
+            product_specification_id_list = []  # 商品SKU id list
 
-                select_product_property_id_list = select_mysql.select(
-                    "SELECT id as 属性id FROM `lifekh_takeaway`.`product_property` WHERE `product_id` = '{}'".format(
-                        product_id_list[m]))
-                product_property_id_list = []  # 商品属性id list
-                if len(select_product_property_id_list) > 0:
-                    for x in range(len(select_product_property_id_list)):
-                        # 将查询 - 属性id 单独添加的对应的list中
-                        product_property_id_list.append(select_product_property_id_list[x]['属性id'])
+            for k in range(len(select_product_specification_id_list)):
+                # 将查询 - 规格id 单独添加的对应的list中
+                product_specification_id_list.append((select_product_specification_id_list[k]['规格id']))
 
-                        select_product_property_selection_id_list = select_mysql.select(
-                            "SELECT id as 属性选项id FROM `lifekh_takeaway`.`product_property_selection` WHERE `product_property_id` = '{}'".format(
-                                product_property_id_list[x]))
-                        product_property_selection_id_list = []  # 商品属性选项id list
-                        for l in range(len(select_product_property_selection_id_list)):
-                            # 将查询 - 商品属性选项id 单独添加的对应的list中
-                            product_property_selection_id_list.append(select_product_property_selection_id_list[l]['属性选项id'])
-                            print('商品id：'+str(product_id_list[m]) +
-                                  ',规格id：'+str(product_specification_id_list[k]) +
-                                  ',快照版本id：'+str(product_multiple_version_id_list[q]) +
-                                  ',属性id：'+str(product_property_id_list[x]) +
-                                  ',属性选项id：'+str(product_property_selection_id_list[l]))
-                            result.append(store_no +
-                                          ','+str(product_id_list[m]) +
-                                          ','+str(product_specification_id_list[k]) +
-                                          ','+str(product_multiple_version_id_list[q]) +
-                                          ','+str(product_property_id_list[x]) +
-                                          ','+str(product_property_selection_id_list[l]))
-                else:
-                    print('当前商品id：{},无属性id'.format(str(product_id_list[m])))
-    first_line_data = 'storeNo,productId,productSpecificationId,productMultipleVersionId,productPropertyId,' \
-                      'productPropertySelectionId'
-    write_csv_product_info(file=file, data=result, first_line_data=first_line_data)
+                select_product_multiple_version_id_list = select_mysql.select(
+                    "SELECT id as 快照版本id FROM `lifekh_takeaway_uat`.`product_multiple_version` WHERE `product_id` = '{}' order by `update_time` Desc limit 0,1"
+                    .format(product_id_list[m]))
+                product_multiple_version_id_list = []  # 商品快照版本id list
+                for q in range(len(select_product_multiple_version_id_list)):
+                    # 将查询 - 快照版本id 单独添加的对应的list中
+                    product_multiple_version_id_list.append(select_product_multiple_version_id_list[q]['快照版本id'])
+
+                    select_product_property_id_list = select_mysql.select(
+                        "SELECT id as 属性id FROM `lifekh_takeaway_uat`.`product_property` WHERE `product_id` = '{}'".format(
+                            product_id_list[m]))
+                    product_property_id_list = []  # 商品属性id list
+                    if len(select_product_property_id_list) > 0:
+                        for x in range(len(select_product_property_id_list)):
+                            # 将查询 - 属性id 单独添加的对应的list中
+                            product_property_id_list.append(select_product_property_id_list[x]['属性id'])
+
+                            select_product_property_selection_id_list = select_mysql.select(
+                                "SELECT id as 属性选项id FROM `lifekh_takeaway_uat`.`product_property_selection` WHERE `product_property_id` = '{}'".format(
+                                    product_property_id_list[x]))
+                            product_property_selection_id_list = []  # 商品属性选项id list
+                            for l in range(len(select_product_property_selection_id_list)):
+                                # 将查询 - 商品属性选项id 单独添加的对应的list中
+                                product_property_selection_id_list.append(select_product_property_selection_id_list[l]['属性选项id'])
+                                print('商品id：'+str(product_id_list[m]) +
+                                      ',规格id：'+str(product_specification_id_list[k]) +
+                                      ',快照版本id：'+str(product_multiple_version_id_list[q]) +
+                                      ',属性id：'+str(product_property_id_list[x]) +
+                                      ',属性选项id：'+str(product_property_selection_id_list[l]))
+                                result.append(str(store_no[i]) +
+                                              ','+str(product_id_list[m]) +
+                                              ','+str(product_specification_id_list[k]) +
+                                              ','+str(product_multiple_version_id_list[q]) +
+                                              ','+str(product_property_id_list[x]) +
+                                              ','+str(product_property_selection_id_list[l]))
+                    else:
+                        print('当前商品id：{},无属性id'.format(str(product_id_list[m])))
+                        print('商品id：' + str(product_id_list[m]) +
+                              ',规格id：' + str(product_specification_id_list[k]) +
+                              ',快照版本id：' + str(product_multiple_version_id_list[q]))
+                        result.append(str(store_no[i]) +
+                                      ',' + str(product_id_list[m]) +
+                                      ',' + str(product_specification_id_list[k]) +
+                                      ',' + str(product_multiple_version_id_list[q])
+                                      )
+
+        first_line_data = 'storeNo,productId,productSpecificationId,productMultipleVersionId,productPropertyId,' \
+                          'productPropertySelectionId'
+        write_csv_product_info(file=file, data=result, first_line_data=first_line_data)
 
 
 def write_csv_product_info(file: str, data: list, first_line_data: str):
@@ -152,6 +170,7 @@ def read_txt(file: str, key_word: str):
     """
     读取接口报错中相关关键值的键值
     :param file:
+    :param key_word:
     :return:
     """
     with open(file, encoding='utf-8', mode='r') as f:
@@ -167,6 +186,7 @@ def read_txt(file: str, key_word: str):
 def get_phone_number_cambodia(prefix: bool = True, check: bool = False):
     """
     随机生成855可用运营商号段号码
+    :param prefix:
     :param check:
     :return:
     """
@@ -220,7 +240,7 @@ def write_csv_loginname(file: str, first_line_data: str = 'loginName', times=1):
 
 def api_data_dict_exchange_str(data: dict):
     data_str = json.dumps(data).replace(' ', '')
-    print(data_str)
+    # print(data_str)
     return data_str
 
 
@@ -232,14 +252,14 @@ def escape_double_quotation_marks(data: str):
         else:
             escape_data = escape_data + i
 
-    print(escape_data)
+    # print(escape_data)
     return escape_data
 
 
 def api_query_data(api_url: str, api_data: dict):
     api_data_str = api_data_dict_exchange_str(api_data)
     request_data = '{"apiUrl":"' + api_url + '","apiData":' + api_data_str
-    print(request_data)
+    # print(request_data)
     return escape_double_quotation_marks(request_data)
 
 
@@ -278,7 +298,7 @@ class Operator_xls():
                 temp.pop(1)  # 去除：申请日期 字段
                 temp.pop(2)  # 去除：职务 字段
                 test_list.append(temp)
-        print(test_list)
+        # print(test_list)
         return test_list
 
     def create_write_xls(self, data: list):
@@ -286,18 +306,17 @@ class Operator_xls():
         ws = wb.add_sheet('Sheet1')
         for i in range(len(data)):
             for n in range(len(data[i])):
-                print(data[i][n])
+                # print(data[i][n])
                 ws.write(i, n, data[i][n])
 
         wb.save('test_001.xls')
 
 
-
 class Oracle:
-    def __init__(self, username: str = 'lifekh_mp_customer', password: str = 'djk876KKJJhyyhg787654J',
-                 address: str = '172.17.2.240:1521/lifekh'):
+    def __init__(self, username: str = 'lifekh_mp_customer_uat', password: str = 'lifekh_mp_customer_uat_2020',
+                 address: str = '172.16.27.10:1521/lifekh'):
         """
-        默认连接表：lifekh_mp_customer
+        默认连接表：lifekh_mp_customer_uat
         :param username:
         :param password:
         :param address:
@@ -372,33 +391,54 @@ class MySQL:
 if __name__ == '__main__':
     # print(random_text_base_date(suffix='en'))
     # a = escape_double_quotation_marks('123')
-    test_dict = {
-            "storeNo": "${storeNo}",
-            "virtual": "true",
-            "orderNo": "",
-            "businessline": "TinhNow",
-            "logisticsScore": 1,
-            "serviceScore": 1,
-            "storeName": "",
-            "itemList": [{
-                "score": 1,
-                "itemId": "${itemId}",
-                "imageUrls": [],
-                "mobile": "",
-                "anonymous": 10,
-                "content": "${content}",
-                "skuId": "${skuId}"
-		        }]
-	    }
-    api_query_data(api_url='https://boss-uat.lifekh.com/boss_web/config/banner/v2/deleteCard.do', api_data=test_dict)
+    # test_dict = {
+    #         "storeNo": "${storeNo}",
+    #         "virtual": "true",
+    #         "orderNo": "",
+    #         "businessline": "TinhNow",
+    #         "logisticsScore": 1,
+    #         "serviceScore": 1,
+    #         "storeName": "",
+    #         "itemList": [{
+    #             "score": 1,
+    #             "itemId": "${itemId}",
+    #             "imageUrls": [],
+    #             "mobile": "",
+    #             "anonymous": 10,
+    #             "content": "${content}",
+    #             "skuId": "${skuId}"
+	# 	        }]
+	#     }
+
+    # api_query_data(api_url='https://boss-uat.lifekh.com/boss_web/config/banner/v2/deleteCard.do', api_data=test_dict)
     test_data = {}
     test = api_data_dict_exchange_str({"12":12})
-
-    test1  = get_product_info_on_performance('MS1320194834269442048',
+    test_list = ['MS1425669117183733760',
+                    'MS1425694894075883520',
+                    'MS1425768431977443328',
+                    'MS1425769178660024320',
+                    'MS1425769183085015040',
+                    'MS1425769188046876672',
+                    'MS1425769192660611072',
+                    'MS1425769201158270976',
+                    'MS1425769205176414208',
+                    'MS1425769209018396672',
+                    'MS1425769211534979072',
+                    'MS1425769215003668480',
+                    'MS1425769217084043264',
+                    'MS1425769845042655232',
+                    'MS1425769946553200640',
+                    'MS1425770003755118592',
+                    'MS1425770071967084544',
+                    'MS1425770194235240448',
+                    'MS1425771271244427264',
+                    'MS1425771274109136896'
+                 ]
+    test1  = get_product_info_on_performance(test_list,
                                              file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_store_info.csv')
     #
-    test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_new_user.csv',
-                                         times=100)
+    # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_new_user.csv',
+    #                                      times=100)
     #
     # a = read_txt('/Users/windy/Desktop/error.txt', 'loginName')
     # test_date = '2020-09-08'
