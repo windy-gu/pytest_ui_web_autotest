@@ -83,6 +83,7 @@ def operator_by_list(browser, list_int: int, style_value: str):
 
     :param browser:
     :param list_int:
+    :param style_value:
     :return:
     """
     hour = 0
@@ -109,6 +110,7 @@ def get_info_by_detail(browser, loop: int, style_value: str):
     点击list数据跳转到对应详情页面，获取对应加班或调休的数据信息
     :param browser:
     :param loop:
+    :param style_value:
     :return:
     """
     hour = 0
