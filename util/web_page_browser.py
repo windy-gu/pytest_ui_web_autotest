@@ -5,10 +5,13 @@ import os
 import time
 import warnings
 from time import sleep
+from util.log import Log
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import NoAlertPresentException
 from appium.webdriver.common.touch_action import TouchAction as MobileTouchAction
+
+log = Log()
 
 
 class PageBrowser(object):
@@ -33,7 +36,9 @@ class PageBrowser(object):
         """
         root_uri = self.root_uri or ''
         self.driver.get(root_uri + uri)
+        log.info('打开网页：{}'.format(uri))
         self.driver.implicitly_wait(5)
+        log.info('设置全局隐式等待时间：5s')
 
     def run_script(self, js=None, *args):
         """
@@ -160,7 +165,7 @@ class PageBrowser(object):
         """
         return self.driver.get_cookie(name)
 
-    def add_cookie(self, cookie_dict):
+    def add_cookie(self, cookie_dict: dict):
         """
         Adds a cookie to your current session.
         Usage:
@@ -168,10 +173,11 @@ class PageBrowser(object):
         """
         if isinstance(cookie_dict, dict):
             self.driver.add_cookie(cookie_dict)
+            log.info('Add cookie:' + str(cookie_dict))
         else:
             raise TypeError("Wrong cookie type.")
 
-    def add_cookies(self, cookie_list):
+    def add_cookies(self, cookie_list: list):
         """
         Adds a cookie to your current session.
         Usage:
@@ -184,6 +190,8 @@ class PageBrowser(object):
         if isinstance(cookie_list, list):
             for cookie in cookie_list:
                 self.add_cookie(cookie)
+            log.info('Add cookies:' + str(cookie_list))
+
         else:
             raise TypeError("Wrong cookie type.")
 
@@ -192,6 +200,7 @@ class PageBrowser(object):
         Deletes a single cookie with the given name.
         """
         self.driver.delete_cookie(name)
+        log.info("Delete kry:{all} cookie".format(all=name))
 
     def delete_all_cookies(self):
         """
@@ -200,6 +209,7 @@ class PageBrowser(object):
             self.delete_all_cookies()
         """
         self.driver.delete_all_cookies()
+        log.info("Delete all cookies")
 
     def switch_to_app(self):
         """
@@ -230,6 +240,7 @@ class PageBrowser(object):
         Accept warning box.
         """
         self.driver.switch_to.alert.accept()
+        log.info('Accept current alert')
 
     def dismiss_alert(self):
         """
@@ -237,6 +248,7 @@ class PageBrowser(object):
         Dismisses the alert available.
         """
         self.driver.switch_to.alert.dismiss()
+        log.info('Dismiss current alert')
 
     def alert_is_display(self):
         """
@@ -256,7 +268,9 @@ class PageBrowser(object):
         selenium API
         Get warning box prompt information.
         """
-        return self.driver.switch_to.alert.text
+        text = self.driver.switch_to.alert.text
+        log.info('Get current alert text:{}'.format(text))
+        return text
 
     def move_to_element(self, elem):
         """
