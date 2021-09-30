@@ -186,8 +186,8 @@ def read_txt(file: str, key_word: str):
 def get_phone_number_cambodia(prefix: bool = True, check: bool = False):
     """
     随机生成855可用运营商号段号码
-    :param prefix:
-    :param check:
+    :param prefix:是否需要855前置，默认值：True
+    :param check:是否需要检验随机生成的号码注册使用过
     :return:
     """
     phone_list = ['11', '12', '14', '17', '61', '76', '77', '78', '79', '85', '89', '92',
@@ -210,9 +210,11 @@ def get_phone_number_cambodia(prefix: bool = True, check: bool = False):
 
     # 判断是否需要校验号码已注册，校验会严重降低速度
     if check:
-        check_oracle = Oracle(username='lifekh_mp_customer', password='djk876KKJJhyyhg787654J',
-                              address='172.17.2.240:1521/lifekh')
-        check_data = check_oracle.select('SELECT LOGIN_NAME from "LIFEKH_MP_CUSTOMER"."USER_OPERATOR_LOGIN_INFO" WHERE "LOGIN_NAME" =' + "'%s'" % register_number)
+        check_oracle = Oracle(username='lifekh_mp_customer_uat', password='lifekh_mp_customer_uat_2020',
+                              address='172.16.27.10:1521/lifekh')
+        register_number = '855010147258'
+        check_data = check_oracle.select('SELECT LOGIN_NAME from "LIFEKH_MP_CUSTOMER_UAT"."USER_OPERATOR_LOGIN_INFO" WHERE "LOGIN_NAME" =' + "'%s'" % register_number)
+
         if len(check_data) != 0:
             if register_number in ''.join(check_data[0]):
                 print('%s 账号已注册' % register_number)
@@ -313,8 +315,12 @@ class Operator_xls():
 
 
 class Oracle:
+    # 设置访问本地oracle_client,若没有可能会报错：
+    # DPI-1047: Cannot locate a 64-bit Oracle Client library: "dlopen(libclntsh.dylib, 1): image not found
+    cx_Oracle.init_oracle_client(lib_dir=r"/usr/local/lib/instantclient_19_8")
+
     def __init__(self, username: str = 'lifekh_mp_customer_uat', password: str = 'lifekh_mp_customer_uat_2020',
-                 address: str = '172.16.27.10:1521/lifekh'):
+                 address: str = '172.16.27.10:1521\lifekh'):
         """
         默认连接表：lifekh_mp_customer_uat
         :param username:
@@ -325,17 +331,49 @@ class Oracle:
         self.password = password
         self.address = address
 
-    def select(self, expression: str):
+    def _connect(self):
         db = cx_Oracle.connect(self.username, self.password, self.address)
+        return db
+
+    def _execute(self, sql: str, mode: str):
+        db = self._connect()
         cur = db.cursor()
-        cur.execute(expression)
-        rows = cur.fetchall()
+        cur.execute(sql)
+
+        if mode == 'r':
+            rows = cur.fetchall()
+        else:
+            db.commit()
+            print('执行sql语句：{}'.format(sql))
+
         cur.close()
         db.close()
-        return rows
+        if mode == 'r':
+            return rows
 
-    def update(self, expression: str):
-        pass
+    def select(self, sql: str, mode: str = 'r'):
+        if 'select' not in sql.lower():
+            raise Exception('执行的SQL语句，不是select相关的语句。')
+        else:
+            return self._execute(sql=sql, mode=mode)
+
+    def update(self, sql: str, mode='w'):
+        if 'update' not in sql.lower():
+            raise Exception('执行的SQL语句，不是update相关的语句。')
+        else:
+            return self._execute(sql=sql, mode=mode)
+
+    def insert(self, sql: str, mode='w'):
+        if 'insert' not in sql.lower():
+            raise Exception('执行的SQL语句，不是insert相关的语句。')
+        else:
+            return self._execute(sql=sql, mode=mode)
+
+    def delete(self, sql: str, mode='w'):
+        if 'delete' not in sql.lower():
+            raise Exception('执行的SQL语句，不是delete相关的语句。')
+        else:
+            return self._execute(sql=sql, mode=mode)
 
 
 class MySQL:
@@ -355,18 +393,16 @@ class MySQL:
         self.port = port
         self.database = database
 
-    def select(self, sql: str, mode='r'):
-        """
-
-        :param sql:
-        :param mode:
-        :return:
-        """
+    def _connect(self):
         # 创建connect连接
         py = pymysql.connect(user=self.user, password=self.password, host=self.host, port=self.port,
                              database=self.database, charset="utf8", cursorclass=pymysql.cursors.DictCursor)
         # 获取cursor对象
         cs = py.cursor()
+        return py, cs
+
+    def _execute(self, sql: str, mode='r'):
+        py, cs = self._connect()
         try:
             cs.execute(sql)
             if mode == 'r':
@@ -380,62 +416,39 @@ class MySQL:
         py.close()
         return data
 
-    def update(self, sql: str):
-        pass
+    def select(self, sql: str, mode='r'):
+        if 'select' not in sql.lower():
+            raise Exception('执行的SQL语句，不是select相关的语句。')
+        else:
+            return self._execute(sql=sql, mode=mode)
 
-    def delete(self):
+    def update(self, sql: str, mode='w'):
+        if 'update' not in sql.lower():
+            raise Exception('执行的SQL语句，不是update相关的语句。')
+        else:
+            return self._execute(sql=sql, mode=mode)
 
-        pass
+    def insert(self, sql: str, mode='w'):
+        if 'insert' not in sql.lower():
+            raise Exception('执行的SQL语句，不是insert相关的语句。')
+        else:
+            return self._execute(sql=sql, mode=mode)
+
+    def delete(self, sql: str, mode='w'):
+        if 'delete' not in sql.lower():
+            raise Exception('执行的SQL语句，不是delete相关的语句。')
+        else:
+            return self._execute(sql=sql, mode=mode)
 
 
 if __name__ == '__main__':
-    # print(random_text_base_date(suffix='en'))
-    # a = escape_double_quotation_marks('123')
-    # test_dict = {
-    #         "storeNo": "${storeNo}",
-    #         "virtual": "true",
-    #         "orderNo": "",
-    #         "businessline": "TinhNow",
-    #         "logisticsScore": 1,
-    #         "serviceScore": 1,
-    #         "storeName": "",
-    #         "itemList": [{
-    #             "score": 1,
-    #             "itemId": "${itemId}",
-    #             "imageUrls": [],
-    #             "mobile": "",
-    #             "anonymous": 10,
-    #             "content": "${content}",
-    #             "skuId": "${skuId}"
-	# 	        }]
-	#     }
 
     # api_query_data(api_url='https://boss-uat.lifekh.com/boss_web/config/banner/v2/deleteCard.do', api_data=test_dict)
+
+    print(get_phone_number_cambodia(check=True))
     test_data = {}
-    test = api_data_dict_exchange_str({"12":12})
-    test_list = ['MS1425669117183733760',
-                    'MS1425694894075883520',
-                    'MS1425768431977443328',
-                    'MS1425769178660024320',
-                    'MS1425769183085015040',
-                    'MS1425769188046876672',
-                    'MS1425769192660611072',
-                    'MS1425769201158270976',
-                    'MS1425769205176414208',
-                    'MS1425769209018396672',
-                    'MS1425769211534979072',
-                    'MS1425769215003668480',
-                    'MS1425769217084043264',
-                    'MS1425769845042655232',
-                    'MS1425769946553200640',
-                    'MS1425770003755118592',
-                    'MS1425770071967084544',
-                    'MS1425770194235240448',
-                    'MS1425771271244427264',
-                    'MS1425771274109136896'
-                 ]
-    test1  = get_product_info_on_performance(test_list,
-                                             file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_store_info.csv')
+    test = api_data_dict_exchange_str({"12": 12})
+
     #
     # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_new_user.csv',
     #                                      times=100)
