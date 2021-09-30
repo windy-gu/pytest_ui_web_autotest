@@ -445,8 +445,8 @@ if __name__ == '__main__':
     # api_query_data(api_url='https://boss-uat.lifekh.com/boss_web/config/banner/v2/deleteCard.do', api_data=test_dict)
 
     print(get_phone_number_cambodia(check=True))
-    test_data = {}
-    test = api_data_dict_exchange_str({"12": 12})
+    # test_data = {}
+    # test = api_data_dict_exchange_str({"12": 12})
 
     #
     # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_new_user.csv',
