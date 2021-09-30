@@ -132,7 +132,7 @@ class CustomerCenterPage(Page):
     merchant_submit = NewPageElement(xpath='//*[@class="pub_btns"]/button[2]', describe='提交')
 
 
-class YumnowManagementPage(Page):
+class DeliveryManagementPage(Page):
     # 外卖管理 - 次级导航栏元素
     store_management = NewPageElement(xpath='//span[contains(text(),"门店管理")]', describe='门店管理')
     order_management = NewPageElement(xpath='//span[contains(text(),"订单管理")]', describe='订单管理')

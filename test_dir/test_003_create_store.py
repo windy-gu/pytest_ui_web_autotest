@@ -8,7 +8,7 @@ from os.path import dirname, abspath
 from util.public_util import random_text_base_date, get_phone_number_cambodia
 from test_dir.test_001_boss_login import check_boss_login
 sys.path.insert(0, dirname(dirname(abspath(__file__))))
-from page.boss_page import HomePage, YumnowManagementPage
+from page.boss_page import HomePage, DeliveryManagementPage
 
 
 """
@@ -22,7 +22,7 @@ def setup():
 
 def test_create_store(browser, test_url='https://boss-uat.lifekh.com/boss/home'):
     page_home = HomePage(browser)
-    page_yumnow_management = YumnowManagementPage(browser)
+    page_yumnow_management = DeliveryManagementPage(browser)
     page_home.get(test_url)
     time.sleep(1)
     check_boss_login(browser, test_url)
