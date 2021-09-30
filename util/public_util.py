@@ -212,7 +212,6 @@ def get_phone_number_cambodia(prefix: bool = True, check: bool = False):
     if check:
         check_oracle = Oracle(username='lifekh_mp_customer_uat', password='lifekh_mp_customer_uat_2020',
                               address='172.16.27.10:1521/lifekh')
-        register_number = '855010147258'
         check_data = check_oracle.select('SELECT LOGIN_NAME from "LIFEKH_MP_CUSTOMER_UAT"."USER_OPERATOR_LOGIN_INFO" WHERE "LOGIN_NAME" =' + "'%s'" % register_number)
 
         if len(check_data) != 0:
