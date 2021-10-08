@@ -189,9 +189,9 @@ class Element(WebElement, Driver):
         """Clears the text if it's a text entry element."""
         elem = self.__get_element(self.k, self.v)
         if self.desc != 'undefined':
-            log.info("clear element: {k}={v},  desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))
+            log.info("clear element: {k} = {v},  desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("clear element: {}={},".format(self.k, self.v))
+            log.info("clear element: {k} = {v} ".format(k=self.k, v=self.v))
         elem.clear()
 
     def send_keys(self, input_value):
@@ -200,27 +200,27 @@ class Element(WebElement, Driver):
         """
         elem = self.__get_element(self.k, self.v)
         if self.desc != 'undefined':
-            log.info("🖋 input element: {}, {k}={v},  desc：{desc}".format(input_value, k=self.k, v=self.v, desc=self.desc))
+            log.info("🖋 input element: {}, {k} = {v},  desc：{desc}".format(input_value, k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("🖋 input element: {}, {k}={v} ".format(input_value, k=self.k, v=self.v))
+            log.info("🖋 input element: {}, {k} = {v} ".format(input_value, k=self.k, v=self.v))
         elem.send_keys(input_value)
 
     def click(self):
         """Clicks the element."""
         elem = self.__get_element(self.k, self.v)
         if self.desc != 'undefined':
-            log.info("🖱 click element: {k}={v},  desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))
+            log.info("🖱 click element: {k} = {v},  desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("🖱 click element: {k}={v} ".format(k=self.k, v=self.v))
+            log.info("🖱 click element: {k} = {v} ".format(k=self.k, v=self.v))
         elem.click()
 
     def submit(self):
         """Submits a form."""
         elem = self.__get_element(self.k, self.v)
         if self.desc != 'undefined':
-            log.info("Submit element: {k}={v},  desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))
+            log.info("Submit element: {k} = {v},  desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("Submit element: {k}={v} ".format(k=self.k, v=self.v))
+            log.info("Submit element: {k} = {v} ".format(k=self.k, v=self.v))
         elem.submit()
 
     @property
@@ -229,9 +229,9 @@ class Element(WebElement, Driver):
         elem = self.__get_element(self.k, self.v)
         tag_name = elem.tag_name
         if self.desc != 'undefined':
-            log.info("Get element tag_name: {}, {k}={v},  desc：{desc}".format(tag_name, k=self.k, v=self.v, desc=self.desc))
+            log.info("Get element tag_name: {}, {k} = {v},  desc：{desc}".format(tag_name, k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("Get element tag_name: {}, {k}={v} ".format(tag_name, k=self.k, v=self.v))
+            log.info("Get element tag_name: {}, {k} = {v} ".format(tag_name, k=self.k, v=self.v))
         return tag_name
 
     @property
@@ -240,9 +240,9 @@ class Element(WebElement, Driver):
         elem = self.__get_element(self.k, self.v)
         text = elem.text
         if self.desc != 'undefined':
-            log.info("Get element text: {}, {k}={v},  desc：{desc}".format(text, k=self.k, v=self.v, desc=self.desc))
+            log.info("Get element text: {}, {k} = {v},  desc：{desc}".format(text, k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("Get element text: {}, {k}={v} ".format(text, k=self.k, v=self.v))
+            log.info("Get element text: {}, {k} = {v} ".format(text, k=self.k, v=self.v))
         return text
 
     @property
@@ -251,9 +251,9 @@ class Element(WebElement, Driver):
         elem = self.__get_element(self.k, self.v)
         size = elem.size
         if self.desc != 'undefined':
-            log.info("Get element size: {}, {k}={v},  desc：{desc}".format(size, k=self.k, v=self.v, desc=self.desc))
+            log.info("Get element size: {}, {k} = {v},  desc：{desc}".format(size, k=self.k, v=self.v, desc=self.desc))
         else:
-            log.info("Get element size: {}, {k}={v} ".format(size, k=self.k, v=self.v))
+            log.info("Get element size: {}, {k} = {v} ".format(size, k=self.k, v=self.v))
         return size
 
     def get_property(self, name):
@@ -294,6 +294,7 @@ class Element(WebElement, Driver):
         """
         elem = self.__get_element(self.k, self.v)
         Browser.driver.switch_to.frame(elem)
+        log.info("切换到frame，frame location info:{k} = {v} ".format(k=self.k, v=self.v))
 
     def move_to_element(self):
         """
@@ -302,7 +303,7 @@ class Element(WebElement, Driver):
         """
         elem = self.__get_element(self.k, self.v)
         ActionChains(Browser.driver).move_to_element(elem).perform()
-        log.info("将当前页面移动到指定定位元素，element location info:{k}={v} ".format(k=self.k, v=self.v))
+        log.info("将当前页面移动到指定定位元素，element location info:{k} = {v} ".format(k=self.k, v=self.v))
 
     def click_and_hold(self):
         """

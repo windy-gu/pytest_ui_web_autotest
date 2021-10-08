@@ -33,45 +33,16 @@ def test_replace_accept_finish(browser,
     if boss_delivery_order_url != browser.current_url:
         page_delivery_management.get(boss_delivery_order_url)
         log.info('打开网址：{}'.format(boss_delivery_order_url))
+        time.sleep(3)
+
     if browser.current_url == boss_delivery_order_url:
-        page_home.yumnow_management.click()
-        page_delivery_management.store_management.click()
-        page_delivery_management.store_list.click()
-        page_delivery_management.add_merchant.click()
+        page_delivery_management.wait_accept_order_search.click()
+        # 此处需要补充获取数据库指定门店中的待接单的商家数据
+        page_delivery_management.order_no_input = '12345689'
+        page_delivery_management.search_btn.click()
+        time.sleep(3)
+        # 待补充查询后
 
-        # 账号信息
-        page_delivery_management.merchant_name_en = random_text_base_date(pre='UITest_Merchant', suffix='en')
-        page_delivery_management.merchant_name_zh = random_text_base_date(pre='UITest_Merchant', suffix='zh')
-        page_delivery_management.merchant_name_cb = random_text_base_date(pre='UITest_Merchant', suffix='cb')
-        page_delivery_management.merchant_style_person.click()
-        page_delivery_management.merchant_charge_name = 'Tester'
-        page_delivery_management.merchant_charge_surname = 'UI'
-        page_delivery_management.merchant_certificate_type.click()
-        page_delivery_management.merchant_passport.click()
-        page_delivery_management.merchant_certificate_no = 'UITest_12345678'
-        page_delivery_management.merchant_certificate_photo = '/Users/windy/Downloads/test_photo/tofu.jpeg'
-        page_delivery_management.merchant_statue_open.click()
-        time.sleep(1)
-
-        # 门店信息
-        page_delivery_management.merchant_business_yumnow.click()
-        page_delivery_management.merchant_connect_name = 'Tester'
-        page_delivery_management.merchant_connect_surname = 'UI'
-        page_delivery_management.merchant_connect_phoneNo = '010111222'
-        page_delivery_management.merchant_contract_photo = '/Users/windy/Downloads/test_photo/tofu.jpeg'
-        time.sleep(1)
-
-        # 管理账号信息
-        page_delivery_management.merchant_login_phoneNo = get_phone_number_cambodia(prefix=False)
-        page_delivery_management.merchant_email = '111222333@qq.com'
-        page_delivery_management.merchant_user_name = random_text_base_date(pre='UITester')
-        page_delivery_management.merchant_password = '123456'
-        page_delivery_management.merchant_password_second = '123456'
-        time.sleep(1)
-
-        page_delivery_management.merchant_submit.click()
-
-        time.sleep(5)
 
     else:
         print('failure')

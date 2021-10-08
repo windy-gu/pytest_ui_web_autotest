@@ -7,7 +7,7 @@ import struct
 import pytest
 import hashlib
 from time import sleep
-from poium.common import logging
+from util.log import Log
 from os.path import dirname, abspath
 sys.path.insert(0, dirname(dirname(abspath(__file__))))
 from page.boss_page import BossLoginPage, HomePage
@@ -17,6 +17,7 @@ from page.boss_page import BossLoginPage, HomePage
     测试案例，Boss登录页面
     这里作为一个public的方法作为所有需要在boss中进行操作的前置方法
 """
+log = Log()
 
 
 def test_boss_login(browser, url='https://boss-uat.lifekh.com/boss#/login',
@@ -60,10 +61,10 @@ def change_language(browser, language='zh'):
     page = HomePage(browser)
     language_text = page.language_text_span.text
     if language == language_text:
-        logging.info('当前Boss语言，与所需执行的语言一致。当前Boss语言：{}，所需切换的语言：{}。'.format(language_text, language))
+        log.info('当前Boss语言，与所需执行的语言一致。当前Boss语言：{}，所需切换的语言：{}。'.format(language_text, language))
     else:
-        logging.info('当前Boss语言，与所需执行的语言不一致。当前Boss语言：{}，所需切换的语言：{}。'.format(language_text, language))
-        logging.info('进行切换Boss语言操作。')
+        log.info('当前Boss语言，与所需执行的语言不一致。当前Boss语言：{}，所需切换的语言：{}。'.format(language_text, language))
+        log.info('进行切换Boss语言操作。')
         page.language_button_span.click()
         if language == 'zh':
             page.language_selector_zh.click()
@@ -73,14 +74,14 @@ def change_language(browser, language='zh'):
 
 def check_boss_login(browser, url, need_login=True):
     if url != browser.current_url:
-        logging.info('测试URL地址为重定向到Boss登录地址')
+        log.info('测试URL地址为重定向到Boss登录地址')
         if need_login is True:
-            logging.info('need_login：{}，执行Boss登录流程'.format(need_login))
+            log.info('need_login：{}，执行Boss登录流程'.format(need_login))
             test_boss_login(browser=browser)
         else:
-            logging.info('need_login：{}，不执行Boss登录流程'.format(need_login))
+            log.info('need_login：{}，不执行Boss登录流程'.format(need_login))
     else:
-        logging.info('测试URL地址与当前URL地址一致')
+        log.info('测试URL地址与当前URL地址一致')
 
 
 if __name__ == '__main__':

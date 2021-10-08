@@ -2,7 +2,7 @@ import sys
 import logging.handlers
 from colorama import Fore, Style
 import colorlog
-import os, time
+import os,time
 
 log_file = (os.path.dirname(os.path.dirname(__file__))) + '/' + time.strftime('%Y-%m-%d') + '.log'  # log文件目录
 

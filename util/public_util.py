@@ -13,8 +13,8 @@ import xlwt
 def random_text_base_date(pre: str = None, suffix: str = None):
     """
 
-    :param pre:
-    :param suffix:
+    :param pre: 前缀
+    :param suffix: 后缀
     :return:
     """
     date_text = time.strftime('%Y_%m_%d_%H_%M')
