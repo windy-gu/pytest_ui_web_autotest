@@ -19,7 +19,6 @@ def chrome_driver(driver_path=None,
                   maximize=True
                   ):
 
-
     """
 
     :param driver_path:    使用项目工程的driver驱动
@@ -61,6 +60,8 @@ def chrome_driver(driver_path=None,
     if maximize:
         log.info('窗口全屏化')
         wd.maximize_window()
+        log.info('浏览器名称：{}'.format(wd.capabilities["browserName"]))
+        log.info('浏览器版本号：{}'.format(wd.capabilities["browserVersion"]))
 
     # atexit.register(wd.quit())  # always quit driver when done
     return wd
@@ -82,7 +83,7 @@ def get_chrome_version_info(current_chrome_driver_version: str):
         'Referer': 'http://chromedriver.storage.googleapis.com/index.html',
         'Host': 'chromedriver.storage.googleapis.com',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                      'Chrome/80.0.3987.163 Safari/537.36'
+                      'Chrome/94.0.4606.81 Safari/537.36'
     }
     r = requests.get(url=api_url, headers=headers)
     text = r.text
@@ -111,7 +112,7 @@ def get_chrome_version_info(current_chrome_driver_version: str):
 
     if len(over_version) > 0:
         log.warn('本地Chrome浏览器驱动，可能不是最新版本。若Chrome浏览器无法启动，请手动更新Chrome驱动')
-        log.warn('本地Chrome浏览器驱动：%s' % version)
+        log.warn('本地Chrome浏览器驱动版本：%s' % version)
         log.warn('当前可更新或近期的Chrome浏览器驱动版本：%s，驱动下载地址：%s' % (str(over_version), download_url))
     else:
         log.info('本地Chrome浏览器驱动，可以正常使用')

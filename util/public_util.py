@@ -376,8 +376,8 @@ class Oracle:
 
 
 class MySQL:
-    def __init__(self, user: str = 'lifekh_takeaway', password: str = 'fpgX5XYNVLMqVFjEC1hK',
-                 host: str = '172.17.2.241', port: int = 3306, database: str = 'lifekh_takeaway'):
+    def __init__(self, user: str = 'lifekh_takeaway_uat', password: str = 'lifekh_takeaway_uat_2020',
+                 host: str = '172.16.27.10', port: int = 3400, database: str = 'lifekh_takeaway_uat'):
         """
 
         :param user:
