@@ -2,7 +2,7 @@ import sys
 import logging.handlers
 from colorama import Fore, Style
 import colorlog
-import os,time
+import os, time
 
 log_file = (os.path.dirname(os.path.dirname(__file__))) + '/' + time.strftime('%Y-%m-%d') + '.log'  # log文件目录
 
@@ -43,15 +43,17 @@ class Log():
 
         # 记录一条日志
         if level == 'info':
-            self.logger.info(message)
+            self.logger.info(Fore.GREEN + message + Style.RESET_ALL)
         elif level == 'debug':
             self.logger.debug(message)
         elif level == 'warn':
-            self.logger.warning(message)
+            self.logger.warning(Fore.YELLOW + message + Style.RESET_ALL)
         elif level == 'error':
-            self.logger.error(message)
+            self.logger.error(Fore.RED + message + Style.RESET_ALL)
         elif level == 'critical':
-            self.logger.critical(message)
+            self.logger.critical(Fore.LIGHTRED_EX + message + Style.RESET_ALL)
+        elif level == 'print':
+            self.logger.debug(Fore.BLUE + message + Style.RESET_ALL)
 
         # 删除Handler避免重复输出log
         self.logger.removeHandler(FILE_HANDLER)
@@ -75,3 +77,6 @@ class Log():
 
     def critical(self, message):
         self.print_console('critical', message)
+
+    def print(self, message):
+        self.print_console('print', message)

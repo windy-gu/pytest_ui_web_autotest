@@ -22,43 +22,58 @@ def setup():
 
 def test_replace_accept_finish(browser,
                                boss_delivery_order_url='https://boss-uat.lifekh.com/boss/order/delivery-order',
-                               store_no: str = ''):
+                               store_no: str = 'MS1320194834269442048'):
     page_home = HomePage(browser)
     page_delivery_management = DeliveryManagementPage(browser)
     page_home.get(boss_delivery_order_url)
     time.sleep(1)
-    get_store_wait_accept_ords('MS1320194834269442048')
+
+    # 校验boss是否登录
     check_boss_login(browser, boss_delivery_order_url)
 
     # 判断当前是否在外卖管理 - 订单管理 - 外卖订单页面
     if boss_delivery_order_url != browser.current_url:
         page_delivery_management.get(boss_delivery_order_url)
-        log.info('打开网址：{}'.format(boss_delivery_order_url))
+        time.sleep(3)
+    if boss_delivery_order_url == browser.current_url:
+        # 进入到待门店接单流程
+        page_delivery_management.wait_accept_order_tab.click()
         time.sleep(3)
 
-    if browser.current_url == boss_delivery_order_url:
-        page_delivery_management.wait_accept_order_search.click()
-        # 此处需要补充获取数据库指定门店中的待接单的商家数据
+        ords = get_store_wait_accept_ords(store_no)
+        if len(ords) >= 1:
+            log.info('当前门店：{} 存在 待接单的订单：{}'.format(store_no, str(ords)))
+            for i in range(len(ords)):
+                page_delivery_management.order_no_input.clear()
+                page_delivery_management.order_no_input = ords[i]
+                page_delivery_management.search_btn.click()
+                time.sleep(3)
 
-        page_delivery_management.order_no_input = '12345689'
-        page_delivery_management.search_btn.click()
-        time.sleep(3)
-        # 待补充查询后
-
-    else:
-
-        print('failure')
-    assert browser.title == 'boss管理后台'
+                # 判断操作list区域元素是否存在
+                if page_delivery_management.opera_list.check_element():
+                    page_delivery_management.ord_accept_list.click()
+        else:
+            log.info('当前门店：{} 无 待接单的订单'.format(store_no))
 
 
 def get_store_wait_accept_ords(store_no: str):
+    """
+    获取指定门店 - 待接单的订单号
+    :param store_no:门店标号
+    :return:订单号，可以为空
+    """
     mysql = MySQL()
     ords = mysql.select(
                  "SELECT order_no FROM `lifekh_takeaway_uat`.`takeaway_order`"
                  "WHERE `store_no` = '{}' "
                  "AND `biz_state` = '10' ORDER BY `update_time` DESC ".format(store_no))
-
-    return ords
+    ords_list = []
+    if isinstance(ords, list):
+        for i in range(len(ords)):
+            ords_list.append(ords[i]['order_no'])
+    else:
+        log.info('门店：{},当前无待接单订单'.format(store_no))
+    return ords_list
 
 
 if __name__ == '__main__':

@@ -154,10 +154,16 @@ class DeliveryManagementPage(PageBrowser):
     add_store_relate_merchant = Element(xpath='//input[@class="请选择"]', describe='+ 新增（门店）btn')
 
     # 订单管理 - 外卖管理 - 全部
-    wait_accept_order_search = Element(xpath='//*[@class="filter-form-button ivu-btn ivu-btn-default"]/span[contains(text(),"等待商家接单")]', describe='等待商家接单btn')
-    accept_order_search = Element(xpath='//*[@class="filter-form-button ivu-btn ivu-btn-default"]/span[contains(text(),"商家已接单")]', describe='商家已接单btn')
+    wait_accept_order_tab = Element(xpath='//*[@class="filter-form-button ivu-btn ivu-btn-default"]/span[contains(text(),"等待商家接单")]', describe='等待商家接单tab')
+    accept_order_tab = Element(xpath='//*[@class="filter-form-button ivu-btn ivu-btn-default"]/span[contains(text(),"商家已接单")]', describe='商家已接单tab')
     order_no_input = Element(xpath='//label[@class="ivu-form-item-label"]/span[contains(text(),"订单号")]/../following-sibling::div/div/input', describe='订单编号input')
     search_btn = Element(xpath='//*[@class="ivu-btn ivu-btn-primary"]/span[contains(text(),"查询")]', describe='查询')
+
+    # 订单管理 - 外卖管理 - 全部 - list
+    opera_list = Element(xpath='//td/div[@class="ivu-table-cell"]', describe='操作list')
+    ord_detail_list = Element(xpath='//td/div[@class="ivu-table-cell"]/div/button/span[contains(text(),"详情")]', describe='详情btn')
+    ord_cancer_list = Element(xpath='//td/div[@class="ivu-table-cell"]/div/button/span[contains(text(),"取消订单")]', describe='取消订单btn')
+    ord_accept_list = Element(xpath='//td/div[@class="ivu-table-cell"]/div/button/span[contains(text(),"代接单")]', describe='代接单btn')
 
 
 class CreateStore(PageBrowser):

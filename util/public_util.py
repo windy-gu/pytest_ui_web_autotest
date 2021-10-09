@@ -444,8 +444,9 @@ if __name__ == '__main__':
 
     # api_query_data(api_url='https://boss-uat.lifekh.com/boss_web/config/banner/v2/deleteCard.do', api_data=test_dict)
 
-    print(get_phone_number_cambodia(check=True))
-    # test_data = {}
+    # print(get_phone_number_cambodia(check=True))
+    test_data = [{'order_no': '1446671320510849024'}]
+    print(test_data[0]['order_no'])
     # test = api_data_dict_exchange_str({"12": 12})
 
     #

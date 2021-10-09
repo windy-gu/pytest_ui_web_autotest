@@ -194,6 +194,20 @@ class Element(WebElement, Driver):
             log.info("clear element: {k} = {v} ".format(k=self.k, v=self.v))
         elem.clear()
 
+    def check_element(self):
+        """
+        校验元素是否存在，存在返回True，否则返回False
+        :return:
+        """
+        flag = True
+        try:
+            elem = self.__get_element(self.k, self.v)
+        except:
+            flag = False
+        finally:
+            log.info("Check element is exit？：{k} = {v} 校验状态：".format(k=self.k, v=self.v) + str(flag))
+            return flag
+
     def send_keys(self, input_value):
         """
         Simulates typing into the element.
