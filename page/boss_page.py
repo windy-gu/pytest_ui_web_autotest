@@ -162,8 +162,19 @@ class DeliveryManagementPage(PageBrowser):
     # 订单管理 - 外卖管理 - 全部 - list
     opera_list = Element(xpath='//td/div[@class="ivu-table-cell"]', describe='操作list')
     ord_detail_list = Element(xpath='//td/div[@class="ivu-table-cell"]/div/button/span[contains(text(),"详情")]', describe='详情btn')
-    ord_cancer_list = Element(xpath='//td/div[@class="ivu-table-cell"]/div/button/span[contains(text(),"取消订单")]', describe='取消订单btn')
+    ord_cancel_list = Element(xpath='//td/div[@class="ivu-table-cell"]/div/button/span[contains(text(),"取消订单")]', describe='取消订单btn')
     ord_accept_list = Element(xpath='//td/div[@class="ivu-table-cell"]/div/button/span[contains(text(),"代接单")]', describe='代接单btn')
+    ord_finish_list = Element(xpath='//td/div[@class="ivu-table-cell"]/div/button/span[contains(text(),"完成订单")]', describe='完成订单btn')
+
+    # 订单管理 - 外卖管理 - 待门店接单 - 二次确认弹窗
+    accept_remark_input = Element(xpath='//p[contains(text(),"备注")]/following-sibling::form/div/div/div/textarea', describe='备注input（待接单）')
+    confirm_button = Element(xpath='//div[@class="ivu-modal-wrap"]/div/div/div[@class="ivu-modal-footer"]/div/button[@class="ivu-btn ivu-btn-primary"]/span[contains(text(),"确认")]', describe='确认button')
+    cancel_button = Element(xpath='//div[@class="ivu-modal-wrap"]/div/div/div[@class="ivu-modal-footer"]/div/button[@class="ivu-btn ivu-btn-default"]/span[contains(text(),"取消")]', describe='取消button')
+
+    # 订单管理 - 外卖管理 - 完成接单 - 二次确认弹窗
+    finish_selected_span = Element(xpath='//span[contains(text(),"请选择") and @class="ivu-select-selected-value"]', describe='请选择_选择框')
+    finish_select_others_reason_li = Element(xpath='//li[contains(text(),"其他原因") and @class="ivu-select-item"]', describe='其他原因_下拉选项')
+    finish_remark_input = Element(xpath='//p[contains(text(),"备注")]/following-sibling::div/textarea', describe='备注input（完成）')
 
 
 class CreateStore(PageBrowser):

@@ -88,7 +88,7 @@ class Element(WebElement, Driver):
                     by=elem[0], value=elem[1]))
                 break
             elif len(elems) > 1:
-                log.info("❓ Find {n} elements through: {by}={value}".format(
+                log.warn("❓ Find {n} elements through: {by}={value}".format(
                     n=len(elems), by=elem[0], value=elem[1]))
                 break
             else:
