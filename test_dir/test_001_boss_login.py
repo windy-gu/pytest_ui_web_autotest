@@ -31,6 +31,7 @@ def test_boss_login(browser, url='https://boss-uat.lifekh.com/boss#/login',
     page.google_code = google_code
     page.login_confirm_button.click()
     sleep(2)
+
     change_language(browser, language='zh')
     assert browser.title == 'boss管理后台'
 
@@ -70,6 +71,7 @@ def change_language(browser, language='zh'):
             page.language_selector_zh.click()
         else:
             page.language_selector_en.click()
+    page.msg_push_button.click()
 
 
 def check_boss_login(browser, url, need_login=True):

@@ -74,6 +74,7 @@ class BossLoginPage(PageBrowser):
 
 class HomePage(PageBrowser):
     # 切换boss登录语言元素
+    msg_push_button = Element(xpath='//label[contains(text()," 消息推送")]', describe='消息推送button')
     language_button_span = Element(xpath='//a[@class="lan"]/span', describe='语言button_span')
     language_text_span = Element(xpath='//a[@class="lan"]/span/span', describe='语言text_span')
     language_selector_zh = Element(xpath='//div[contains(text(), "中文")]', describe='语言_切换选项_中文')

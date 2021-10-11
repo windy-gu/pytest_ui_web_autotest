@@ -53,7 +53,7 @@ class Log():
         elif level == 'critical':
             self.logger.critical(Fore.LIGHTRED_EX + message + Style.RESET_ALL)
         elif level == 'print':
-            self.logger.debug(Fore.BLUE + message + Style.RESET_ALL)
+            self.logger.debug(message)
 
         # 删除Handler避免重复输出log
         self.logger.removeHandler(FILE_HANDLER)

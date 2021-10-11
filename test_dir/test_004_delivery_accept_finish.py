@@ -34,6 +34,7 @@ def test_replace_accept_finish(browser,
     # 判断当前是否在外卖管理 - 订单管理 - 外卖订单页面
     if boss_delivery_order_url != browser.current_url:
         page_delivery_management.get(boss_delivery_order_url)
+        # browser.dismiss_alert()
         time.sleep(3)
     if boss_delivery_order_url == browser.current_url:
         # 进入到：等待门店接单流程
