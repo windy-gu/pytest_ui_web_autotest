@@ -20,7 +20,8 @@ def setup_module():
     print("Setup_module========")
 
 
-def teardown_module():
+def teardown_module(browser):
+    browser.quit()
     print("Teardown_module========")
 
 

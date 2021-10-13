@@ -30,6 +30,14 @@ class PageBrowser(object):
         self.driver = driver
         self.root_uri = url if url else getattr(self.driver, 'url', None)
 
+    def quit(self):
+        log.info('关闭浏览器')
+        self.driver.quit()
+
+    def close(self):
+        log.info('关闭当前窗口')
+        self.driver.close()
+
     def get(self, uri):
         """
         :param uri:  URI to GET, based off of the root_uri attribute.

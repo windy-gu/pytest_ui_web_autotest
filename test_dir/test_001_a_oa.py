@@ -3,7 +3,9 @@ import sys
 import time
 import pytest
 import datetime
+from conftest import browser_close
 from page.oa_page import OAPage
+from util.log import Log
 from selenium.webdriver.common.keys import Keys
 from os.path import dirname, abspath
 from util.web_page_element import Element
@@ -14,6 +16,12 @@ sys.path.insert(0, dirname(dirname(abspath(__file__))))
     测试案例，oa登录页面，统计操作人上个月加班时长和调休时长
     这里作为一个public的方法作为所有需要在boss中进行操作的前置方法
 """
+
+log = Log()
+
+
+def teardown_module():
+    browser_close()
 
 
 def test_oa_001_login(browser, url='https://oa.wownow.net/wui/index.html#/?logintype=1&_key=q6nnev',
@@ -29,13 +37,13 @@ def test_oa_001_login(browser, url='https://oa.wownow.net/wui/index.html#/?login
 
 def test_oa_002_get_overtime_by_month(browser):
     over_time = auto_choose_style_by_value(browser, style_value='OVER_TIME')
-    print("加班工时：" + str(over_time))
+    log.print("加班工时：" + str(over_time))
 
 
 def test_oa_003_get_day_off_by_month(browser):
     day_off_time = auto_choose_style_by_value(browser, style_value='DAY_OFF')
     # 在进行调休时长获取时，会出现点击不跳转的情况
-    print("调休工时：" + str(day_off_time))
+    log.print("调休工时：" + str(day_off_time))
 
 
 def auto_choose_style_by_value(browser, style_value: str):
@@ -51,7 +59,7 @@ def auto_choose_style_by_value(browser, style_value: str):
     page.my_request.click()
 
     if style_value == 'OVER_TIME':
-        print("进入统计加班时间流程")
+        log.print("进入统计加班时间流程")
         page.overtime_application.click()
 
         # 查询指定条件的加班申请&获取符合条件的数据
@@ -63,7 +71,7 @@ def auto_choose_style_by_value(browser, style_value: str):
         return operator_by_list(browser, list_int=list_int, style_value=style_value)
 
     elif style_value == 'DAY_OFF':
-        print("进入统计调休时间流程")
+        log.print("进入统计调休时间流程")
         page.day_off_application.click()
 
         # 查询指定条件的加班申请&获取符合条件的数据

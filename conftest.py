@@ -2,6 +2,7 @@ import os
 import pytest
 from driver.browserdriver import chrome_driver
 from py.xml import html
+from util.log import Log
 from selenium import webdriver
 from selenium.webdriver import Remote
 from selenium.webdriver.chrome.options import Options as CH_Options
@@ -32,7 +33,7 @@ cases_path = "./test_dir/"
 # 是否显示操作标注框
 browser_show = True
 
-
+log = Log()
 ############################
 
 
@@ -202,12 +203,20 @@ def browser():
     return driver
 
 
-# 关闭浏览器
+# 关闭当前窗口
 @pytest.fixture(scope="session", autouse=True)
 def browser_close():
     yield driver
+    driver.close()
+    log.print("关闭当前窗口")
+
+
+# 关闭浏览器
+@pytest.fixture(scope="session", autouse=True)
+def browser_quit():
+    yield driver
     driver.quit()
-    print("test end!")
+    log.print("关闭浏览器")
 
 
 if __name__ == "__main__":
