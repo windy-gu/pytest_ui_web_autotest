@@ -6,6 +6,7 @@ import click
 from conftest import REPORT_DIR
 from util.log import Log
 from conftest import cases_path, rerun, max_fail
+from util.public_util import change_html
 
 # logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 log = Log()
@@ -35,6 +36,7 @@ def run(m):
         now_time = time.strftime("%Y_%m_%d_%H_%M_%S")
         init_env(now_time)
         html_report = os.path.join(REPORT_DIR, now_time, "report.html")
+        target_html_report = os.path.join(REPORT_DIR, now_time, "ui_report.html")
         xml_report = os.path.join(REPORT_DIR, now_time, "junit-xml.xml")
         pytest.main([
                      # "-s",  # 运行时显示详细信息
@@ -47,10 +49,12 @@ def run(m):
                      "--reruns", rerun  # 失败重试次数
                     ])
         log.info("运行结束，生成测试报告！")
+        change_html(html_report, target_html_report)  # 修改html中存在的异常代码，并删除旧文件
+
     elif m == "debug":
-        print("debug模式，开始执行！")
+        log.print("debug模式，开始执行！")
         pytest.main(["-v", "-s", cases_path])
-        print("运行结束！")
+        log.print("运行结束！")
 
 
 if __name__ == '__main__':

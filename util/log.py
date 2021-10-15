@@ -14,7 +14,7 @@ class Log():
     def __init__(self, name='log'):
         self.logger = logging.getLogger(name)
 
-    def print_console(self, level, message, color_style=False):
+    def _print_console(self, level, message:str):
         # 创建一个log
         # log_file_path = (os.path.dirname(os.path.dirname(__file__))) + '/log/' \
         #                 + time.strftime('%Y-%m-%d') + '.log'  # log文件目录
@@ -39,36 +39,18 @@ class Log():
         if "pytest" not in sys.modules:  # 目前在pytest中会存在重复打印日志的情况
             self.logger.addHandler(CONSOLE_HANDLER)
 
-        if platform.system().lower() != 'linux':
-            color_style = True
-
-        # 记录一条日志，使用color的时候，会导致log和HTML文件中会带有颜色的shell码，仅在本地调试的时候使用
-        if color_style:
-            if level == 'info':
-                self.logger.info(Fore.GREEN + message + Style.RESET_ALL)
-            elif level == 'debug':
-                self.logger.debug(message)
-            elif level == 'warn':
-                self.logger.warning(Fore.YELLOW + message + Style.RESET_ALL)
-            elif level == 'error':
-                self.logger.error(Fore.RED + message + Style.RESET_ALL)
-            elif level == 'critical':
-                self.logger.critical(Fore.LIGHTRED_EX + message + Style.RESET_ALL)
-            elif level == 'print':
-                self.logger.debug(message)
-        else:
-            if level == 'info':
-                self.logger.info(message)
-            elif level == 'debug':
-                self.logger.debug(message)
-            elif level == 'warn':
-                self.logger.warning(message)
-            elif level == 'error':
-                self.logger.error(message)
-            elif level == 'critical':
-                self.logger.critical(message)
-            elif level == 'print':
-                self.logger.debug(message)
+        if level == 'info':
+            self.logger.info(Fore.GREEN + message + Style.RESET_ALL)
+        elif level == 'debug':
+            self.logger.debug(message)
+        elif level == 'warn':
+            self.logger.warning(Fore.YELLOW + message + Style.RESET_ALL)
+        elif level == 'error':
+            self.logger.error(Fore.RED + message + Style.RESET_ALL)
+        elif level == 'critical':
+            self.logger.critical(Fore.LIGHTRED_EX + message + Style.RESET_ALL)
+        elif level == 'print':
+            self.logger.debug(message)
 
         # 删除Handler避免重复输出log
         # self.logger.removeHandler(FILE_HANDLER)
@@ -78,19 +60,19 @@ class Log():
         CONSOLE_HANDLER.close()
 
     def debug(self, message):
-        self.print_console('debug', message)
+        self._print_console('debug', message)
 
     def info(self, message):
-        self.print_console('info', message)
+        self._print_console('info', message)
 
     def warn(self, message):
-        self.print_console('warn', message)
+        self._print_console('warn', message)
 
     def error(self, message):
-        self.print_console('error', message)
+        self._print_console('error', message)
 
     def critical(self, message):
-        self.print_console('critical', message)
+        self._print_console('critical', message)
 
     def print(self, message):
-        self.print_console('print', message)
+        self._print_console('print', message)

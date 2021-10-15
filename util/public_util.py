@@ -1,13 +1,14 @@
+import os
 import csv
 import json
 import time
+import xlrd
+import xlwt
 import random
-import cx_Oracle
 import pymysql
 import openpyxl
 import calendar
-import xlrd
-import xlwt
+import cx_Oracle
 
 
 def random_text_base_date(pre: str = None, suffix: str = None):
@@ -158,11 +159,8 @@ def rest_by_month(check_year: str, check_month: str, xls_list_data: list):
                 check_month_last_date = begin_year + '-' + begin_month + '-' + str(monthRange)
                 if begin_date > check_month_first_date:
                     check_true_list.append(xls_list_data[i])
-                    # print('当前日期在生效日期内')
-                    # print(check_true_list)
                 else:
                     pass
-                    # print('当前日期不在生效日期内')
     return check_true_list
 
 
@@ -224,6 +222,35 @@ def get_phone_number_cambodia(prefix: bool = True, check: bool = False):
     return register_number
 
 
+def change_html(source_file_path: str, target_file_path: str):
+    """
+    目前因为输出的html中，会彩色日志的形式，导致log中存在shell在控制台显示的代码
+    此方法用于去除生成多余的代码，并生成新的文件，同时删除旧文件
+
+    :param source_file_path:
+    :param target_file_path:
+    :return:
+    """
+    with open(source_file_path, encoding='utf-8', mode='r') as rf:
+        with open(target_file_path, mode='a+') as wf:
+
+            for i in rf.readlines():
+                if '[' in i:
+                    i = i.strip()\
+                        .replace('[32m', '')\
+                        .replace('[0m', '')\
+                        .replace('[33m', '')\
+                        .replace('[31m', '')\
+                        .replace('[91m', '')
+                    wf.write(i)
+                    wf.write('<br>')
+                else:
+                    wf.write(i)
+
+    os.remove(source_file_path)
+
+
+
 def write_csv_loginname(file: str, first_line_data: str = 'loginName', times=1):
     """
     :param file:需要写入的文件路径
@@ -241,7 +268,6 @@ def write_csv_loginname(file: str, first_line_data: str = 'loginName', times=1):
 
 def api_data_dict_exchange_str(data: dict):
     data_str = json.dumps(data).replace(' ', '')
-    # print(data_str)
     return data_str
 
 
@@ -253,14 +279,12 @@ def escape_double_quotation_marks(data: str):
         else:
             escape_data = escape_data + i
 
-    # print(escape_data)
     return escape_data
 
 
 def api_query_data(api_url: str, api_data: dict):
     api_data_str = api_data_dict_exchange_str(api_data)
     request_data = '{"apiUrl":"' + api_url + '","apiData":' + api_data_str
-    # print(request_data)
     return escape_double_quotation_marks(request_data)
 
 
@@ -445,6 +469,8 @@ if __name__ == '__main__':
     # api_query_data(api_url='https://boss-uat.lifekh.com/boss_web/config/banner/v2/deleteCard.do', api_data=test_dict)
 
     # print(get_phone_number_cambodia(check=True))
+    change_html('/Users/windy/Documents/code/myself/ui/pytest_ui_web_autotest/test_report/2021_10_15_17_45_39/report.html',
+                '/Users/windy/Documents/code/myself/ui/pytest_ui_web_autotest/test_report/2021_10_15_17_45_39/report_new.html')
     test_data = [{'order_no': '1446671320510849024'}]
     print(test_data[0]['order_no'])
     # test = api_data_dict_exchange_str({"12": 12})
