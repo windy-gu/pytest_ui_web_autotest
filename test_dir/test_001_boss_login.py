@@ -1,10 +1,8 @@
-import os
 import sys
 import hmac
 import time
 import base64
 import struct
-import pytest
 import hashlib
 from time import sleep
 from util.log import Log

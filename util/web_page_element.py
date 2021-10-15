@@ -210,7 +210,7 @@ class Element(WebElement, Driver):
 
     def send_keys(self, input_value):
         """
-        Simulates typing into the element.
+        在文本框中输入内容
         """
         elem = self.__get_element(self.k, self.v)
         if self.desc != 'undefined':
@@ -220,7 +220,9 @@ class Element(WebElement, Driver):
         elem.send_keys(input_value)
 
     def click(self):
-        """Clicks the element."""
+        """
+        点击指定元素
+        """
         elem = self.__get_element(self.k, self.v)
         if self.desc != 'undefined':
             log.info("🖱 click element: {k} = {v},  desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))

@@ -2,8 +2,6 @@ import sys
 import time
 import os
 import pytest
-from poium import Page
-from poium.common import logging
 from os.path import dirname, abspath
 from util.public_util import random_text_base_date, get_phone_number_cambodia
 from test_dir.test_001_boss_login import check_boss_login
