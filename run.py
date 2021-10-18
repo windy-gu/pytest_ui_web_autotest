@@ -3,10 +3,10 @@ import os
 import time
 import pytest
 import click
-from conftest import REPORT_DIR
 from util.log import Log
-from conftest import cases_path, rerun, max_fail
 from util.public_util import change_html
+from conftest import REPORT_DIR
+from conftest import cases_path, rerun, max_fail
 
 # logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 log = Log()
@@ -15,8 +15,8 @@ log = Log()
 说明：
 1、用例创建原则，测试文件名必须以“test”开头，测试函数必须以“test”开头。
 2、运行方式：
-  > python3 run_tests.py  (回归模式，生成HTML报告)
-  > python3 run_tests.py -m debug  (调试模式)
+  > python3 run.py  (回归模式，生成HTML报告)
+  > python3 run.py -m debug  (调试模式)
 '''
 
 

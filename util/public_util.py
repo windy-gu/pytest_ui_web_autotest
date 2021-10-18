@@ -7,13 +7,12 @@ import xlwt
 import random
 import pymysql
 import openpyxl
-import calendar
 import cx_Oracle
 
 
 def random_text_base_date(pre: str = None, suffix: str = None):
     """
-
+    根据输入的前缀和后缀，随机生成内容
     :param pre: 前缀
     :param suffix: 后缀
     :return:
@@ -137,33 +136,6 @@ def write_csv_product_info(file: str, data: list, first_line_data: str):
         print('此方法输出csv文件需要手动替换""，否则jmeter中执行会报错！！！！！')
 
 
-def rest_by_month(check_year: str, check_month: str, xls_list_data: list):
-    """
-
-    :param check_year:
-    :param check_month:
-    :param xls_list_data:
-    :return:
-    """
-    check_true_list = []
-    for i in range(len(xls_list_data)):
-        begin_date = xls_list_data[i][3]
-        begin_year = begin_date.split('-')[0]
-        begin_month = begin_date.split('-')[1]
-        if begin_year != check_year:
-            pass
-        else:
-            if begin_month == check_month:
-                monthRange = calendar._monthlen(int(begin_year), int(begin_month))
-                check_month_first_date = begin_year + '-' + begin_month + '-01'
-                check_month_last_date = begin_year + '-' + begin_month + '-' + str(monthRange)
-                if begin_date > check_month_first_date:
-                    check_true_list.append(xls_list_data[i])
-                else:
-                    pass
-    return check_true_list
-
-
 def read_txt(file: str, key_word: str):
     """
     读取接口报错中相关关键值的键值
@@ -247,8 +219,7 @@ def change_html(source_file_path: str, target_file_path: str):
                 else:
                     wf.write(i)
 
-    os.remove(source_file_path)
-
+    os.remove(source_file_path)  # 删除文件
 
 
 def write_csv_loginname(file: str, first_line_data: str = 'loginName', times=1):
