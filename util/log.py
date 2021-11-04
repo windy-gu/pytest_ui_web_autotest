@@ -14,7 +14,7 @@ class Log():
     def __init__(self, name='log'):
         self.logger = logging.getLogger(name)
 
-    def _print_console(self, level, message:str):
+    def _print_console(self, level, message: str):
         # 创建一个log
         # log_file_path = (os.path.dirname(os.path.dirname(__file__))) + '/log/' \
         #                 + time.strftime('%Y-%m-%d') + '.log'  # log文件目录

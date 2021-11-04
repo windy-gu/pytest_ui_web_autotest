@@ -3,17 +3,12 @@
 # software: PyCharm
 
 import json
-import rsa
+import time
 import hashlib
 import base64
 import requests
-import pickle
-import collections
-import time
 from util.log import Log
-from Crypto.Hash import MD5
 from Crypto.Cipher import PKCS1_v1_5 as Cipher_pkcs1_v1_5
-from Crypto.Signature import PKCS1_v1_5 as Signature_pkcs1_v1_5
 from Crypto.PublicKey import RSA
 
 log = Log()
@@ -77,11 +72,11 @@ def decrypt_by_private_key(ciphertext, private_key):
 
 def app_api_post(api_url: str, api_body: json, header: dict):
     """
-
-    :param api_url:
-    :param api_body:
-    :param header:
-    :return:
+    app中请求post接口方法
+    :param api_url:   请求接口url地址，格式str
+    :param api_body:  请求body参数，格式json
+    :param header:    请求header参数，格式dict
+    :return:          返回响应数据，格式str
     """
     temp_header = check_add_header_keys(header)
     checked_body, checked_header = check_body_header_keys(body_dict=api_body, header_dict=temp_header)
@@ -110,6 +105,12 @@ def check_add_header_keys(header_dict: dict):
 
 
 def check_body_header_keys(body_dict: dict, header_dict: dict):
+    """
+
+    :param body_dict:
+    :param header_dict:
+    :return:
+    """
     if 'requestTm' not in body_dict and 'deviceId' not in body_dict:
         if 'requestTm' in header_dict:
             body_dict['requestTm'] = header_dict['requestTm']
@@ -122,15 +123,12 @@ def check_body_header_keys(body_dict: dict, header_dict: dict):
             body_dict['deviceId'] = "python_api_test"
             header_dict['deviceId'] = "python_api_test"
 
-        print("无device Id，无requestTm")
-
     elif 'requestTm' in body_dict and 'deviceId' not in body_dict:
         if 'deviceId' in header_dict:
             body_dict['deviceId'] = header_dict['deviceId']
         else:
             body_dict['deviceId'] = "python_api_test"
             header_dict['deviceId'] = "python_api_test"
-        print("无device Id，有requestTm")
 
     elif 'requestTm' not in body_dict and 'deviceId' in body_dict:
         if 'requestTm' in header_dict:
@@ -138,10 +136,6 @@ def check_body_header_keys(body_dict: dict, header_dict: dict):
         else:
             body_dict['requestTm'] = timestamp_ms()
             header_dict['requestTm'] = timestamp_ms()
-        print("有device Id，无requestTm")
-
-    else:
-        print("有device Id，有requestTm")
 
     return body_dict, header_dict
 
@@ -149,7 +143,7 @@ def check_body_header_keys(body_dict: dict, header_dict: dict):
 def timestamp_ms():
     """
     返回时间戳(ms)
-    :return:
+    :return:  时间戳(ms)，格式：str
     """
     return str(round(time.time()*1000))
 
