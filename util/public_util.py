@@ -4,10 +4,16 @@ import json
 import time
 import xlrd
 import xlwt
+import base64
 import random
 import pymysql
 import openpyxl
 import cx_Oracle
+from Crypto.Cipher import PKCS1_v1_5 as Cipher_pkcs1_v1_5
+from Crypto.Signature import PKCS1_v1_5 as Signature_pkcs1_v1_5
+from Crypto.PublicKey import RSA
+from Crypto.Hash import MD5
+from Crypto.Hash import SHA
 
 
 def random_text_base_date(pre: str = None, suffix: str = None):
@@ -308,6 +314,72 @@ class Operator_xls():
         wb.save('test_001.xls')
 
 
+class RSA():
+
+    def rsa_sign_by_private_key(encryptData, private_key):
+        """
+        通过RSA私钥加签
+        :param encryptData:
+        :param private_key:
+        :return:
+        """
+        # privateKey = '-----BEGIN RSA PRIVATE KEY-----\n' + private_key + '\n-----END RSA PRIVATE KEY-----'
+        # print(privateKey)
+        private_keyBytes = base64.b64decode(private_key)
+        priKey = RSA.importKey(private_keyBytes)
+        signer = Signature_pkcs1_v1_5.new(priKey)
+        data = SHA.new(encryptData.encode('utf-8'))
+        signature = signer.sign(data)
+        signature = base64.b64encode(signature)
+        return signature.decode()
+
+    def rsa_verify_by_public_key(encryptData, public_key):
+        """
+        通过RSA公钥验签
+        :param encryptData:
+        :param public_key:
+        :return:
+        """
+        # 若输入的key 带有对应的前缀和后缀则不用执行 public_keyBytes = base64.b64decode(public_key)
+        # privateKey = '-----BEGIN RSA PRIVATE KEY-----\n' + private_key + '\n-----END RSA PRIVATE KEY-----'
+        # print(privateKey)
+        public_keyBytes = base64.b64decode(public_key)
+        priKey = RSA.importKey(public_keyBytes)
+        signer = Signature_pkcs1_v1_5.new(priKey)
+        data = MD5.new(encryptData.encode('utf-8'))
+        signature = signer.sign(data)
+        signature = base64.b64encode(signature)
+        return signature.decode()
+
+    def encrypt_by_public_key(plaintext, public_key):
+        """
+        通过RSA公钥加密
+        :param plaintext:  明文
+        :param public_key: RSA公钥
+
+        :return:           密文
+        """
+        publicKey = '-----BEGIN RSA PUBLIC KEY-----\n' + public_key + '\n-----END RSA PUBLIC KEY-----'
+        rsakey = RSA.importKey(publicKey)
+        cipher = Cipher_pkcs1_v1_5.new(rsakey)
+        ciphertext = base64.b64encode(cipher.encrypt(plaintext.encode(encoding='UTF-8')))
+        return ciphertext.decode('utf8')
+
+    def decrypt_by_private_key(ciphertext, private_key):
+        """
+        通过RSA私钥解密
+        :param ciphertext:  密文
+        :param private_key: RSA私钥
+
+        :return:            明文
+        """
+        privateKey = '-----BEGIN RSA PRIVATE KEY-----\n' + private_key + '\n-----END RSA PRIVATE KEY-----'
+        rsakey = RSA.importKey(privateKey)
+        cipher = Cipher_pkcs1_v1_5.new(rsakey)
+        plaintext = cipher.decrypt(base64.b64decode(ciphertext), None)
+        return plaintext.decode('utf8')
+
+
 class Oracle:
     # 设置访问本地oracle_client,若没有可能会报错：
     # DPI-1047: Cannot locate a 64-bit Oracle Client library: "dlopen(libclntsh.dylib, 1): image not found
@@ -447,8 +519,8 @@ if __name__ == '__main__':
     # test = api_data_dict_exchange_str({"12": 12})
 
     #
-    # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_new_user.csv',
-    #                                      times=100)
+    test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_new_user.csv',
+                                         times=10000)
     #
     # a = read_txt('/Users/windy/Desktop/error.txt', 'loginName')
     # test_date = '2020-09-08'

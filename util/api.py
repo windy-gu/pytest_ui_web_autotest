@@ -9,7 +9,11 @@ import base64
 import requests
 from util.log import Log
 from Crypto.Cipher import PKCS1_v1_5 as Cipher_pkcs1_v1_5
+from Crypto.Signature import PKCS1_v1_5 as Signature_pkcs1_v1_5
 from Crypto.PublicKey import RSA
+from Crypto.Hash import MD5
+from Crypto.Hash import SHA
+
 
 log = Log()
 
@@ -38,6 +42,42 @@ def body():
 
 def get():
     pass
+
+
+def rsa_sign_by_private_key(encryptData, private_key):
+    """
+    通过RSA私钥加签
+    :param encryptData:
+    :param private_key:
+    :return:
+    """
+    # privateKey = '-----BEGIN RSA PRIVATE KEY-----\n' + private_key + '\n-----END RSA PRIVATE KEY-----'
+    # print(privateKey)
+    private_keyBytes = base64.b64decode(private_key)
+    priKey = RSA.importKey(private_keyBytes)
+    signer = Signature_pkcs1_v1_5.new(priKey)
+    data = SHA.new(encryptData.encode('utf-8'))
+    signature = signer.sign(data)
+    signature = base64.b64encode(signature)
+    return signature.decode()
+
+
+def rsa_verify_by_public_key(encryptData, public_key):
+    """
+    通过RSA公钥验签
+    :param encryptData:
+    :param public_key:
+    :return:
+    """
+    # 若输入的
+
+    public_keyBytes = base64.b64decode(public_key)
+    priKey = RSA.importKey(public_keyBytes)
+    signer = Signature_pkcs1_v1_5.new(priKey)
+    data = MD5.new(encryptData.encode('utf-8'))
+    signature = signer.sign(data)
+    signature = base64.b64encode(signature)
+    return signature.decode()
 
 
 def encrypt_by_public_key(plaintext, public_key):
@@ -78,12 +118,12 @@ def app_api_post(api_url: str, api_body: json, header: dict):
     :param header:    请求header参数，格式dict
     :return:          返回响应数据，格式str
     """
-    temp_header = check_add_header_keys(header)
-    checked_body, checked_header = check_body_header_keys(body_dict=api_body, header_dict=temp_header)
-    checked_header['sign'] = api_sign(checked_body)
-    if 'requestTm' in api_body and 'deviceId' in api_body:
-        del checked_body['requestTm']  # 删除因sign加签导致添加到body中对应的key值
-        del checked_body['deviceId']  # 删除因sign加签导致添加到body中对应的key值
+    # temp_header = check_add_header_keys(header)
+    # checked_body, checked_header = check_body_header_keys(body_dict=api_body, header_dict=temp_header)
+    # checked_header['sign'] = api_sign(checked_body)
+    # if 'requestTm' in api_body and 'deviceId' in api_body:
+    #     del checked_body['requestTm']  # 删除因sign加签导致添加到body中对应的key值
+    #     del checked_body['deviceId']  # 删除因sign加签导致添加到body中对应的key值
 
     r = requests.post(url=api_url, data=json.dumps(api_body), headers=header, timeout=10)
     text = r.text
@@ -208,9 +248,13 @@ def exchange_encryption_data(untreated_data: str):
 
 
 if __name__ == '__main__':
+
+    a = [1, 2, 3]
+    b = [1, 2, 4]
+    print(id(a[1]) == id(b[1]))
+
     api_url = 'https://appgateway-uat.lifekh.com/gateway_web/operator/login/password.do'
-    body_dict = {
-        "password":'hd123456'}
+    body_dict = {"app_id": "1624010948354", "biz_content": {"couponNo": "WNJ210908154513449", "mobile": "855010145005"}, "charset": "UTF-8", "service": "send.choice.coupon", "timestamp": "2020-09-07 16:07:50", "version": "1.0"}
 
     headers = {
                 'Connection': 'keep-alive',
@@ -224,6 +268,14 @@ if __name__ == '__main__':
                 "deviceId": "python_api_test",
                 "signver": "1.0"
     }
-    print(app_api_post(api_url, body_dict, headers))
+    # print(app_api_post(api_url, body_dict, headers))
+    out = ''
+    for k,v in body_dict.items():
+        print(type(k))
+        print(v)
+        out += str(k) + '=' + str(v) + '&'
+    out = out[0:-1]
+
+    print(out)
 
 
