@@ -1,4 +1,6 @@
 import sys
+import os
+import pytest
 import hmac
 import time
 import base64
@@ -7,8 +9,8 @@ import hashlib
 from time import sleep
 from util.log import Log
 from os.path import dirname, abspath
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
 from page.boss_page import BossLoginPage, HomePage
+sys.path.insert(0, dirname(dirname(abspath(__file__))))
 
 
 """
@@ -85,7 +87,12 @@ def check_boss_login(browser, url, need_login=True):
 
 
 if __name__ == '__main__':
-    key = google_security_code('BONOHGS6QNHS7V4Y')
-    print(key)
-    # file_name = os.path.split(__file__)[-1]
-    # pytest.main(['-s', './{}'.format(file_name)])
+    # key = google_security_code('6CODTEYPFSW3NPQB')
+    # print(key)
+    curPath = os.path.abspath(os.path.dirname(__file__))
+    print(curPath)
+    rootPath = os.path.split(curPath)[0]
+    print(rootPath)
+    file_name = os.path.split(__file__)[-1]
+    print(file_name)
+    pytest.main(['-s', './{}'.format(file_name)])

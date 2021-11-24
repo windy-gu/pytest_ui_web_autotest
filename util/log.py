@@ -32,7 +32,7 @@ class Log():
         # 再创建一个handler，设置输出日志的级别，且设置输出日志的格式，用于输出到控制台
         CONSOLE_HANDLER = logging.StreamHandler()
         CONSOLE_HANDLER.setLevel(logging.DEBUG)
-        CONSOLE_HANDLER.setFormatter(logging.Formatter('%(asctime)s - %(filename)s - %(name)s - %(levelname)s - %(message)s', "%Y-%m-%d %H:%M:%S"))
+        CONSOLE_HANDLER.setFormatter(logging.Formatter('%(asctime)s - %(funcName)s - %(name)s - %(levelname)s - %(message)s', "%Y-%m-%d %H:%M:%S"))
 
         # 给log添加handler
         # self.logger.addHandler(FILE_HANDLER)

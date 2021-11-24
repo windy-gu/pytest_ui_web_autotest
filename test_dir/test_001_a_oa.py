@@ -3,7 +3,6 @@ import sys
 import time
 import pytest
 import datetime
-from conftest import browser_close
 from page.oa_page import OAPage
 from util.log import Log
 from selenium.webdriver.common.keys import Keys
@@ -20,8 +19,8 @@ sys.path.insert(0, dirname(dirname(abspath(__file__))))
 log = Log()
 
 
-def teardown_module():
-    browser_close()
+# def teardown_module(browser):
+#     browser.browser_close()
 
 
 def test_oa_001_login(browser, url='https://oa.wownow.net/wui/index.html#/?logintype=1&_key=q6nnev',

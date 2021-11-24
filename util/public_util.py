@@ -83,32 +83,42 @@ def get_product_info_on_performance(store_no: list, file: str):
                     product_multiple_version_id_list.append(select_product_multiple_version_id_list[q]['快照版本id'])
 
                     select_product_property_id_list = select_mysql.select(
-                        "SELECT id as 属性id FROM `lifekh_takeaway_uat`.`product_property` WHERE `product_id` = '{}'".format(
+                        "SELECT id, required_selection FROM `lifekh_takeaway_uat`.`product_property` WHERE `product_id` = '{}'".format(
                             product_id_list[m]))
                     product_property_id_list = []  # 商品属性id list
                     if len(select_product_property_id_list) > 0:
                         for x in range(len(select_product_property_id_list)):
                             # 将查询 - 属性id 单独添加的对应的list中
-                            product_property_id_list.append(select_product_property_id_list[x]['属性id'])
+                            print(select_product_property_id_list[x]['required_selection'])
+                            if select_product_property_id_list[x]['required_selection'] > 1:
+                                print('必选属性选项id数>1，不作为性能批量数据中')
+                            else:
+                                print('必选属性选项id数<=1')
+                                product_property_id_list.append(select_product_property_id_list[x]['id'])
 
-                            select_product_property_selection_id_list = select_mysql.select(
-                                "SELECT id as 属性选项id FROM `lifekh_takeaway_uat`.`product_property_selection` WHERE `product_property_id` = '{}'".format(
-                                    product_property_id_list[x]))
-                            product_property_selection_id_list = []  # 商品属性选项id list
-                            for l in range(len(select_product_property_selection_id_list)):
-                                # 将查询 - 商品属性选项id 单独添加的对应的list中
-                                product_property_selection_id_list.append(select_product_property_selection_id_list[l]['属性选项id'])
-                                print('商品id：'+str(product_id_list[m]) +
-                                      ',规格id：'+str(product_specification_id_list[k]) +
-                                      ',快照版本id：'+str(product_multiple_version_id_list[q]) +
-                                      ',属性id：'+str(product_property_id_list[x]) +
-                                      ',属性选项id：'+str(product_property_selection_id_list[l]))
-                                result.append(str(store_no[i]) +
-                                              ','+str(product_id_list[m]) +
-                                              ','+str(product_specification_id_list[k]) +
-                                              ','+str(product_multiple_version_id_list[q]) +
-                                              ','+str(product_property_id_list[x]) +
-                                              ','+str(product_property_selection_id_list[l]))
+                            # 此处判断逻辑，剔除属性id，必选项参数>1的参数
+                            if x < len(product_property_id_list):
+                                select_product_property_selection_id_list = select_mysql.select(
+                                    "SELECT id as 属性选项id FROM `lifekh_takeaway_uat`.`product_property_selection` WHERE `product_property_id` = '{}'".format(
+                                        product_property_id_list[x]))
+                                product_property_selection_id_list = []  # 商品属性选项id list
+                                for l in range(len(select_product_property_selection_id_list)):
+                                    # 将查询 - 商品属性选项id 单独添加的对应的list中
+                                    product_property_selection_id_list.append(select_product_property_selection_id_list[l]['属性选项id'])
+                                    print('商品id：'+str(product_id_list[m]) +
+                                          ',规格id：'+str(product_specification_id_list[k]) +
+                                          ',快照版本id：'+str(product_multiple_version_id_list[q]) +
+                                          ',属性id：'+str(product_property_id_list[x]) +
+                                          ',属性选项id：'+str(product_property_selection_id_list[l]))
+                                    result.append(str(store_no[i]) +
+                                                  ','+str(product_id_list[m]) +
+                                                  ','+str(product_specification_id_list[k]) +
+                                                  ','+str(product_multiple_version_id_list[q]) +
+                                                  ','+str(product_property_id_list[x]) +
+                                                  ','+str(product_property_selection_id_list[l]))
+                            else:
+                                print('当前商品id：{},有属性id：{}，但属性必选项参数>1，不添加到性能数据中去'.format(str(product_id_list[m]), str(select_product_property_id_list[x]['id'])))
+
                     else:
                         print('当前商品id：{},无属性id'.format(str(product_id_list[m])))
                         print('商品id：' + str(product_id_list[m]) +
@@ -508,29 +518,30 @@ class MySQL:
 
 
 if __name__ == '__main__':
-
+    get_product_info_on_performance(['MS1320194834269442048'],'/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_store_info.csv')
     # api_query_data(api_url='https://boss-uat.lifekh.com/boss_web/config/banner/v2/deleteCard.do', api_data=test_dict)
 
     # print(get_phone_number_cambodia(check=True))
-    change_html('/Users/windy/Documents/code/myself/ui/pytest_ui_web_autotest/test_report/2021_10_15_17_45_39/report.html',
-                '/Users/windy/Documents/code/myself/ui/pytest_ui_web_autotest/test_report/2021_10_15_17_45_39/report_new.html')
-    test_data = [{'order_no': '1446671320510849024'}]
-    print(test_data[0]['order_no'])
+    # change_html('/Users/windy/Documents/code/myself/ui/pytest_ui_web_autotest/test_report/2021_10_15_17_45_39/report.html',
+    #             '/Users/windy/Documents/code/myself/ui/pytest_ui_web_autotest/test_report/2021_10_15_17_45_39/report_new.html')
+    # test_data = [{'order_no': '1446671320510849024'}]
+    # print(test_data[0]['order_no'])
     # test = api_data_dict_exchange_str({"12": 12})
-
-    #
-    test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_new_user.csv',
-                                         times=10000)
+    # mysql = MySQL()
+    # sql = "SELECT id, required_selection FROM `lifekh_takeaway_uat`.`product_property` WHERE `product_id` = '{}'".format('1262170')
+    # sql_select_data = mysql.select(sql)
+    # for i in range(len(sql_select_data)):
+    #     print(sql_select_data[i])
+    #     if sql_select_data[i]['required_selection'] > 1:
+    #         print('必选属性选项id数>1')
+    #     else:
+    #         print('必选属性选项id数<=1')
+    # print(sql_select_data)
+    # #
+    # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_new_user.csv',
+    #                                      times=100)
     #
     # a = read_txt('/Users/windy/Desktop/error.txt', 'loginName')
-    # test_date = '2020-09-08'
-    # a = test_date.split('-')[1]
-    # check_month = '10'
-    # check_year = '2020'
-    # check_month = '02'
-    # monthRange = calendar._monthlen(int(check_year), int(check_month))
-    # print(monthRange)
-    # print(type(monthRange))
     # lala = input('请输入需要获取的xls文件路径')
     # print(lala)
     # xls = Operator_xls()
