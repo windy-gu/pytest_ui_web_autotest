@@ -67,6 +67,25 @@ pytest-ui-web自动化框架
     def __init__(self, timeout=5, describe="undefined", index=0, **kwargs):
     Element(xx='xx')
     
+    其他 - 通过兄弟节点进行定位 例如：
+    <html>
+    <body>
+    <div>
+        <!--下面两个节点用于兄弟节点定位-->
+        <div>brother 1</div>
+        <div id="D"></div>
+        <div>brother 2</div>
+    </div>
+    </body>
+    </html>
+    1）由兄节点，定位弟节点
+    driver.find_element_by_xpath("//div[@id='D']/following-sibling::div[1]")
+    following-sibling，它的作用是获取当前节点的所有同级弟节点，1 代表离当前节点最近的一个弟节点，数字越大表示离当前节点越远
+    
+    2）由弟节点，定位兄节点
+    driver.find_element_by_xpath("//div[@id='D']/preceding-sibling::div[1]")
+    preceding-sibling，其能够获取当前节点的所有同级兄节点，注意括号里的标号，1 代表着离当前节点最近的一个兄节点，数字越大表示离当前节点越远
+    
 
 
 ###运行执行
