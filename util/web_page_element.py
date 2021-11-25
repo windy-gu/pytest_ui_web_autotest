@@ -189,7 +189,10 @@ class Element(WebElement, Driver):
         """Clears the text if it's a text entry element."""
         elem = self.__get_element(self.k, self.v)
         if self.desc != 'undefined':
-            log.info("clear element: {k} = {v},  desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))
+            if self.index != 0:
+                log.info("clear element: {k} = {v}, index：{index}, desc：{desc}".format(k=self.k, v=self.v, index=self.index, desc=self.desc))
+            else:
+                log.info("clear element: {k} = {v}, desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))
         else:
             log.info("clear element: {k} = {v} ".format(k=self.k, v=self.v))
         elem.clear()
@@ -214,7 +217,11 @@ class Element(WebElement, Driver):
         """
         elem = self.__get_element(self.k, self.v)
         if self.desc != 'undefined':
-            log.info("🖋 input element: {}, {k} = {v},  desc：{desc}".format(input_value, k=self.k, v=self.v, desc=self.desc))
+            if self.index != 0:
+                log.info("🖋 input element: {k} = {v}, index：{index}, desc：{desc}".format(k=self.k, v=self.v, index=self.index, desc=self.desc))
+            else:
+                log.info("🖋 input element: {}, {k} = {v}, desc：{desc}".format(input_value, k=self.k, v=self.v, desc=self.desc))
+
         else:
             log.info("🖋 input element: {}, {k} = {v} ".format(input_value, k=self.k, v=self.v))
         elem.send_keys(input_value)
@@ -225,7 +232,10 @@ class Element(WebElement, Driver):
         """
         elem = self.__get_element(self.k, self.v)
         if self.desc != 'undefined':
-            log.info("🖱 click element: {k} = {v},  desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))
+            if self.index != 0:
+                log.info("🖱 click element: {k} = {v}, index：{index}, desc：{desc}".format(k=self.k, v=self.v, index=self.index, desc=self.desc))
+            else:
+                log.info("🖱 click element: {k} = {v}, desc：{desc}".format(k=self.k, v=self.v, desc=self.desc))
         else:
             log.info("🖱 click element: {k} = {v} ".format(k=self.k, v=self.v))
         elem.click()
