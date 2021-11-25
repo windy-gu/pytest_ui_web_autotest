@@ -210,6 +210,20 @@ def get_phone_number_cambodia(prefix: bool = True, check: bool = False):
     return register_number
 
 
+def get_email(postfix: str = ''):
+    """
+    生成当前常用的email
+    :param postfix:
+    :return:
+    """
+    email_postfix_list = ['@qq.com', '@163.com', '@gmail.com', '@yahoo.com', '@msn.com', '@hotmail.com',
+                          '@aol.com', '@live.com', '@0355.net', '@163.net', '@263.net', '@3721.net']
+    email_postfix = random.choice(email_postfix_list)
+    email_length = random.randint(7, 10)
+    email = "".join(random.choice("0123456789") for i in range(email_length)) + email_postfix
+    return email
+
+
 def change_html(source_file_path: str, target_file_path: str):
     """
     目前因为输出的html中，会彩色日志的形式，导致log中存在shell在控制台显示的代码
@@ -254,6 +268,11 @@ def write_csv_loginname(file: str, first_line_data: str = 'loginName', times=1):
 
 
 def api_data_dict_exchange_str(data: dict):
+    """
+    将dict的数据类型，转换为json格式，并且去除空格
+    :param data:
+    :return:
+    """
     data_str = json.dumps(data).replace(' ', '')
     return data_str
 
@@ -325,6 +344,9 @@ class Operator_xls():
 
 
 class RSA():
+    """
+    RSA非对称加密
+    """
 
     def rsa_sign_by_private_key(encryptData, private_key):
         """
@@ -518,7 +540,8 @@ class MySQL:
 
 
 if __name__ == '__main__':
-    get_product_info_on_performance(['MS1320194834269442048'],'/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_store_info.csv')
+    print(get_email())
+    # get_product_info_on_performance(['MS1320194834269442048'],'/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_store_info.csv')
     # api_query_data(api_url='https://boss-uat.lifekh.com/boss_web/config/banner/v2/deleteCard.do', api_data=test_dict)
 
     # print(get_phone_number_cambodia(check=True))

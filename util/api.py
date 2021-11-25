@@ -270,7 +270,7 @@ if __name__ == '__main__':
     }
     # print(app_api_post(api_url, body_dict, headers))
     out = ''
-    for k,v in body_dict.items():
+    for k, v in body_dict.items():
         print(type(k))
         print(v)
         out += str(k) + '=' + str(v) + '&'
