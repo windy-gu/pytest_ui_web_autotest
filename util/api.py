@@ -51,8 +51,8 @@ def rsa_sign_by_private_key(encryptData, private_key):
     :param private_key:
     :return:
     """
-    # privateKey = '-----BEGIN RSA PRIVATE KEY-----\n' + private_key + '\n-----END RSA PRIVATE KEY-----'
-    # print(privateKey)
+    privateKey = '-----BEGIN RSA PRIVATE KEY-----\n' + private_key + '\n-----END RSA PRIVATE KEY-----'
+    print("privateKey:" + privateKey)
     private_keyBytes = base64.b64decode(private_key)
     priKey = RSA.importKey(private_keyBytes)
     signer = Signature_pkcs1_v1_5.new(priKey)
@@ -118,12 +118,12 @@ def app_api_post(api_url: str, api_body: json, header: dict):
     :param header:    请求header参数，格式dict
     :return:          返回响应数据，格式str
     """
-    # temp_header = check_add_header_keys(header)
-    # checked_body, checked_header = check_body_header_keys(body_dict=api_body, header_dict=temp_header)
-    # checked_header['sign'] = api_sign(checked_body)
-    # if 'requestTm' in api_body and 'deviceId' in api_body:
-    #     del checked_body['requestTm']  # 删除因sign加签导致添加到body中对应的key值
-    #     del checked_body['deviceId']  # 删除因sign加签导致添加到body中对应的key值
+    temp_header = check_add_header_keys(header)
+    checked_body, checked_header = check_body_header_keys(body_dict=api_body, header_dict=temp_header)
+    checked_header['sign'] = api_sign(checked_body)
+    if 'requestTm' in api_body and 'deviceId' in api_body:
+        del checked_body['requestTm']  # 删除因sign加签导致添加到body中对应的key值
+        del checked_body['deviceId']  # 删除因sign加签导致添加到body中对应的key值
 
     r = requests.post(url=api_url, data=json.dumps(api_body), headers=header, timeout=10)
     text = r.text

@@ -36,7 +36,7 @@ def random_text_base_date(pre: str = None, suffix: str = None):
             return date_text + '_' + suffix
 
 
-def get_product_info_on_performance(store_no: list, file: str):
+def get_product_info_on_performance(store_no: list, file: str, env: str):
     """
     通过门店no查询当前门店下的产品信息， 包括：商品id、规格id、快照版本id、属性id、属性选项id
     :param store_no:
@@ -44,18 +44,28 @@ def get_product_info_on_performance(store_no: list, file: str):
     :return:
     """
 
-    # UAT环境
-    select_mysql = MySQL(user='lifekh_takeaway_uat', password='lifekh_takeaway_uat_2020',
-                         host='172.16.27.10', port=3400, database='lifekh_takeaway_uat')
-    # 金边机房
-    # select_mysql = MySQL(user='lifekh_takeaway_query', password='q1h9MqKpgX5V9qVFfFjEC',
-    #                      host='10.24.255.42', port=3300, database='lifekh_takeaway')
+    if env == 'uat':
+        # UAT环境
+        select_mysql_env = MySQL(user='lifekh_takeaway_uat', password='lifekh_takeaway_uat_2020',
+                             host='172.16.27.10', port=3400, database='lifekh_takeaway_uat')
+        database = 'lifekh_takeaway_uat'
+    elif env == 'pro':
+        # 金边机房
+        select_mysql = MySQL(user='lifekh_takeaway_query', password='q1h9MqKpgX5V9qVFfFjEC',
+                             host='10.24.255.42', port=3300, database='lifekh_takeaway')
+        database = 'lifekh_takeaway'
+    elif env == '310':
+        # 金边310机房
+        select_mysql = MySQL(user='lifekh_takeaway_query4hei', password='h9X5V9qMqKpgX5fFjECMgqFVFj',
+                             host='10.34.255.26', port=3300, database='lifekh_takeaway')
+        database = 'lifekh_takeaway'
+
     result = []
     for i in range(len(store_no)):
         # 根据门店号查询门店下的所有商品id，输出对应的set集合
         select_product_id_list = select_mysql.select(
-            "SELECT id as 商品id FROM `lifekh_takeaway_uat`.`product` WHERE `store_no` = '{}' and `del_state` = 10"
-            .format(store_no[i]))
+            "SELECT id as 商品id FROM `{database}`.`product` WHERE `store_no` = '{store_no}' and `del_state` = 10"
+            .format(database=database, store_no=store_no[i]))
 
         product_id_list = []
         for n in range(len(select_product_id_list)):
@@ -66,8 +76,8 @@ def get_product_info_on_performance(store_no: list, file: str):
         for m in range(len(product_id_list)):
             # 根据商品id查询商品SKU id，输出对应的set集合
             select_product_specification_id_list = select_mysql.select(
-                "SELECT id as 规格id FROM `lifekh_takeaway_uat`.`product_specification` WHERE `product_id` = '{}'"
-                .format(product_id_list[m]))
+                "SELECT id as 规格id FROM `{database}`.`product_specification` WHERE `product_id` = '{product_id}'"
+                .format(database=database, product_id=product_id_list[m]))
             product_specification_id_list = []  # 商品SKU id list
 
             for k in range(len(select_product_specification_id_list)):
@@ -75,16 +85,16 @@ def get_product_info_on_performance(store_no: list, file: str):
                 product_specification_id_list.append((select_product_specification_id_list[k]['规格id']))
 
                 select_product_multiple_version_id_list = select_mysql.select(
-                    "SELECT id as 快照版本id FROM `lifekh_takeaway_uat`.`product_multiple_version` WHERE `product_id` = '{}' order by `update_time` Desc limit 0,1"
-                    .format(product_id_list[m]))
+                    "SELECT id as 快照版本id FROM `{database}`.`product_multiple_version` WHERE `product_id` = '{product_id}' order by `update_time` Desc limit 0,1"
+                    .format(database=database, product_id=product_id_list[m]))
                 product_multiple_version_id_list = []  # 商品快照版本id list
                 for q in range(len(select_product_multiple_version_id_list)):
                     # 将查询 - 快照版本id 单独添加的对应的list中
                     product_multiple_version_id_list.append(select_product_multiple_version_id_list[q]['快照版本id'])
 
                     select_product_property_id_list = select_mysql.select(
-                        "SELECT id, required_selection FROM `lifekh_takeaway_uat`.`product_property` WHERE `product_id` = '{}'".format(
-                            product_id_list[m]))
+                        "SELECT id, required_selection FROM `{database}`.`product_property` WHERE `product_id` = '{product_id}'"
+                            .format(database=database, product_id=product_id_list[m]))
                     product_property_id_list = []  # 商品属性id list
                     if len(select_product_property_id_list) > 0:
                         for x in range(len(select_product_property_id_list)):
@@ -99,8 +109,8 @@ def get_product_info_on_performance(store_no: list, file: str):
                             # 此处判断逻辑，剔除属性id，必选项参数>1的参数
                             if x < len(product_property_id_list):
                                 select_product_property_selection_id_list = select_mysql.select(
-                                    "SELECT id as 属性选项id FROM `lifekh_takeaway_uat`.`product_property_selection` WHERE `product_property_id` = '{}'".format(
-                                        product_property_id_list[x]))
+                                    "SELECT id as 属性选项id FROM `{database}`.`product_property_selection` WHERE `product_property_id` = '{product_property_id}'"
+                                        .format(database=database, product_property_id=product_property_id_list[x]))
                                 product_property_selection_id_list = []  # 商品属性选项id list
                                 for l in range(len(select_product_property_selection_id_list)):
                                     # 将查询 - 商品属性选项id 单独添加的对应的list中
@@ -130,8 +140,7 @@ def get_product_info_on_performance(store_no: list, file: str):
                                       ',' + str(product_multiple_version_id_list[q])
                                       )
 
-        first_line_data = 'storeNo,productId,productSpecificationId,productMultipleVersionId,productPropertyId,' \
-                          'productPropertySelectionId'
+        first_line_data = 'storeNo,goodsId,goodsSkuId,inEffectVersionId,propertyId,properties'
         write_csv_product_info(file=file, data=result, first_line_data=first_line_data)
 
 
@@ -169,7 +178,7 @@ def read_txt(file: str, key_word: str):
     return result
 
 
-def get_phone_number_cambodia(prefix: bool = True, check: bool = False):
+def get_phone_number_cambodia(prefix: bool = True, check: bool = False, env: str = 'uat'):
     """
     随机生成855可用运营商号段号码
     :param prefix:是否需要855前置，默认值：True
@@ -181,11 +190,11 @@ def get_phone_number_cambodia(prefix: bool = True, check: bool = False):
                   '96', '98', '31', '60', '66', '67', '68', '71', '88', '90', '97',
                   '13', '80', '83', '84', '38', '18'
                   ]  # 柬埔寨可正常使用手机号号段
-    phone_seven_long = ['76', '96', '31', '71', '88', '97', '38', '18']
+    phone_seven_length = ['76', '96', '31', '71', '88', '97', '38', '18']
     phone_segment = random.choice(phone_list)
     if phone_segment == '12':
         num_length = random.randint(6, 7)
-    elif phone_segment in phone_seven_long:
+    elif phone_segment in phone_seven_length:
         num_length = random.randint(7, 7)
     else:
         num_length = random.randint(6, 6)
@@ -196,9 +205,15 @@ def get_phone_number_cambodia(prefix: bool = True, check: bool = False):
 
     # 判断是否需要校验号码已注册，校验会严重降低速度
     if check:
-        check_oracle = Oracle(username='lifekh_mp_customer_uat', password='lifekh_mp_customer_uat_2020',
-                              address='172.16.27.10:1521/lifekh')
-        check_data = check_oracle.select('SELECT LOGIN_NAME from "LIFEKH_MP_CUSTOMER_UAT"."USER_OPERATOR_LOGIN_INFO" WHERE "LOGIN_NAME" =' + "'%s'" % register_number)
+        if env == 'uat':
+            database = 'LIFEKH_MP_CUSTOMER_UAT'
+            check_oracle = Oracle(username='lifekh_mp_customer_uat', password='lifekh_mp_customer_uat_2020',
+                                  address='172.16.27.10:1521/lifekh')
+        else:
+            database = 'LIFEKH_MP_CUSTOMER'
+            check_oracle = Oracle(username='lifekh_mp_customer_uat', password='lifekh_mp_customer_uat_2020',
+                                  address='172.16.27.10:1521/lifekh')
+        check_data = check_oracle.select("SELECT LOGIN_NAME from `{database}`.`USER_OPERATOR_LOGIN_INFO` WHERE `LOGIN_NAME` ='{loginName}'".format(database=database, loginName=register_number))
 
         if len(check_data) != 0:
             if register_number in ''.join(check_data[0]):
@@ -540,8 +555,9 @@ class MySQL:
 
 
 if __name__ == '__main__':
-    print(get_email())
-    # get_product_info_on_performance(['MS1320194834269442048'],'/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_store_info.csv')
+    # print(get_email())
+    # get_product_info_on_performance(['MS1320194834269442048'], '/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_store_info.csv', 'uat')
+    # get_product_info_on_performance(['MS1461534823757172736'], '/Users/windy/Desktop/jmeter_script/chaoA_performance_test/pro310_data_info/pro310_store_info.csv', '310')
     # api_query_data(api_url='https://boss-uat.lifekh.com/boss_web/config/banner/v2/deleteCard.do', api_data=test_dict)
 
     # print(get_phone_number_cambodia(check=True))
@@ -561,8 +577,8 @@ if __name__ == '__main__':
     #         print('必选属性选项id数<=1')
     # print(sql_select_data)
     # #
-    # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_new_user.csv',
-    #                                      times=100)
+    test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_new_user.csv',
+                                         times=100)
     #
     # a = read_txt('/Users/windy/Desktop/error.txt', 'loginName')
     # lala = input('请输入需要获取的xls文件路径')

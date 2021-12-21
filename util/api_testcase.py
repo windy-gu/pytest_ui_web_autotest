@@ -17,13 +17,14 @@ def api_001():
         "projectname": "SuperApp",
         "appid": "SuperApp",
         "appno": "10",
-        "appversion": "2.19.0",
+        "appversion": "2.24.0",
         "phonemodel": "python-api-test",
         "deviceId": "python_api_test",
         "signver": "1.0"
     }
     body = {}
     response_data = app_api_post(api_url, api_body=body, header=headers)
+    print(response_data)
     response_data = eval(response_data)
     data = {}
     data['index'] = jsonpath.jsonpath(response_data, '$.data.index')[0]
@@ -57,7 +58,7 @@ def api_001():
 
 def api_002():
     login_url = 'https://openapi-uat.lifekh.com/open_web/gateway.do'
-
+    # 请求头参数
     headers2 = {
         "Connection": "keep-alive",
         "termtyp": "ANDROID",
@@ -68,11 +69,13 @@ def api_002():
         "deviceId": "python_api_test",
         "content-type": "application/json; charset=UTF-8"
     }
+    # biz_content 需要的动态参数mobile和couponNo
     biz_content = {}
     privateKey = """MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKfUj13CGKkxEtcmCg3IdQBMyXV46Cdwf+dLX1bmtaAkbPY5ov1zQrNaLICl+tc+zi6L8tqtjA3WS3P9YZiI9FMSCo8lImPrG1RTs7CM1Y6tzl8K/qsecQ44UPvEzlGRfGXttSqdmFYzsSWNIFidz6kXFszCBdYun7EDFnf7WDtXAgMBAAECgYBe/VLLqUDV+h2EwlXsaSm3qr5Xi8AyGl16JtHmWJwx8IvvbL3Qn7z/0CjiA4+O5lBCThl9Jb7gUgrQsnfboqBNues6XyCuiXypubI0sTh0UcrS0dZDSdqlJpGoIlsA2QnYfBEB5Czo+0E4b7+UVBr3F5pYVzu+0iyqcAcQwXUckQJBAPbkjcdYMdAprmis8r24DaX7qvKEDxunlSvW5kpJd+k3+toUpOQtpb7+rNOrlEJFU4SNjYfLgQzUby0AEYyMZJkCQQCuBWg+4lxFzud1tsGmeIu7sp7qwyoutYU2+KBTBvbSs0LD48kOBIDnIztJb8UOi14+ZydSxO32Ac2PiwY98qVvAkBAVjKz/cGNUy9Fy7u9wJad6EUVyV/+ft8ae3eraBW9Sn8uES8e3t5QNSFoT0/lLRekdRaqildotnr6KQhprbQRAkEAnpPs2Akcfry57Wn588I7y3JNIK9yXBgr6dkM+DwLZhvWxn1ndK+j630OhLAmiUd1PTZw/hrYoeoosRrGOGNKXwJBAK6YuCYRZsNd6LNbM/9iTkdJi5LoKwY4mPxegjlAXczdUIx3ylIzF+b36K6Zrr/b/HwEsUYrCpQJr/U1dKBcZs0="""
     biz_content["mobile"] = "855010145010"
     biz_content["couponNo"] = "WNJ210908154513449"
 
+    # 需要私钥加签的参数
     need_sign = {}
     need_sign['biz_content'] = biz_content
     need_sign['app_id'] = '1624010948354'
@@ -80,20 +83,26 @@ def api_002():
     need_sign['service'] = 'send.choice.coupon'
     need_sign['timestamp'] = '2020-09-07 16:07:50'
     need_sign['version'] = '1.0'
+    print("需要加密的原始数据：" + str(need_sign))
+
+    # 对加签的内容根据key值进行序列化排序
     biz_content_str = json.dumps(need_sign, sort_keys=True)
-    biz_content_dict = eval(biz_content_str)
+
+    biz_content_dict = eval(biz_content_str)  # 转为字典dict类型
+    print(biz_content_str)
     unsign_data = ''
 
     for k, v in biz_content_dict.items():
+        # 将key值和value值通过 "=" 拼接，不同键值通过 "&"连接
         if type(v) is dict:
             unsign_data += str(k) + '=' + str(v).replace(' ', '') + '&'
         else:
             unsign_data += str(k) + '=' + str(v) + '&'
     unsign_data = unsign_data[0:-1].replace("'", '"')
-    print(unsign_data)
+    print("待加密的内容：" + unsign_data)
     from api import rsa_sign_by_private_key
     sign = rsa_sign_by_private_key(unsign_data, privateKey)
-    print(sign)
+    print("加签后内容：" + sign)
     login_body = {"app_id":"1624010948354",
                   "biz_content":"{\"couponNo\":\"WNJ210908154513449\",\"mobile\":\"855010145010\"}",
                   "charset":"UTF-8",
@@ -105,9 +114,14 @@ def api_002():
                   }
     login_body["sign"] = sign
     #
-    print(login_body)
+    print("请求body："+str(login_body))
     #
     return app_api_post(login_url, login_body, headers2)
+
+
+def api_003():
+
+    pass
 
 
 if __name__ == '__main__':
