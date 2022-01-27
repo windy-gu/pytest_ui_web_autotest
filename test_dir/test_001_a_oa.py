@@ -25,6 +25,14 @@ log = Log()
 
 def test_oa_001_login(browser, url='https://oa.wownow.net/wui/index.html#/?logintype=1&_key=q6nnev',
                       account='guxiaofeng', psw='gxf4843860.'):
+    """
+
+    :param browser:
+    :param url: 执行自动化的URL地址
+    :param account: 账号
+    :param psw: 密码
+    :return:
+    """
     page = OAPage(browser)
     page.get(url)
 
@@ -35,11 +43,21 @@ def test_oa_001_login(browser, url='https://oa.wownow.net/wui/index.html#/?login
 
 
 def test_oa_002_get_overtime_by_month(browser):
+    """
+    获取加班工时的testcase
+    :param browser:
+    :return:
+    """
     over_time = auto_choose_style_by_value(browser, style_value='OVER_TIME')
     log.print("加班工时：" + str(over_time))
 
 
 def test_oa_003_get_day_off_by_month(browser):
+    """
+    获取调休工时的testcase
+    :param browser:
+    :return:
+    """
     day_off_time = auto_choose_style_by_value(browser, style_value='DAY_OFF')
     # 在进行调休时长获取时，会出现点击不跳转的情况
     log.print("调休工时：" + str(day_off_time))
@@ -47,7 +65,6 @@ def test_oa_003_get_day_off_by_month(browser):
 
 def auto_choose_style_by_value(browser, style_value: str):
     page = OAPage(browser)
-
     # 进入：流程 - 我的请求 - S-app 加班申请
     page.door.click_and_hold()
     time.sleep(1)
@@ -89,8 +106,8 @@ def operator_by_list(browser, list_int: int, style_value: str):
     """
 
     :param browser:
-    :param list_int:
-    :param style_value:
+    :param list_int: 待处理的list数量
+    :param style_value: 加班or调休类型
     :return:
     """
     hour = 0

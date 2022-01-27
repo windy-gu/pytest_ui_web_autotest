@@ -73,7 +73,7 @@ def api_002():
     biz_content = {}
     privateKey = """MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAKfUj13CGKkxEtcmCg3IdQBMyXV46Cdwf+dLX1bmtaAkbPY5ov1zQrNaLICl+tc+zi6L8tqtjA3WS3P9YZiI9FMSCo8lImPrG1RTs7CM1Y6tzl8K/qsecQ44UPvEzlGRfGXttSqdmFYzsSWNIFidz6kXFszCBdYun7EDFnf7WDtXAgMBAAECgYBe/VLLqUDV+h2EwlXsaSm3qr5Xi8AyGl16JtHmWJwx8IvvbL3Qn7z/0CjiA4+O5lBCThl9Jb7gUgrQsnfboqBNues6XyCuiXypubI0sTh0UcrS0dZDSdqlJpGoIlsA2QnYfBEB5Czo+0E4b7+UVBr3F5pYVzu+0iyqcAcQwXUckQJBAPbkjcdYMdAprmis8r24DaX7qvKEDxunlSvW5kpJd+k3+toUpOQtpb7+rNOrlEJFU4SNjYfLgQzUby0AEYyMZJkCQQCuBWg+4lxFzud1tsGmeIu7sp7qwyoutYU2+KBTBvbSs0LD48kOBIDnIztJb8UOi14+ZydSxO32Ac2PiwY98qVvAkBAVjKz/cGNUy9Fy7u9wJad6EUVyV/+ft8ae3eraBW9Sn8uES8e3t5QNSFoT0/lLRekdRaqildotnr6KQhprbQRAkEAnpPs2Akcfry57Wn588I7y3JNIK9yXBgr6dkM+DwLZhvWxn1ndK+j630OhLAmiUd1PTZw/hrYoeoosRrGOGNKXwJBAK6YuCYRZsNd6LNbM/9iTkdJi5LoKwY4mPxegjlAXczdUIx3ylIzF+b36K6Zrr/b/HwEsUYrCpQJr/U1dKBcZs0="""
     biz_content["mobile"] = "855010145010"
-    biz_content["couponNo"] = "WNJ210908154513449"
+    biz_content["couponNo"] = "WNJ220120161949011"
 
     # 需要私钥加签的参数
     need_sign = {}
@@ -104,7 +104,7 @@ def api_002():
     sign = rsa_sign_by_private_key(unsign_data, privateKey)
     print("加签后内容：" + sign)
     login_body = {"app_id":"1624010948354",
-                  "biz_content":"{\"couponNo\":\"WNJ210908154513449\",\"mobile\":\"855010145010\"}",
+                  "biz_content":"{\"couponNo\":\"WNJ220120161949011\",\"mobile\":\"855010145010\"}",
                   "charset":"UTF-8",
                   "open_id":"",
                   "service":"send.choice.coupon",
@@ -117,11 +117,6 @@ def api_002():
     print("请求body："+str(login_body))
     #
     return app_api_post(login_url, login_body, headers2)
-
-
-def api_003():
-
-    pass
 
 
 if __name__ == '__main__':
