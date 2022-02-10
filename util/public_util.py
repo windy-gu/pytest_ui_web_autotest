@@ -358,19 +358,19 @@ class Operator_xls():
         wb.save('test_001.xls')
 
 
-class RSA():
+class Rsa_utils():
     """
     RSA非对称加密
     """
 
-    def rsa_sign_by_private_key(encryptData, private_key):
+    def rsa_sign_by_private_key(self, encryptData, private_key):
         """
         通过RSA私钥加签
         :param encryptData:
         :param private_key:
         :return:
         """
-        # privateKey = '-----BEGIN RSA PRIVATE KEY-----\n' + private_key + '\n-----END RSA PRIVATE KEY-----'
+        # privateKey = '-----BEGIN PRIVATE KEY-----\n' + private_key + '\n-----END PRIVATE KEY-----'
         # print(privateKey)
         private_keyBytes = base64.b64decode(private_key)
         priKey = RSA.importKey(private_keyBytes)
@@ -380,7 +380,7 @@ class RSA():
         signature = base64.b64encode(signature)
         return signature.decode()
 
-    def rsa_verify_by_public_key(encryptData, public_key):
+    def rsa_verify_by_public_key(self, encryptData, public_key):
         """
         通过RSA公钥验签
         :param encryptData:
@@ -388,7 +388,7 @@ class RSA():
         :return:
         """
         # 若输入的key 带有对应的前缀和后缀则不用执行 public_keyBytes = base64.b64decode(public_key)
-        # privateKey = '-----BEGIN RSA PRIVATE KEY-----\n' + private_key + '\n-----END RSA PRIVATE KEY-----'
+        # privateKey = '-----BEGIN PRIVATE KEY-----\n' + private_key + '\n-----END PRIVATE KEY-----'
         # print(privateKey)
         public_keyBytes = base64.b64decode(public_key)
         priKey = RSA.importKey(public_keyBytes)
@@ -398,7 +398,7 @@ class RSA():
         signature = base64.b64encode(signature)
         return signature.decode()
 
-    def encrypt_by_public_key(plaintext, public_key):
+    def encrypt_by_public_key(self, plaintext, public_key):
         """
         通过RSA公钥加密
         :param plaintext:  明文
@@ -406,13 +406,15 @@ class RSA():
 
         :return:           密文
         """
-        publicKey = '-----BEGIN RSA PUBLIC KEY-----\n' + public_key + '\n-----END RSA PUBLIC KEY-----'
+        publicKey = '-----BEGIN PUBLIC KEY-----\n' + public_key + '\n-----END PUBLIC KEY-----'
+        print(publicKey)
+
         rsakey = RSA.importKey(publicKey)
         cipher = Cipher_pkcs1_v1_5.new(rsakey)
         ciphertext = base64.b64encode(cipher.encrypt(plaintext.encode(encoding='UTF-8')))
         return ciphertext.decode('utf8')
 
-    def decrypt_by_private_key(ciphertext, private_key):
+    def decrypt_by_private_key(self, ciphertext, private_key):
         """
         通过RSA私钥解密
         :param ciphertext:  密文
@@ -420,7 +422,7 @@ class RSA():
 
         :return:            明文
         """
-        privateKey = '-----BEGIN RSA PRIVATE KEY-----\n' + private_key + '\n-----END RSA PRIVATE KEY-----'
+        privateKey = '-----BEGIN PRIVATE KEY-----\n' + private_key + '\n-----END PRIVATE KEY-----'
         rsakey = RSA.importKey(privateKey)
         cipher = Cipher_pkcs1_v1_5.new(rsakey)
         plaintext = cipher.decrypt(base64.b64decode(ciphertext), None)
@@ -577,8 +579,11 @@ if __name__ == '__main__':
     #         print('必选属性选项id数<=1')
     # print(sql_select_data)
     # #
-    test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_new_user.csv',
-                                         times=100)
+    # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_new_user.csv',
+    #                                      times=100)
+    test_rsa = Rsa_utils()
+    temp_1 = test_rsa.encrypt_by_public_key("test", "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCjblMlMerHC2Dx2+mbrW2jjmBDgDaSolsXZuC3e2oc94xBHPn0C4Dyna1xRkBPPWW1I4GoBWRL32LDQ8xqfugv8UxcAiOQdTXVJ5XbHSXCBfA+aySRg9tjfVONyxp1cwUhon23NkdY9Jy/XE7VKUzjCvhwasfbjg83oQY8dyQefQIDAQAB")
+    print(temp_1)
     #
     # a = read_txt('/Users/windy/Desktop/error.txt', 'loginName')
     # lala = input('请输入需要获取的xls文件路径')
