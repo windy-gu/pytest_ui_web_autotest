@@ -218,7 +218,7 @@ class Element(WebElement, Driver):
         elem = self.__get_element(self.k, self.v)
         if self.desc != 'undefined':
             if self.index != 0:
-                log.info("🖋 input element: {k} = {v}, index：{index}, desc：{desc}".format(k=self.k, v=self.v, index=self.index, desc=self.desc))
+                log.info("🖋 input element: {}, {k} = {v}, index：{index}, desc：{desc}".format(input_value, k=self.k, v=self.v, index=self.index, desc=self.desc))
             else:
                 log.info("🖋 input element: {}, {k} = {v}, desc：{desc}".format(input_value, k=self.k, v=self.v, desc=self.desc))
 

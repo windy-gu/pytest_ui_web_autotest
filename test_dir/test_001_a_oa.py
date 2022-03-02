@@ -84,7 +84,16 @@ def auto_choose_style_by_value(browser, style_value: str):
         time.sleep(1.5)
         list_int = int(str(page.list_operator_count.get_attribute("textContent"))[1: -1])
         time.sleep(1)
-        return operator_by_list(browser, list_int=list_int, style_value=style_value)
+        if list_int == 0:
+            log.info('{last_month}无数据，统计下一个月数据'.format(last_month=get_last_month()))
+            page.clear_search_input_text.click()
+            page.search_input.send_keys(time.strftime("%Y-%m"))
+            page.search_input.send_keys(Keys.ENTER)
+            time.sleep(1.5)
+            list_int = int(str(page.list_operator_count.get_attribute("textContent"))[1: -1])
+            return operator_by_list(browser, list_int=list_int, style_value=style_value)
+        else:
+            return operator_by_list(browser, list_int=list_int, style_value=style_value)
 
     elif style_value == 'DAY_OFF':
         log.print("进入统计调休时间流程")
@@ -209,4 +218,4 @@ def get_last_month():
 
 if __name__ == '__main__':
     file_name = os.path.split(__file__)[-1]
-    pytest.main(['-s', './{}'.format(file_name)])
+    pytest.main(['-s', '-v', './{}'.format(file_name)])

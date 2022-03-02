@@ -15,6 +15,8 @@ class OAPage(PageBrowser):
     overtime_application = Element(xpath='//div[contains(text(),"S-app 加班申请")]', describe='加班申请')
     day_off_application = Element(xpath='//div[contains(text(),"S-app 请休假申请")]', describe='请休假申请')
     search_input = Element(xpath='//input[@class="ant-input undefined"]', index=1, describe='搜索输入框')
+    clear_search_input_text = Element(xpath='//icon[@class="icon-coms-Clear"]', describe='x')
+
     rest_application = Element(xpath='//div[contains(text(),"S-app 请休假申请")]', describe='休假申请')
 
     list_operator_count = Element(xpath='//span[@class="ant-pagination-total-text"]', describe='需要操作数据条数')

@@ -204,11 +204,11 @@ def browser():
 
 
 # 关闭当前窗口
-@pytest.fixture(scope="session", autouse=True)
-def browser_close():
-    yield driver
-    driver.close()
-    log.print("关闭当前窗口")
+# @pytest.fixture(scope="session", autouse=True)
+# def browser_close():
+#     yield driver
+#     driver.close()
+#     log.print("关闭当前窗口")
 
 
 # 关闭浏览器
