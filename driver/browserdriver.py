@@ -4,6 +4,7 @@
 
 import os
 # import atexit
+import re
 import time
 
 import requests
@@ -164,11 +165,14 @@ def driver_last_version(browser: str = 'chrome', system: str = 'darwin'):
 
     driver_dir = os.path.join(driver_dir_path, browser, operating_system)  # 将驱动目录，浏览器类型和操作系统，输出文件路径
     version_last = os.listdir(driver_dir)  # 根据驱动目录获取目录下浏览器版本号名称
-    version_last.sort()  # 排序。此处若是排序中若是首位<但整体大于时，可能存在出错的情况
-    # log.info(str(version_last))
+    version_last.sort(key=lambda l: int(re.findall('\d+', l)[0]))  # 排序。
     driver_file_path = os.path.join(driver_dir, version_last[-1], file)  # 将驱动文件目录，版本号和驱动文件，输出文件路径
     # log.info('本地Chrome浏览器驱动版本List:' + str(driver_file_path))
     return driver_file_path, version_last[-1]
+
+
+def get_list_last_driver_version(driver_version_list: list):
+    ...
 
 
 if __name__ == '__main__':

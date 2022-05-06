@@ -556,8 +556,17 @@ class MySQL:
             return self._execute(sql=sql, mode=mode)
 
 
+# def get_list_last_driver_version(driver_version_list: list):
+#     ...
+#     target_str = ''
+#     sorted(driver_version_list, key=str.lower())
+#     return
+
+
 if __name__ == '__main__':
-    # print(get_email())
+    # test_list = ['99.0.4844.51', '101.0.4951.41']
+    # print(get_list_last_driver_version(test_list))
+    print(get_email())
     # get_product_info_on_performance(['MS1320194834269442048'], '/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_store_info.csv', 'uat')
     # get_product_info_on_performance(['MS1461534823757172736'], '/Users/windy/Desktop/jmeter_script/chaoA_performance_test/pro310_data_info/pro310_store_info.csv', '310')
     # api_query_data(api_url='https://boss-uat.lifekh.com/boss_web/config/banner/v2/deleteCard.do', api_data=test_dict)
@@ -581,9 +590,9 @@ if __name__ == '__main__':
     # #
     # test_loginName = write_csv_loginname(file='/Users/windy/Desktop/jmeter_script/chaoA_performance_test/uat_data_info/uat_new_user.csv',
     #                                      times=100)
-    test_rsa = Rsa_utils()
-    temp_1 = test_rsa.encrypt_by_public_key("test", "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCjblMlMerHC2Dx2+mbrW2jjmBDgDaSolsXZuC3e2oc94xBHPn0C4Dyna1xRkBPPWW1I4GoBWRL32LDQ8xqfugv8UxcAiOQdTXVJ5XbHSXCBfA+aySRg9tjfVONyxp1cwUhon23NkdY9Jy/XE7VKUzjCvhwasfbjg83oQY8dyQefQIDAQAB")
-    print(temp_1)
+    # test_rsa = Rsa_utils()
+    # temp_1 = test_rsa.encrypt_by_public_key("test", "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCjblMlMerHC2Dx2+mbrW2jjmBDgDaSolsXZuC3e2oc94xBHPn0C4Dyna1xRkBPPWW1I4GoBWRL32LDQ8xqfugv8UxcAiOQdTXVJ5XbHSXCBfA+aySRg9tjfVONyxp1cwUhon23NkdY9Jy/XE7VKUzjCvhwasfbjg83oQY8dyQefQIDAQAB")
+    # print(temp_1)
     #
     # a = read_txt('/Users/windy/Desktop/error.txt', 'loginName')
     # lala = input('请输入需要获取的xls文件路径')
