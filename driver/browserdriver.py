@@ -171,9 +171,5 @@ def driver_last_version(browser: str = 'chrome', system: str = 'darwin'):
     return driver_file_path, version_last[-1]
 
 
-def get_list_last_driver_version(driver_version_list: list):
-    ...
-
-
 if __name__ == '__main__':
     print(get_driver_file_path())
