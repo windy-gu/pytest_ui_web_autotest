@@ -52,9 +52,9 @@ def rsa_sign_by_private_key(encryptData, private_key):
     :return:
     """
     privateKey = '-----BEGIN RSA PRIVATE KEY-----\n' + private_key + '\n-----END RSA PRIVATE KEY-----'
-    print("privateKey:" + privateKey)
-    private_keyBytes = base64.b64decode(private_key)
-    priKey = RSA.importKey(private_keyBytes)
+    # print("privateKey:" + privateKey)
+    private_key_bytes = base64.b64decode(private_key)
+    priKey = RSA.importKey(private_key_bytes)
     signer = Signature_pkcs1_v1_5.new(priKey)
     data = SHA.new(encryptData.encode('utf-8'))
     signature = signer.sign(data)

@@ -58,7 +58,7 @@ def api_001():
     return response_data_login
 
 
-def api_002():
+def api_bind_user_coupon_002():
     login_url = 'https://openapi-uat.lifekh.com/open_web/gateway.do'
     # 请求头参数
     headers = {
@@ -228,7 +228,9 @@ def get_open_request_body(open_request_body: dict, private_key: str):
     :param private_key:
     :return:
     """
+    # 深层次复制，便于区分，两种使用不同场景
     request_body = copy.deepcopy(open_request_body)
+
     # 判断入参body中是否存在以下键值，若存在则删除
     if 'sign' in open_request_body.keys():
         open_request_body.pop('sign')
@@ -243,7 +245,7 @@ def get_open_request_body(open_request_body: dict, private_key: str):
 
     # 对加签的内容根据key值进行序列化排序
     open_need_sign_str = json.dumps(open_request_body, sort_keys=True)
-    print('open_need_sign_str：'+open_need_sign_str)
+
     # 转为字典dict类型
     need_sign_dict = eval(open_need_sign_str)
 
@@ -257,16 +259,15 @@ def get_open_request_body(open_request_body: dict, private_key: str):
             unsign_data += str(k) + '=' + str(v) + '&'
     # 剔除多余&，并将单引号替换为双引号
     unsign_data = unsign_data[0:-1].replace("'", '"')
-    print('unsign_data：'+unsign_data)
 
-    # 导入加密方法
+    # 导入RSA 私钥加密方法
     from api import rsa_sign_by_private_key
     sign = rsa_sign_by_private_key(unsign_data, private_key)
 
     # 提取biz_content内容，转换为str类型
     if type(open_request_body['biz_content']) is dict:
-        print('biz_content类型为字典，进入到dict替换str流程')
-        # 为了避免中文乱码 ensure_ascii=False
+        # print('biz_content类型为字典，进入到dict替换str流程')
+        # 为了避免中文乱码，添加ensure_ascii=False
         biz_content_str = json.dumps(open_request_body['biz_content'], sort_keys=True, ensure_ascii=False).replace(' ', '')
 
         # 删除biz_content(dict)，并重新添加biz_content(str)，添加sign
@@ -277,7 +278,7 @@ def get_open_request_body(open_request_body: dict, private_key: str):
 
 
 if __name__ == '__main__':
-    # print(api_002())
+    # print(api_bind_user_coupon_002())
     print(api_003_create_ord())
     # print(api_004_finish_ord("1517062598539964416"))
     # print(api_005_application_test(app_id="1517077510405431296", ord_no="12334444566"))
