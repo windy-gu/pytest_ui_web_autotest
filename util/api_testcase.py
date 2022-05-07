@@ -4,6 +4,7 @@
 
 import json
 import time
+import copy
 import jsonpath
 from api import encrypt_by_public_key
 from util.api import app_api_post
@@ -60,7 +61,7 @@ def api_001():
 def api_002():
     login_url = 'https://openapi-uat.lifekh.com/open_web/gateway.do'
     # 请求头参数
-    headers2 = {
+    headers = {
         "Connection": "keep-alive",
         "termtyp": "ANDROID",
         "channel": "Portal",
@@ -76,54 +77,30 @@ def api_002():
     biz_content["mobile"] = "855010145010"
     biz_content["couponNo"] = "WNJ220120161949011"
 
-    # 需要私钥加签的参数
-    need_sign = {}
-    need_sign['biz_content'] = biz_content
-    need_sign['app_id'] = '1624010948354'
-    need_sign['charset'] = 'UTF-8'
-    need_sign['service'] = 'send.choice.coupon'
-    need_sign['timestamp'] = '2020-09-07 16:07:50'
-    need_sign['version'] = '1.0'
-    print("需要加密的原始数据：" + str(need_sign))
+    app_id = '1624010948354'
+    charset = 'UTF-8'
+    service = 'send.choice.coupon'
+    sign_type = 'RSA'
+    timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
+    version = '1.0'
 
-    # 对加签的内容根据key值进行序列化排序
-    biz_content_str = json.dumps(need_sign, sort_keys=True)
+    login_body = {"app_id": app_id,
+                  "biz_content": biz_content,
+                  "charset": charset,
+                  "service": service,
+                  "sign_type": sign_type,
+                  "timestamp": timestamp,
+                  "version": version}
 
-    biz_content_dict = eval(biz_content_str)  # 转为字典dict类型
-    print(biz_content_str)
-    unsign_data = ''
-
-    for k, v in biz_content_dict.items():
-        # 将key值和value值通过 "=" 拼接，不同键值通过 "&"连接
-        if type(v) is dict:
-            unsign_data += str(k) + '=' + str(v).replace(' ', '') + '&'
-        else:
-            unsign_data += str(k) + '=' + str(v) + '&'
-    unsign_data = unsign_data[0:-1].replace("'", '"')
-    print("待加密的内容：" + unsign_data)
-    from api import rsa_sign_by_private_key
-    sign = rsa_sign_by_private_key(unsign_data, privateKey)
-    print("加签后内容：" + sign)
-    login_body = {"app_id":"1624010948354",
-                  "biz_content":"{\"couponNo\":\"WNJ220120161949011\",\"mobile\":\"855010145010\"}",
-                  "charset":"UTF-8",
-                  "open_id":"",
-                  "service":"send.choice.coupon",
-                  "sign_type":"RSA",
-                  "timestamp":"2020-09-07 16:07:50",
-                  "version":"1.0"
-                  }
-    login_body["sign"] = sign
-    #
-    print("请求body："+str(login_body))
-    #
-    return app_api_post(login_url, login_body, headers2)
+    return app_api_post(login_url,
+                        get_open_request_body(open_request_body=login_body, private_key=privateKey),
+                        headers)
 
 
 def api_003_create_ord():
     login_url = 'https://openapi-uat.lifekh.com/open_web/gateway.do'
     # 请求头参数
-    headers2 = {
+    headers = {
         "Connection": "keep-alive",
         "termtyp": "ANDROID",
         "channel": "Portal",
@@ -151,150 +128,125 @@ def api_003_create_ord():
     biz_content["merchantNo"] = "04134701"
     biz_content["businessContent"] = {"PAY_NOW": 1}
 
-    # 需要私钥加签的参数
-    need_sign = {}
-    need_sign['biz_content'] = biz_content
-    need_sign['app_id'] = '1603310269'
-    need_sign['charset'] = 'UTF-8'
-    need_sign['service'] = 'create.transaction.order'
-    # need_sign['sign_type'] = 'RSA'
-    need_sign['timestamp'] = '2022-04-20 16:07:50'
-    need_sign['version'] = '1.0'
-    print("need_sign的原始数据：" + str(need_sign))
+    app_id = '1603310269'
+    charset = 'UTF-8'
+    service = 'create.transaction.order'
+    sign_type = 'RSA'
+    timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
+    version = '1.0'
+    login_body = {"app_id": app_id,
+                  "biz_content": biz_content,
+                  "charset": charset,
+                  "service": service,
+                  "sign_type": sign_type,
+                  "timestamp": timestamp,
+                  "version": version}
 
-    # 对加签的内容根据key值进行序列化排序
-    nees_sign_str = json.dumps(need_sign, sort_keys=True)
-
-    need_sign_dict = eval(nees_sign_str)  # 转为字典dict类型
-    print(nees_sign_str)
-    unsign_data = ''
-
-    for k, v in need_sign_dict.items():
-        # 将key值和value值通过 "=" 拼接，不同键值通过 "&"连接
-        if type(v) is dict:
-            unsign_data += str(k) + '=' + str(v).replace(' ', '') + '&'
-        else:
-            unsign_data += str(k) + '=' + str(v) + '&'
-    unsign_data = unsign_data[0:-1].replace("'", '"')
-    print("待加密的内容：" + unsign_data)
-    biz_content_str = unsign_data.split('biz_content=')[1].split('&charset')[0]  # 提取biz_content内容
-    print(biz_content_str)
-    from api import rsa_sign_by_private_key
-    sign = rsa_sign_by_private_key(unsign_data, privateKey)
-    print("加签后内容：" + sign)
-    login_body = {"app_id": need_sign['app_id'],
-                  "biz_content": biz_content_str,
-                  "charset": need_sign['charset'],
-                  "service": need_sign['service'],
-                  "sign_type": "RSA",
-                  "timestamp": need_sign['timestamp'],
-                  "version": need_sign['version']
-                  }
-    login_body["sign"] = sign
-    #
-    print("请求body：" + str(login_body))
-    #
-    return app_api_post(login_url, login_body, headers2)
+    return app_api_post(login_url,
+                        get_open_request_body(open_request_body=login_body, private_key=privateKey),
+                        headers)
 
 
 def api_004_finish_ord(ord_no: str):
-    login_url = 'https://openapi-uat.lifekh.com/open_web/gateway.do'
+
+    login_url: str = 'https://openapi-uat.lifekh.com/open_web/gateway.do'
     # 请求头参数
-    headers2 = {
-        "Connection": "keep-alive",
-        "termtyp": "ANDROID",
-        "channel": "Portal",
-        "projectname": "SuperApp",
-        "appid": "SuperApp",
-        "phonemodel": "python-api-test",
-        "deviceId": "python_api_test",
-        "content-type": "application/json; charset=UTF-8"
-    }
-    # biz_content 需要的动态参数mobile和couponNo
+    headers = {"Connection": "keep-alive",
+               "termtyp": "ANDROID",
+               "channel": "Portal",
+               "projectname": "SuperApp",
+               "appid": "SuperApp",
+               "phonemodel": "python-api-test",
+               "deviceId": "python_api_test",
+               "content-type": "application/json; charset=UTF-8"}
+
+    # biz_content 需要的动态获取相关参数
     biz_content = {}
     privateKey = """MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAKC9PfqjQfRjXViXuhY19kGD4hUGe7ygLfN8NemHB84RV30hhoaUp+DcKJ8qtQq/OlYrU93tNqNSRE4IWu0bX7NnMy9wmdF1zwshhUj/vHkofLrnsjm5sPWtDB2y8S6nw98P1Y4xE2EL/gfr08Sg21blrkki0Ge+Tl8v1UO7O27TAgMBAAECgYArbTVTg8wL5NSRXNyvp4CSjrkECS5g9b20bLh8ETkwmUrTybz4my0H+TMYXYdwEd4G7cnIyY/bbBx8IJHAQYcHGXbyfX1WvW6Tec/98nBsy4MborWoS35EhkHGg3dEi8pZS8sQLuiJ1mjSzN+Mse4EuC8SlMnWyRMGtb26b90/8QJBANWbDePORJ33g6VVBzdyjVt8HTmF795QYXZqh7ofNw6Y/Nxsfr56D+aMqF+jFdIVspVqyZ2DD5Mo+fggI/tibqUCQQDApCHVNIPAi351HJFxGXBTwYDEKPLUbdn7YF4O1Dj2uqu/n13Ilj2zU+siFuycPoEl2IYlCD1SEhxsTP4CayYXAkBFkRoU9zihudrGHcsb49Ll2KYr9dMJNGSJjGhn1YK43lp771nX7yj+jRDJFPQmV6qxvvWqtuR7qPzAMreFR6mBAkAcZFRkMvA0IZsKsaIx9BjdD0jmIE7hxir5ZJOYRej7XDnR7TAKTzJaysR96rkGsiOgq0/iB1vaS7cKszJAswATAkB5OuEAZwE1jbc/QNvE58TWN9mmZaJCyAE6IhYCq2vlUPeGwT9Jt3bhmFQlmbfgotnCMX2wkjYoMAlYHv+LsSqz"""
     biz_content["aggregateOrderFinalState"] = "11"  # 11：完成 （会进入结算状态），12：取消（支付完成的会自动退款）
     biz_content["aggregateOrderNo"] = ord_no
+    app_id = '1603310269'
+    charset = 'UTF-8'
+    service = 'confirm.transaction.order'
+    sign_type = 'RSA'
+    timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
+    version = '1.0'
 
-    # 需要私钥加签的参数
-    need_sign = {}
-    need_sign['biz_content'] = biz_content
-    need_sign['app_id'] = '1603310269'
-    need_sign['charset'] = 'UTF-8'
-    need_sign['service'] = 'confirm.transaction.order'
-    # need_sign['sign_type'] = 'RSA'
-    need_sign['timestamp'] = '2022-04-20 16:07:50'
-    need_sign['version'] = '1.0'
-    print("need_sign的原始数据：" + str(need_sign))
+    login_body = {"app_id": app_id,
+                  "biz_content": biz_content,
+                  "charset": charset,
+                  "service": service,
+                  "sign_type": sign_type,
+                  "timestamp": timestamp,
+                  "version": version}
 
-    # 对加签的内容根据key值进行序列化排序
-    nees_sign_str = json.dumps(need_sign, sort_keys=True)
-
-    need_sign_dict = eval(nees_sign_str)  # 转为字典dict类型
-    print(nees_sign_str)
-    unsign_data = ''
-
-    for k, v in need_sign_dict.items():
-        # 将key值和value值通过 "=" 拼接，不同键值通过 "&"连接
-        if type(v) is dict:
-            unsign_data += str(k) + '=' + str(v).replace(' ', '') + '&'
-        else:
-            unsign_data += str(k) + '=' + str(v) + '&'
-    unsign_data = unsign_data[0:-1].replace("'", '"')
-    print("待加密的内容：" + unsign_data)
-    biz_content_str = unsign_data.split('biz_content=')[1].split('&charset')[0]  # 提取biz_content内容
-    print(biz_content_str)
-    from api import rsa_sign_by_private_key
-    sign = rsa_sign_by_private_key(unsign_data, privateKey)
-    print("加签后内容：" + sign)
-    login_body = {"app_id": need_sign['app_id'],
-                  "biz_content": biz_content_str,
-                  "charset": need_sign['charset'],
-                  "service": need_sign['service'],
-                  "sign_type": "RSA",
-                  "timestamp": need_sign['timestamp'],
-                  "version": need_sign['version']
-                  }
-    login_body["sign"] = sign
-    #
-    print("请求body：" + str(login_body))
-    #
-    return app_api_post(login_url, login_body, headers2)
+    return app_api_post(login_url,
+                        get_open_request_body(open_request_body=login_body, private_key=privateKey),
+                        headers)
 
 
 def api_005_application_test(app_id: str, ord_no: str):
     login_url = 'https://openapi-uat.lifekh.com/open_web/gateway.do'
     # 请求头参数
-    headers2 = {
-        "Connection": "keep-alive",
-        "termtyp": "ANDROID",
-        "channel": "Portal",
-        "projectname": "SuperApp",
-        "appid": "SuperApp",
-        "phonemodel": "python-api-test",
-        "deviceId": "python_api_test",
-        "content-type": "application/json; charset=UTF-8"
+    headers = {
+                "Connection": "keep-alive",
+                "termtyp": "ANDROID",
+                "channel": "Portal",
+                "projectname": "SuperApp",
+                "appid": "SuperApp",
+                "phonemodel": "python-api-test",
+                "deviceId": "python_api_test",
+                "content-type": "application/json; charset=UTF-8"
     }
     # biz_content 需要的动态参数mobile和couponNo
     biz_content = ord_no
     privateKey = """MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAKaEnENEGlooCd/QWYtIJ1VNxtH1D75s72SCS6zCyIF7vtN8+S/spBVxcMebDgyaZgn/lshf/2RPbQi9PUotJ5nkspvqSh93SoYgg11MM/phGsABQLD1UTAgyRk5OZ5/MakDncZTnyDuNjgyQ1GhCrx3dLNQs/U7B979IIECas4DAgMBAAECgYEAj069dR6dV03yAY68IaR9RWrkWzl+zTHPbT69hfc0vEsVVcnOYzJTnKi+mOqW0r3mZ2ByEgycLWY1vjmvD7GAzApw2+ZJDgSh05bEnuu/uxmjJe7BX7n8gBMEZdsvqJ4/bSDonrQlauFQVJpvjQz3n51uG/ZVmBDTUpK+2S1rgTECQQDgO41MwAJsl1GRp642T02KFEh0Z/MdBI+FpwxSN5rSB5F/PZShSmoCI78GU7gTRDGbdQODAlI1p16Ku+436R4HAkEAvhvewKp0tNyweZQ+cFKAlsyphfgKDhe7O6kop57cD9IRfOySxRyzVUlEQ2tSb9M/oLRc4HNOu5P+PsVJmK0RJQJBAKVNIYBX+DGHZ7mBrJsa4SWOiE9QJlfY+djkad/eYAK/U5JCmmRA0F9dbMBETWneltdsbrdQqbwl8ztBCX8sGlcCQCZl0K8PfrUNIiPcWmQrdcd/nPnvKHDCQFIDj6+TeZVEc73MtrRTYLFoM/5+Dc+CVoaqB1xaTdu7P44EISJSSnUCQQCtghaFoP7oRJzH8fseDvOqyU3bhLeAYCf0Pcxt5dW4Vtf7vBvz63BprR5YtkzOW3JV7TvyNKjqMISJTROnWisk"""
+    app_id = app_id
+    charset = 'UTF-8'
+    service = 'payment.query'
+    sign_type = 'RSA'
+    timestamp = time.strftime('%Y-%m-%d %H:%M:%S')
+    version = '1.0'
+
+    login_body = {"app_id": app_id,
+                  "biz_content": biz_content,
+                  "charset": charset,
+                  "service": service,
+                  "sign_type": sign_type,
+                  "timestamp": timestamp,
+                  "version": version}
+
+    return app_api_post(login_url,
+                        get_open_request_body(open_request_body=login_body, private_key=privateKey),
+                        headers)
 
 
-    # 需要私钥加签的参数
-    need_sign = {}
-    need_sign['biz_content'] = biz_content
-    need_sign['app_id'] = app_id
-    need_sign['charset'] = 'UTF-8'
-    need_sign['service'] = 'payment.query'
-    need_sign['timestamp'] = time.strftime('%Y-%m-%d %H:%M:%S')
-    need_sign['version'] = '1.0'
-    print("need_sign的原始数据：" + str(need_sign))
+def get_open_request_body(open_request_body: dict, private_key: str):
+    """
+    自动根据入参body，生成sign键对值，将biz_content的dict转换为str后重新传参
+    :param open_request_body:
+    :param private_key:
+    :return:
+    """
+    request_body = copy.deepcopy(open_request_body)
+    # 判断入参body中是否存在以下键值，若存在则删除
+    if 'sign' in open_request_body.keys():
+        open_request_body.pop('sign')
+    if 'signData' in open_request_body.keys():
+        open_request_body.pop('signData')
+    if 'sign_type' in open_request_body.keys():
+        open_request_body.pop('sign_type')
+    if 'ipAddress' in open_request_body.keys():
+        open_request_body.pop('ipAddress')
+    if 'operatorNo' in open_request_body.keys():
+        open_request_body.pop('operatorNo')
 
     # 对加签的内容根据key值进行序列化排序
-    nees_sign_str = json.dumps(need_sign, sort_keys=True)
+    open_need_sign_str = json.dumps(open_request_body, sort_keys=True)
+    print('open_need_sign_str：'+open_need_sign_str)
+    # 转为字典dict类型
+    need_sign_dict = eval(open_need_sign_str)
 
-    need_sign_dict = eval(nees_sign_str)  # 转为字典dict类型
-    print(nees_sign_str)
     unsign_data = ''
 
     for k, v in need_sign_dict.items():
@@ -303,26 +255,25 @@ def api_005_application_test(app_id: str, ord_no: str):
             unsign_data += str(k) + '=' + str(v).replace(' ', '') + '&'
         else:
             unsign_data += str(k) + '=' + str(v) + '&'
+    # 剔除多余&，并将单引号替换为双引号
     unsign_data = unsign_data[0:-1].replace("'", '"')
-    print("待加密的内容：" + unsign_data)
-    biz_content_str = unsign_data.split('biz_content=')[1].split('&charset')[0]  # 提取biz_content内容
-    print(biz_content_str)
+    print('unsign_data：'+unsign_data)
+
+    # 导入加密方法
     from api import rsa_sign_by_private_key
-    sign = rsa_sign_by_private_key(unsign_data, privateKey)
-    print("加签后内容：" + sign)
-    login_body = {"app_id": need_sign['app_id'],
-                  "biz_content": biz_content_str,
-                  "charset": need_sign['charset'],
-                  "service": need_sign['service'],
-                  "sign_type": "RSA",
-                  "timestamp": need_sign['timestamp'],
-                  "version": need_sign['version']
-                  }
-    login_body["sign"] = sign
-    #
-    print("请求body：" + str(login_body))
-    #
-    return app_api_post(login_url, login_body, headers2)
+    sign = rsa_sign_by_private_key(unsign_data, private_key)
+
+    # 提取biz_content内容，转换为str类型
+    if type(open_request_body['biz_content']) is dict:
+        print('biz_content类型为字典，进入到dict替换str流程')
+        # 为了避免中文乱码 ensure_ascii=False
+        biz_content_str = json.dumps(open_request_body['biz_content'], sort_keys=True, ensure_ascii=False).replace(' ', '')
+
+        # 删除biz_content(dict)，并重新添加biz_content(str)，添加sign
+        request_body.pop('biz_content')
+        request_body['biz_content'] = biz_content_str
+    request_body['sign'] = sign
+    return request_body
 
 
 if __name__ == '__main__':
