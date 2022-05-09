@@ -556,13 +556,6 @@ class MySQL:
             return self._execute(sql=sql, mode=mode)
 
 
-# def get_list_last_driver_version(driver_version_list: list):
-#     ...
-#     target_str = ''
-#     sorted(driver_version_list, key=str.lower())
-#     return
-
-
 if __name__ == '__main__':
     # test_list = ['99.0.4844.51', '101.0.4951.41']
     # print(get_list_last_driver_version(test_list))
