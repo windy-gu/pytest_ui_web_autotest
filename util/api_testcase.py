@@ -243,10 +243,10 @@ def get_open_request_body(open_request_body: dict, private_key: str):
     if 'operatorNo' in open_request_body.keys():
         open_request_body.pop('operatorNo')
 
-    # 对加签的内容根据key值进行序列化排序
+    # 对加签的内容根据key值进行序列化排序，注：ensure_ascii=False若是不指定这个，中文字符会变成ascii字符
     open_need_sign_str = json.dumps(open_request_body, sort_keys=True)
 
-    # 转为字典dict类型
+    # str转为字典dict类型，便于后续的拼接操作
     need_sign_dict = eval(open_need_sign_str)
 
     unsign_data = ''
@@ -264,7 +264,7 @@ def get_open_request_body(open_request_body: dict, private_key: str):
     from api import rsa_sign_by_private_key
     sign = rsa_sign_by_private_key(unsign_data, private_key)
 
-    # 提取biz_content内容，转换为str类型
+    # 提取biz_content内容，若是dict类型则转换为str类型
     if type(open_request_body['biz_content']) is dict:
         # print('biz_content类型为字典，进入到dict替换str流程')
         # 为了避免中文乱码，添加ensure_ascii=False
