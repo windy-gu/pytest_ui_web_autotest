@@ -3,10 +3,7 @@
 # software: PyCharm
 
 import os
-# import atexit
 import re
-import time
-
 import requests
 import platform
 from util.log import Log
@@ -24,7 +21,7 @@ def chrome_driver(driver_path=None,
 
     """
 
-    :param driver_path:    使用项目工程的driver驱动
+    :param driver_path:         使用项目工程的driver驱动
     :param headless:            无头模式
     :param user_agent:          自定义user_agent
     :param maximize:            是否最大化窗口
@@ -145,6 +142,9 @@ def get_driver_file_path(browser: str = 'chrome'):
 def driver_last_version(browser: str = 'chrome', system: str = 'darwin'):
     """
     根据浏览器类型，输出浏览器驱动在项目工作中的路径地址
+    :param browser:     浏览器类型，默认值：chrome
+    :param system:      操作系统类型，默认值：darwin
+    :return:
     """
     global operating_system
     driver_dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__)))
